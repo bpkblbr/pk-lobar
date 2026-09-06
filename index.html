@@ -700,7 +700,108 @@ function addIndividualRow() {
   evaluateNo2LockRules();
   lucide.createIcons();
 }
+    
+// Hapus baris data individu tertentu & susun ulang indeks
+function removeIndividualRow(indexToRemove) {
+  if (indexToRemove === 1) {
+    alert("Kepala Keluarga (Anggota #1) tidak dapat dihapus!");
+    return;
+  }
 
+  const container = document.getElementById('individus-container');
+  const cards = Array.from(container.children);
+  const total = cards.length;
+
+  if (total <= 1) {
+    alert("Minimal harus ada 1 anggota keluarga!");
+    return;
+  }
+
+  if (!confirm(`Hapus data Anggota #${indexToRemove}?`)) {
+    return;
+  }
+
+  // 1. Simpan data anggota yang tidak dihapus ke array temporary
+  const preservedData = [];
+  cards.forEach((card, idx) => {
+    const currentIdx = idx + 1;
+    if (currentIdx !== indexToRemove) {
+      const dis = [];
+      card.querySelectorAll(`.dis-check-${currentIdx}:checked`).forEach(cb => dis.push(cb.value));
+
+      preservedData.push({
+        nama: card.querySelector('.ind-nama')?.value || '',
+        nik: card.querySelector('.ind-nik')?.value || '',
+        hubungan: card.querySelector('.ind-hubungan')?.value || 'Anak',
+        jk: document.getElementById(`jk-${currentIdx}`)?.value || 'Laki-laki',
+        tgl_lahir: card.querySelector('.ind-tgl-lahir')?.value || '',
+        usia: document.getElementById(`usia-${currentIdx}`)?.value || '',
+        kawin: document.getElementById(`kawin-${currentIdx}`)?.value || 'Belum Kawin',
+        usia_kawin: document.getElementById(`usia-kawin-${currentIdx}`)?.value || '',
+        akta: card.querySelector('.ind-akta')?.value || 'false',
+        ibu: document.getElementById(`ibu-${currentIdx}`)?.value || '',
+        agama: card.querySelector('.ind-agama')?.value || 'Islam',
+        pekerjaan: card.querySelector('.ind-pekerjaan')?.value || 'Tidak/Belum Bekerja',
+        pendidikan: card.querySelector('.ind-pendidikan')?.value || 'Tidak/Belum Sekolah',
+        jkn: card.querySelector('.ind-jkn')?.value || 'PBI',
+        luar_negeri: document.getElementById(`luarnegeri-${currentIdx}`)?.value || 'Tidak',
+        mutasi: card.querySelector('.ind-mutasi')?.value || '',
+        disabilitas: dis
+      });
+    }
+  });
+
+  // 2. Render ulang form dengan urutan indeks baru (1, 2, 3...)
+  container.innerHTML = '';
+  preservedData.forEach((data, idx) => {
+    const newIdx = idx + 1;
+    const newCard = createIndividualCard(newIdx);
+    container.appendChild(newCard);
+
+    // Isi kembali nilai yang sudah diketik sebelumnya
+    newCard.querySelector('.ind-nama').value = data.nama;
+    newCard.querySelector('.ind-nik').value = data.nik;
+    if (newIdx !== 1) newCard.querySelector('.ind-hubungan').value = data.hubungan;
+    document.getElementById(`jk-${newIdx}`).value = data.jk;
+    newCard.querySelector('.ind-tgl-lahir').value = data.tgl_lahir;
+    document.getElementById(`usia-${newIdx}`).value = data.usia;
+    document.getElementById(`kawin-${newIdx}`).value = data.kawin;
+    
+    const usiaKawinEl = document.getElementById(`usia-kawin-${newIdx}`);
+    if (usiaKawinEl) {
+      usiaKawinEl.value = data.usia_kawin;
+      usiaKawinEl.disabled = (data.kawin === 'Belum Kawin');
+    }
+
+    newCard.querySelector('.ind-akta').value = data.akta;
+    newCard.querySelector('.ind-agama').value = data.agama;
+    newCard.querySelector('.ind-pekerjaan').value = data.pekerjaan;
+    newCard.querySelector('.ind-pendidikan').value = data.pendidikan;
+    newCard.querySelector('.ind-jkn').value = data.jkn;
+    document.getElementById(`luarnegeri-${newIdx}`).value = data.luar_negeri;
+    newCard.querySelector('.ind-mutasi').value = data.mutasi;
+
+    // Checkbox disabilitas
+    newCard.querySelectorAll(`.dis-check-${newIdx}`).forEach(cb => {
+      cb.checked = data.disabilitas.includes(cb.value);
+    });
+  });
+
+  // 3. Update input jumlah anggota di Form Wilayah
+  const newTotal = preservedData.length;
+  document.getElementById('w-jml-anggota').value = newTotal;
+
+  // 4. Update tab navigasi dan arahkan ke tab yang valid
+  renderIndividuTabs();
+  const nextActive = Math.min(currentActiveIndividu, newTotal);
+  switchIndividuView(nextActive);
+
+  // 5. Evaluasi aturan kunci No. 2 dan dropdown ibu kandung
+  evaluateNo2LockRules();
+  refreshMotherDropdowns();
+  lucide.createIcons();
+}
+    
 // Render tab tombol nomor anggota
 function renderIndividuTabs() {
   const tabsWrapper = document.getElementById('individu-tabs');
