@@ -1251,7 +1251,11 @@ function toggleDisabilitas(el, index) {
 }
 
 async function confirmIndividualAndProceed() {
-  const isDone = await showAppConfirm("Apakah seluruh data anggota keluarga sudah selesai diisi? Pilih Batal jika ingin menambah anggota lagi.", "Selesai Isi Individu?");
+  const isDone = await showAppConfirm(
+    "Apakah seluruh data individu anggota keluarga sudah selesai diisi? Klik Batal jika masih ingin menambah anggota baru.", 
+    "Konfirmasi Data Individu"
+  );
+  
   if (!isDone) {
     addIndividualRow();
   } else {
