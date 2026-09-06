@@ -529,42 +529,45 @@
       desaEl.setAttribute('data-code', profile.kode_desa);
     }
 
-    // 2. SETUP WILAYAH TUGAS DINAMIS (DUSUN & RT TERTENTU)
+    // 2. SETUP WILAYAH TUGAS DINAMIS (DUSUN & RT TERTENTU)    
     function setupWilayahPenugasan(profile) {
       const dusunSelect = document.getElementById('w-dusun-select');
       const rtSelect = document.getElementById('w-rt');
       dusunSelect.innerHTML = '';
       rtSelect.innerHTML = '';
-
+    
       let listTugas = [];
+    
       if (profile.role === 'pendata' && Array.isArray(profile.wilayah_tugas) && profile.wilayah_tugas.length > 0) {
+        // Wilayah spesifik tugas kader pendata
         listTugas = profile.wilayah_tugas;
       } else {
-        // Default jika admin dusun atau akun non-multisite
-        listTugas = [{
-          kode_dusun: profile.kode_dusun || '0001',
-          nama_dusun: profile.nama_dusun || 'Dusun Wilayah',
-          rt: ['001', '002', '003']
-        }];
+        // Admin Desa / role di atasnya memiliki akses standar seluruh wilayah desa
+        listTugas = [
+          { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
+          { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
+        ];
       }
-
-      // Render Dropdown Dusun
+    
+      // Isi dropdown Dusun (Kode 4 Digit)
       listTugas.forEach((item, index) => {
         const opt = document.createElement('option');
-        opt.value = item.kode_dusun;
-        opt.textContent = `${item.nama_dusun} (Kode: ${item.kode_dusun})`;
+        opt.value = item.kode_dusun.padStart(4, '0');
+        opt.textContent = `${item.nama_dusun} (${item.kode_dusun.padStart(4, '0')})`;
         opt.dataset.index = index;
         dusunSelect.appendChild(opt);
       });
-
+    
       // Handler sinkronisasi Dusun -> RT
       dusunSelect.onchange = function() {
         const selectedIdx = this.options[this.selectedIndex].dataset.index;
         const selectedData = listTugas[selectedIdx];
         
-        document.getElementById('w-dusun').setAttribute('data-code', selectedData.kode_dusun);
+        // Set kode dusun 4 digit untuk generate ID Keluarga
+        document.getElementById('w-dusun').setAttribute('data-code', selectedData.kode_dusun.padStart(4, '0'));
         rtSelect.innerHTML = '';
-
+    
+        // Isi opsi RT (Kode 3 Digit)
         selectedData.rt.forEach(rtNomor => {
           const rtOpt = document.createElement('option');
           const paddedRT = String(rtNomor).padStart(3, '0');
@@ -572,11 +575,11 @@
           rtOpt.textContent = `RT ${paddedRT}`;
           rtSelect.appendChild(rtOpt);
         });
-
+    
         updateIDKeluarga();
       };
-
-      // Trigger default
+    
+      // Jalankan perubahan pertama kali
       dusunSelect.dispatchEvent(new Event('change'));
     }
 
