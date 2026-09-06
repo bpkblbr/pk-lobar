@@ -780,9 +780,9 @@ function addIndividualRow() {
 }
     
 // Hapus baris data individu tertentu & susun ulang indeks
-function removeIndividualRow(indexToRemove) {
+async function removeIndividualRow(indexToRemove) {
   if (indexToRemove === 1) {
-    alert("Kepala Keluarga (Anggota #1) tidak dapat dihapus!");
+    await showAppAlert("Kepala Keluarga (Anggota #1) tidak dapat dihapus!", "Peringatan", "danger");
     return;
   }
 
@@ -791,13 +791,12 @@ function removeIndividualRow(indexToRemove) {
   const total = cards.length;
 
   if (total <= 1) {
-    alert("Minimal harus ada 1 anggota keluarga!");
+    await showAppAlert("Minimal harus ada 1 anggota keluarga!", "Peringatan", "danger");
     return;
   }
 
-  if (!confirm(`Hapus data Anggota #${indexToRemove}?`)) {
-    return;
-  }
+  const confirmed = await showAppConfirm(`Apakah Anda yakin ingin menghapus data Anggota #${indexToRemove}?`, "Hapus Anggota");
+  if (!confirmed) return;
 
   // 1. Simpan data anggota yang tidak dihapus ke array temporary
   const preservedData = [];
