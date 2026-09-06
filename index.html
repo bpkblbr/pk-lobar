@@ -443,7 +443,7 @@
   </div>
 
   <script>
-    // CONFIG SUPABASE
+    / CONFIG SUPABASE
     const SUPABASE_URL = 'https://zbwlbhkrzgdsblyjrepo.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpid2xiaGtyemdkc2JseWpyZXBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NjI0MjQsImV4cCI6MjEwNDIzODQyNH0.AxOP7CGAGGCUA5DxzydTJ7lQoovpr_dNYSb2bIMxKqU';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -451,84 +451,53 @@
     let currentUserProfile = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-  lucide.createIcons();
-  bindIDGenerators();
-  initIndividuRows(2);
+      lucide.createIcons();
+      bindIDGenerators();
+      initIndividuRows(2);
 
-  const savedUser = localStorage.getItem('simpk_session');
-  if (savedUser) {
-    currentUserProfile = JSON.parse(savedUser);
-    renderUserInterface(currentUserProfile);
-    setupWilayahPenugasan(currentUserProfile);
-    loadStats();
-    document.getElementById('auth-view').classList.add('hidden');
-    document.getElementById('app-view').classList.remove('hidden');
-  }
-});
+      // Cek sesi login tersimpan
+      const savedUser = localStorage.getItem('simpk_session');
+      if (savedUser) {
+        currentUserProfile = JSON.parse(savedUser);
+        renderUserInterface(currentUserProfile);
+        setupWilayahPenugasan(currentUserProfile);
+        loadStats();
+        document.getElementById('auth-view').classList.add('hidden');
+        document.getElementById('app-view').classList.remove('hidden');
+      }
+    });
 
-// Verifikasi Login Manual ke Tabel app_users
-document.getElementById('form-login').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const usernameInput = document.getElementById('login-username').value.trim();
-  const passwordInput = document.getElementById('login-password').value;
-  const btn = document.getElementById('btn-submit-login');
-  btn.disabled = true;
+    // Verifikasi Login Manual ke Tabel users
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const usernameInput = document.getElementById('login-username').value.trim();
+      const passwordInput = document.getElementById('login-password').value.trim();
+      const btn = document.getElementById('btn-submit-login');
+      btn.disabled = true;
 
-  try {
-    // Memanggil tabel public.users
-    const { data: user, error } = await supabaseClient
-      .from('users')
-      .select('*')
-      .eq('username', usernameInput)
-      .eq('password', passwordInput)
-      .eq('is_active', true)
-      .single();
-
-    if (error || !user) {
-      throw new Error('Username atau kata sandi tidak cocok!');
-    }
-
-    currentUserProfile = user;
-    localStorage.setItem('simpk_session', JSON.stringify(user));
-
-    renderUserInterface(user);
-    setupWilayahPenugasan(user);
-    loadStats();
-
-    document.getElementById('auth-view').classList.add('hidden');
-    document.getElementById('app-view').classList.remove('hidden');
-    lucide.createIcons();
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-// Tombol Logout
-document.getElementById('btn-logout').addEventListener('click', () => {
-  localStorage.removeItem('simpk_session');
-  currentUserProfile = null;
-  document.getElementById('app-view').classList.add('hidden');
-  document.getElementById('auth-view').classList.remove('hidden');
-  document.getElementById('form-login').reset();
-});
-
-    async function loadUserProfile(authUser) {
       try {
-        const { data: profile, error } = await supabaseClient
-          .from('app_users')
+        const { data: user, error } = await supabaseClient
+          .from('users')
           .select('*')
-          .eq('id', authUser.id)
-          .single();
+          .eq('username', usernameInput)
+          .eq('password', passwordInput)
+          .eq('is_active', true)
+          .maybeSingle(); // Gunakan maybeSingle agar tidak melempar PGRST116 jika 0 baris
 
-        if (error || !profile) {
-          throw new Error('Data profil wilayah akun tidak ditemukan.');
+        if (error) {
+          console.error("Supabase Error:", error);
+          throw new Error('Database Error: ' + error.message);
         }
 
-        currentUserProfile = profile;
-        renderUserInterface(profile);
-        setupWilayahPenugasan(profile);
+        if (!user) {
+          throw new Error('Username atau kata sandi tidak cocok!');
+        }
+
+        currentUserProfile = user;
+        localStorage.setItem('simpk_session', JSON.stringify(user));
+
+        renderUserInterface(user);
+        setupWilayahPenugasan(user);
         loadStats();
 
         document.getElementById('auth-view').classList.add('hidden');
@@ -536,10 +505,20 @@ document.getElementById('btn-logout').addEventListener('click', () => {
         lucide.createIcons();
       } catch (err) {
         alert(err.message);
-        await supabaseClient.auth.signOut();
+      } finally {
+        btn.disabled = false;
       }
-    }
+    });
 
+    // Tombol Logout (Satu listener bersih)
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      localStorage.removeItem('simpk_session');
+      currentUserProfile = null;
+      document.getElementById('app-view').classList.add('hidden');
+      document.getElementById('auth-view').classList.remove('hidden');
+      document.getElementById('form-login').reset();
+    });
+    
     function renderUserInterface(profile) {
       document.getElementById('user-nama').textContent = profile.nama_lengkap;
       document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
@@ -640,14 +619,7 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 
       const fullID = `${p}${kab}${kec}${des}${dus}${rt}-${rmh}-${urt}`;
       document.getElementById('w-id-keluarga').value = fullID;
-    }
-
-    document.getElementById('btn-logout').addEventListener('click', async () => {
-      await supabaseClient.auth.signOut();
-      document.getElementById('app-view').classList.add('hidden');
-      document.getElementById('auth-view').classList.remove('hidden');
-      currentUserProfile = null;
-    });
+    }    
 
     // 4. NAVIGASI WIZARD & LOGIKA FORM
     function goToStep(stepNumber) {
