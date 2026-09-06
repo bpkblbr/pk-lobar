@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Informasi Pendataan Keluarga Mandiri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); }
+    input:disabled, select:disabled { background-color: #f1f5f9; cursor: not-allowed; color: #64748b; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+  <div id="auth-view" class="flex min-h-screen items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+      <div class="text-center mb-8">
+        <div class="inline-flex p-3 bg-indigo-50 text-indigo-600 rounded-xl mb-3">
+          <i data-lucide="users" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900">Masuk Aplikasi Pendataan</h2>
+        <p class="text-sm text-slate-500 mt-1">Sistem Pendataan Terpadu Keluarga & Kependudukan</p>
+      </div>
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Email Petugas</label>
+          <input type="email" id="login-email" required class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="petugas@data.id">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Kata Sandi</label>
+          <input type="password" id="login-password" required class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="••••••••">
+        </div>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg shadow-indigo-100 transition-all flex justify-center items-center gap-2">
+          <span>Masuk Sistem</span>
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="app-view" class="hidden">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="p-2 bg-indigo-600 text-white rounded-lg"><i data-lucide="database" class="w-5 h-5"></i></span>
+          <h1 class="font-bold text-lg text-slate-900">SIM-PK <span class="text-xs font-normal text-slate-500 hidden sm:inline">| Pendataan Keluarga</span></h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <span id="user-display" class="text-sm text-slate-600 font-medium">petugas@data.id</span>
+          <button id="btn-logout" class="text-xs bg-slate-100 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-md font-medium text-slate-600 flex items-center gap-1 transition">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Keluar
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Ringkasan Statistik</h2>
+            <p class="text-sm text-slate-500">Pemantauan hasil pendataan lapangan secara real-time</p>
+          </div>
+          <button id="btn-refresh-stats" class="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Segarkan Data
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="home" class="w-6 h-6"></i></div>
+            <div>
+              <p class="text-xs text-slate-500 font-semibold uppercase">Total Keluarga</p>
+              <h3 id="stat-total-keluarga" class="text-2xl font-black text-slate-900">0</h3>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="users-2" class="w-6 h-6"></i></div>
+            <div>
+              <p class="text-xs text-slate-500 font-semibold uppercase">Total Jiwa</p>
+              <h3 id="stat-total-jiwa" class="text-2xl font-black text-slate-900">0</h3>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-violet-50 text-violet-600 rounded-lg"><i data-lucide="heart" class="w-6 h-6"></i></div>
+            <div>
+              <p class="text-xs text-slate-500 font-semibold uppercase">Peserta KB Aktif</p>
+              <h3 id="stat-peserta-kb" class="text-2xl font-black text-slate-900">0</h3>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+            <div>
+              <p class="text-xs text-slate-500 font-semibold uppercase">Cakupan JKN</p>
+              <h3 id="stat-cakupan-jkn" class="text-2xl font-black text-slate-900">0%</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
+          <button class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600 flex items-center justify-center gap-2 whitespace-nowrap" data-step="1">
+            <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center">1</span> Form Wilayah
+          </button>
+          <button class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="2">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">2</span> Data Individu
+          </button>
+          <button class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="3">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">3</span> Pembangunan Keluarga
+          </button>
+          <button class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="4">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">4</span> Keluarga Berencana (KB)
+          </button>
+        </div>
+
+        <form id="survey-form" class="p-6 sm:p-8 space-y-6">
+
+          <div id="step-1" class="step-content space-y-6">
+            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">B. Data Wilayah & Domisili Keluarga</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Provinsi</label>
+                <input type="text" id="w-prov" value="JAWA BARAT" data-code="32" readonly class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kabupaten/Kota</label>
+                <input type="text" id="w-kab" value="KAB. BANDUNG" data-code="04" readonly class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kecamatan</label>
+                <input type="text" id="w-kec" value="SOREANG" data-code="01" readonly class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Desa/Kelurahan</label>
+                <input type="text" id="w-desa" value="PAMEKUNTAN" data-code="001" readonly class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Dusun/RW</label>
+                <input type="text" id="w-dusun" value="DUSUN MAWAR" data-code="001" readonly class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">RT (Pilihan Otomatis)</label>
+                <select id="w-rt" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"></select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Rumah</label>
+                <input type="text" id="w-no-rumah" required placeholder="012" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Urut Keluarga</label>
+                <input type="text" id="w-no-urut" required placeholder="001" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Generated ID Keluarga</label>
+                <input type="text" id="w-id-keluarga" readonly class="w-full px-3 py-2 border rounded-lg font-mono text-indigo-700 bg-indigo-50 font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. KK (16 Digit)</label>
+                <input type="text" id="w-no-kk" maxlength="16" required placeholder="3204..." class="w-full px-3 py-2 border rounded-lg">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Telepon / HP</label>
+                <input type="tel" id="w-no-telp" placeholder="0812..." class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Anggota Keluarga</label>
+                <input type="number" id="w-jml-anggota" min="1" max="20" value="2" class="w-full px-3 py-2 border rounded-lg font-semibold">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Status Keluarga</label>
+                <select id="w-status-keluarga" class="w-full px-3 py-2 border rounded-lg">
+                  <option value="keluarga ada">Keluarga Ada</option>
+                  <option value="keluarga pindah">Keluarga Pindah</option>
+                  <option value="keluarga seluruh anggota keluarga meninggal dunia">Seluruh Anggota Meninggal Dunia</option>
+                  <option value="keluarga tidak ditemukan">Keluarga Tidak Ditemukan</option>
+                </select>
+              </div>
+              <div class="md:col-span-3">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Alamat Lengkap</label>
+                <textarea id="w-alamat" rows="2" required placeholder="Jl. Melati No..." class="w-full px-3 py-2 border rounded-lg"></textarea>
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-4">
+              <button type="button" onclick="goToStep(2)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center gap-2">
+                <span>Lanjut: Data Individu</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="step-2" class="step-content hidden space-y-6">
+            <div class="flex items-center justify-between pb-2 border-b">
+              <h3 class="text-lg font-bold text-slate-900">C. Data Individu Anggota Keluarga</h3>
+              <button type="button" onclick="addIndividualRow()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold flex items-center gap-1">
+                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Tambah Anggota Manual
+              </button>
+            </div>
+
+            <div id="individus-container" class="space-y-6">
+              </div>
+
+            <div class="flex justify-between pt-4 border-t">
+              <button type="button" onclick="goToStep(1)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium">Kembali</button>
+              <button type="button" onclick="confirmIndividualAndProceed()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center gap-2">
+                <span>Lanjut: Pembangunan Keluarga</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="step-3" class="step-content hidden space-y-6">
+            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">D. Form Pembangunan Keluarga</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Atap Terluas</label>
+                <select id="pk-atap" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Beton</option><option>Genteng</option><option>Asbes/Seng</option><option>Kayu/Sirap</option><option>Bambu</option><option>Jerami/Ijuk/Rumbia/ Daun-daunan</option><option>Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kondisi Atap</label>
+                <select id="pk-kondisi-atap" class="w-full px-3 py-2 border rounded-lg">
+                  <option>baik</option><option>rusak ringan</option><option>Rusak berat</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Dinding Terluas</label>
+                <select id="pk-dinding" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Tembok</option><option>Kayu/Papan</option><option>Seng</option><option>Bambu</option><option>Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kondisi Dinding</label>
+                <select id="pk-kondisi-dinding" class="w-full px-3 py-2 border rounded-lg">
+                  <option>baik</option><option>rusak ringan</option><option>Rusak berat</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Lantai Terluas</label>
+                <select id="pk-lantai" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Keramik/Granit/Marmer/Ubin/Tegel/Teraso</option><option>Semen</option><option>Kayu/Papan</option><option>Bambu</option><option>Tanah</option><option>Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kondisi Lantai</label>
+                <select id="pk-kondisi-lantai" class="w-full px-3 py-2 border rounded-lg">
+                  <option>baik</option><option>rusak ringan</option><option>Rusak berat</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Penerangan Utama</label>
+                <select id="pk-penerangan" onchange="toggleListrikDaya(this.value)" class="w-full px-3 py-2 border rounded-lg">
+                  <option value="Listrik PLN Meteran">Listrik PLN Meteran</option>
+                  <option value="Listrik PLN Non Meteran">Listrik PLN Non Meteran</option>
+                  <option value="Listrik Non PLN">Listrik Non PLN</option>
+                  <option value="Bukan Listrik">Bukan Listrik</option>
+                </select>
+              </div>
+              <div id="wrapper-daya-listrik">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Besar Daya Terpasang</label>
+                <select id="pk-daya" class="w-full px-3 py-2 border rounded-lg">
+                  <option>450 watt</option><option>900 watt</option><option>1300 watt</option><option>&gt;1300 watt</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Air Minum Utama</label>
+                <select id="pk-air" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Air Kemasan bermerek</option><option>Air Isi Ulang</option><option>Ledeng/PAM</option><option>Sumur Bor</option><option>Sumur Terlindung</option><option>Sumur Tidak Terlindung</option><option>Air Permukaan (Sungai, Danau, dll)</option><option>KRAN Umum/Hidwan Umum/Terminal Air</option><option>Penampungan Air Hujan (PAH)</option><option>Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Fasilitas Buang Air Besar (BAB)</label>
+                <select id="pk-bab" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL dan dilakukan penyedotan secara berkala (satu kali dalam 3-5 tahun)</option>
+                  <option>Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL</option>
+                  <option>Ya MCK komunal dengan leher angsa dan tangka septic/IPAL</option>
+                  <option>Ya, lainnya</option>
+                  <option>Tidak ada</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Luas Rumah/Bangunan (m²)</label>
+                <input type="number" step="0.1" id="pk-luas" required class="w-full px-3 py-2 border rounded-lg" placeholder="36">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Bahan Bakar Utama Memasak</label>
+                <select id="pk-bahan-bakar" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Listrik</option><option>Gas 12 kg</option><option>Gas 5,5kg/blue gas</option><option>Gas 3kg</option><option>Minyak tanah</option><option>Briket/arang/kayu</option><option>lainnya</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex justify-between pt-4 border-t">
+              <button type="button" onclick="goToStep(2)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium">Kembali</button>
+              <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center gap-2">
+                <span>Lanjut: Form KB</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="step-4" class="step-content hidden space-y-6">
+            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">E. Form Keluarga Berencana (KB)</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Ibu Melahirkan</label>
+                <input type="number" id="kb-lahir-total" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Lahir Hidup (L)</label>
+                <input type="number" id="kb-lh-laki" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Lahir Hidup (P)</label>
+                <input type="number" id="kb-lh-perempuan" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Masih Hidup (L)</label>
+                <input type="number" id="kb-mh-laki" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Masih Hidup (P)</label>
+                <input type="number" id="kb-mh-perempuan" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Sedang Hamil?</label>
+                <select id="kb-hamil" onchange="toggleHamil(this.value)" class="w-full px-3 py-2 border rounded-lg">
+                  <option value="Tidak">Tidak</option>
+                  <option value="Ya">Ya</option>
+                </select>
+              </div>
+              <div id="box-usia-hamil" class="hidden">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kehamilan (Minggu)</label>
+                <input type="number" id="kb-usia-hamil" min="1" max="44" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Ingin Anak (IAS)</label>
+                <select id="kb-ias" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Ingin Anak Segera</option>
+                  <option>Ingin Anak Nanti/Kemudian</option>
+                  <option>Tidak Ingin Anak Lagi</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border rounded-xl space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Saat ini Menggunakan Kontrasepsi?</label>
+                  <select id="kb-sedang-berkb" onchange="toggleStatusKB(this.value)" class="w-full px-3 py-2 border rounded-lg bg-white">
+                    <option value="Tidak">Tidak</option>
+                    <option value="Ya">Ya</option>
+                  </select>
+                </div>
+                <div id="box-kb-bulan" class="hidden">
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Mulai Pakai Bulan</label>
+                  <input type="number" min="1" max="12" id="kb-mulai-bln" placeholder="1-12" class="w-full px-3 py-2 border rounded-lg bg-white">
+                </div>
+                <div id="box-kb-tahun" class="hidden">
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Mulai Pakai Tahun</label>
+                  <input type="number" min="1990" max="2030" id="kb-mulai-thn" placeholder="2024" class="w-full px-3 py-2 border rounded-lg bg-white">
+                </div>
+              </div>
+
+              <div id="box-alat-kb" class="hidden">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Alat Kontrasepsi yang Digunakan</label>
+                <select id="kb-alat" class="w-full px-3 py-2 border rounded-lg bg-white">
+                  <option>MOW</option><option>MOP</option><option>IUD</option><option>Implan</option><option>Suntik</option><option>Pil</option><option>Kondom</option>
+                </select>
+              </div>
+
+              <div id="box-tidak-kb" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Dalam 12 Bulan Terakhir Pernah Ber-KB?</label>
+                  <select id="kb-pernah-12bln" onchange="togglePernahKB(this.value)" class="w-full px-3 py-2 border rounded-lg bg-white">
+                    <option value="Tidak">Tidak</option>
+                    <option value="Ya">Ya</option>
+                  </select>
+                </div>
+
+                <div id="box-riwayat-kb" class="hidden grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-xs text-slate-500">Mulai Bulan</label>
+                    <input type="number" min="1" max="12" id="kb-p-mulai-bln" class="w-full px-2 py-1.5 border rounded">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-500">Mulai Tahun</label>
+                    <input type="number" min="1990" max="2030" id="kb-p-mulai-thn" class="w-full px-2 py-1.5 border rounded">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-500">Sampai Bulan</label>
+                    <input type="number" min="1" max="12" id="kb-p-sampai-bln" class="w-full px-2 py-1.5 border rounded">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-500">Sampai Tahun</label>
+                    <input type="number" min="1990" max="2030" id="kb-p-sampai-thn" class="w-full px-2 py-1.5 border rounded">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Alasan Tidak Ber-KB</label>
+                  <select id="kb-alasan-tidak" class="w-full px-3 py-2 border rounded-lg bg-white">
+                    <option>Ingin hamil/anak</option>
+                    <option>Tidak Tahu tentang KB</option>
+                    <option>Alasan kesehatan</option>
+                    <option>Efek samping</option>
+                    <option>Tempat pelayanan jauh</option>
+                    <option>Alat/Obat/cara KB tidak tersedia</option>
+                    <option>Biaya mahal</option>
+                    <option>Tidak ada alat/obat/cara KB yang cocok</option>
+                    <option>Suami/ keluarga menolak</option>
+                    <option>Alasan agama</option>
+                    <option>Suami tinggal jauh/jarang berhubungan</option>
+                    <option>Tidak ada petugas pelayanan KB</option>
+                    <option>Infertilitas/Menopause</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between pt-4 border-t">
+              <button type="button" onclick="goToStep(3)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium">Kembali</button>
+              <button type="submit" id="btn-save-all" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-lg shadow-emerald-100 flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-5 h-5"></i> <span>Simpan Seluruh Data</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // 1. Inisialisasi Supabase
+    // GANTI DENGAN URL & ANON KEY PROJECT SUPABASE ANDA
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+    const SUPABASE_KEY = 'YOUR_ANON_PUBLIC_KEY';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Global state
+    let currentUser = null;
+    let listIstriNama = [];
+
+    // On Load
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      initRTSelection(3); // Menghasilkan RT 001, 002, 003
+      bindIDGenerators();
+      initIndividuRows(2); // Inisialisasi default 2 baris anggota
+
+      // Cek sesi login
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        setLoggedIn(session.user);
+      }
+    });
+
+    // Generate pilihan RT dari jumlah RT
+    function initRTSelection(count) {
+      const selectRT = document.getElementById('w-rt');
+      selectRT.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const padded = String(i).padStart(3, '0');
+        const opt = document.createElement('option');
+        opt.value = padded;
+        opt.textContent = `RT ${padded} (Kode: ${padded})`;
+        selectRT.appendChild(opt);
+      }
+      updateIDKeluarga();
+    }
+
+    // Auto calculate ID Keluarga
+    function bindIDGenerators() {
+      ['w-rt', 'w-no-rumah', 'w-no-urut'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateIDKeluarga);
+      });
+      document.getElementById('w-jml-anggota').addEventListener('change', (e) => {
+        const val = parseInt(e.target.value) || 1;
+        initIndividuRows(val);
+      });
+    }
+
+    function updateIDKeluarga() {
+      const p = document.getElementById('w-prov').getAttribute('data-code');
+      const kab = document.getElementById('w-kab').getAttribute('data-code');
+      const kec = document.getElementById('w-kec').getAttribute('data-code');
+      const des = document.getElementById('w-desa').getAttribute('data-code');
+      const dus = document.getElementById('w-dusun').getAttribute('data-code');
+      const rt = document.getElementById('w-rt').value || '001';
+      const rmh = (document.getElementById('w-no-rumah').value || '000').padStart(3, '0');
+      const urt = (document.getElementById('w-no-urut').value || '000').padStart(3, '0');
+
+      const fullID = `${p}${kab}${kec}${des}${dus}${rt}-${rmh}-${urt}`;
+      document.getElementById('w-id-keluarga').value = fullID;
+    }
+
+    // Navigasi Wizard
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+
+      document.querySelectorAll('.step-tab').forEach(btn => {
+        const step = btn.getAttribute('data-step');
+        if (step == stepNumber) {
+          btn.className = 'step-tab flex-1 py-4 px-6 text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600 flex items-center justify-center gap-2 whitespace-nowrap';
+          btn.querySelector('span').className = 'w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center';
+        } else {
+          btn.className = 'step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap';
+          btn.querySelector('span').className = 'w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center';
+        }
+      });
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    // ================= DYNAMIC INDIVIDU BUILDER =================
+    function initIndividuRows(count) {
+      const container = document.getElementById('individus-container');
+      container.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        container.appendChild(createIndividualCard(i));
+      }
+      lucide.createIcons();
+      refreshMotherDropdowns();
+    }
+
+    function addIndividualRow() {
+      const container = document.getElementById('individus-container');
+      const newIndex = container.children.length + 1;
+      container.appendChild(createIndividualCard(newIndex));
+      document.getElementById('w-jml-anggota').value = newIndex;
+      lucide.createIcons();
+      refreshMotherDropdowns();
+    }
+
+    function createIndividualCard(index) {
+      const card = document.createElement('div');
+      card.className = 'p-5 rounded-xl border border-slate-200 bg-white relative space-y-4 shadow-sm';
+      card.id = `ind-card-${index}`;
+
+      const isKK = (index === 1);
+      const isIstriCandidate = (index === 2);
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between pb-2 border-b">
+          <span class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full">
+            Anggota #${index} ${isKK ? '(Kepala Keluarga - Wajib)' : isIstriCandidate ? '(Calon Istri)' : ''}
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
+            <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg" oninput="refreshMotherDropdowns()" required placeholder="Nama sesuai KK">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">NIK</label>
+            <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg" required placeholder="3204...">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Status Hubungan</label>
+            <select class="ind-hubungan w-full px-3 py-2 border rounded-lg" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
+              ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
+                <option value="Istri" ${isIstriCandidate ? 'selected' : ''}>Istri</option>
+                <option value="Anak" ${!isIstriCandidate ? 'selected' : ''}>Anak</option>
+                <option value="Lainnya">Lainnya</option>
+              `}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
+            <select class="ind-jk w-full px-3 py-2 border rounded-lg" id="jk-${index}">
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Lahir</label>
+            <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg" onchange="calculateAge(${index}, this.value)" required>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Usia (Tahun)</label>
+            <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-50 font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Status Perkawinan</label>
+            <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
+              <option value="Belum Kawin">Belum Kawin</option>
+              <option value="Kawin Tercatat">Kawin Tercatat</option>
+              <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
+              <option value="Cerai Hidup tercatat">Cerai Hidup tercatat</option>
+              <option value="Cerai Hidup Belum Tercatat">Cerai Hidup Belum Tercatat</option>
+              <option value="Cerai Mati">Cerai Mati</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kawin Pertama</label>
+            <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci jika belum" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Memiliki Akta Lahir?</label>
+            <select class="ind-akta w-full px-3 py-2 border rounded-lg">
+              <option value="true">Ya</option>
+              <option value="false">Tidak</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Ibu Kandung</label>
+            <select class="ind-ibu w-full px-3 py-2 border rounded-lg" id="ibu-${index}" ${isKK || isIstriCandidate ? 'disabled' : ''}>
+              <option value="">- Terkunci / Pilih Ibu -</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Agama</label>
+            <select class="ind-agama w-full px-3 py-2 border rounded-lg">
+              <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Pekerjaan</label>
+            <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg">
+              <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Pendidikan</label>
+            <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg">
+              <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Kepesertaan JKN</label>
+            <select class="ind-jkn w-full px-3 py-2 border rounded-lg">
+              <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Bekerja di Luar Negeri</label>
+            <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg" id="luarnegeri-${index}">
+              <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Mutasi Anggota</label>
+            <select class="ind-mutasi w-full px-3 py-2 border rounded-lg">
+              <option value="">Kosongkan</option><option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option><option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option><option value="Meninggal Dunia">Meninggal Dunia</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Ragam Disabilitas (Bisa pilih &gt; 1 kecuali 'Tidak')</label>
+          <div class="flex flex-wrap gap-4 text-sm mt-1">
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Tidak" checked onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Tidak</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Fisik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Fisik</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Sensorik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Sensorik</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Mental" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Mental</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Intelektual" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Intelektual</label>
+          </div>
+        </div>
+      `;
+
+      // Inisialisasi status default jika No 2 adalah istri
+      if (isIstriCandidate) {
+        setTimeout(() => {
+          applyIstriLocks(2);
+        }, 50);
+      }
+
+      return card;
+    }
+
+    // Trigger kalkulasi usia & lock luar negeri jika < 5 tahun
+    function calculateAge(index, birthDateStr) {
+      if (!birthDateStr) return;
+      const birth = new Date(birthDateStr);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        age--;
+      }
+      age = Math.max(0, age);
+      document.getElementById(`usia-${index}`).value = age;
+
+      // Lock Bekerja Luar Negeri jika umur < 5 tahun
+      const lnSelect = document.getElementById(`luarnegeri-${index}`);
+      if (age < 5) {
+        lnSelect.value = 'Tidak';
+        lnSelect.disabled = true;
+      } else {
+        lnSelect.disabled = false;
+      }
+    }
+
+    function onKawinChanged(index, val) {
+      const fieldUsiaKawin = document.getElementById(`usia-kawin-${index}`);
+      if (val === 'Belum Kawin') {
+        fieldUsiaKawin.value = '';
+        fieldUsiaKawin.disabled = true;
+      } else {
+        fieldUsiaKawin.disabled = false;
+      }
+
+      // Jika anggota 1 (KK) statusnya Kawin, sinkronisasi No 2 sebagai istri jika ada
+      if (index === 1) {
+        const ind2 = document.getElementById('ind-card-2');
+        if (ind2) {
+          if (val === 'Kawin Tercatat' || val === 'Kawin Belum Tercatat') {
+            applyIstriLocks(2, val);
+          }
+        }
+      }
+    }
+
+    function applyIstriLocks(index, statusKawinKK = null) {
+      const hubunganSelect = document.querySelector(`#ind-card-${index} .ind-hubungan`);
+      const jkSelect = document.getElementById(`jk-${index}`);
+      const kawinSelect = document.getElementById(`kawin-${index}`);
+      const ibuSelect = document.getElementById(`ibu-${index}`);
+
+      if (hubunganSelect) hubunganSelect.value = 'Istri';
+      if (jkSelect) {
+        jkSelect.value = 'Perempuan';
+        jkSelect.disabled = true;
+      }
+      if (statusKawinKK && kawinSelect) {
+        kawinSelect.value = statusKawinKK;
+        kawinSelect.disabled = true;
+        onKawinChanged(index, statusKawinKK);
+      }
+      if (ibuSelect) ibuSelect.disabled = true;
+    }
+
+    function onHubunganChanged(index, val) {
+      const jkSelect = document.getElementById(`jk-${index}`);
+      const ibuSelect = document.getElementById(`ibu-${index}`);
+
+      if (val === 'Istri') {
+        jkSelect.value = 'Perempuan';
+        jkSelect.disabled = true;
+        ibuSelect.disabled = true;
+      } else {
+        jkSelect.disabled = false;
+        ibuSelect.disabled = (val === 'KK');
+      }
+      refreshMotherDropdowns();
+    }
+
+    function toggleDisabilitas(el, index) {
+      const checks = document.querySelectorAll(`.dis-check-${index}`);
+      if (el.value === 'Tidak' && el.checked) {
+        checks.forEach(c => { if (c.value !== 'Tidak') c.checked = false; });
+      } else if (el.value !== 'Tidak' && el.checked) {
+        checks.forEach(c => { if (c.value === 'Tidak') c.checked = false; });
+      }
+    }
+
+    function refreshMotherDropdowns() {
+      // Ambil seluruh nama anggota yang berstatus Istri
+      const cards = document.querySelectorAll('#individus-container > div');
+      const istriList = [];
+      cards.forEach((card) => {
+        const hub = card.querySelector('.ind-hubungan')?.value;
+        const nama = card.querySelector('.ind-nama')?.value;
+        if (hub === 'Istri' && nama && nama.trim() !== '') {
+          istriList.push(nama.trim());
+        }
+      });
+
+      cards.forEach((card, idx) => {
+        const index = idx + 1;
+        const ibuSelect = document.getElementById(`ibu-${index}`);
+        const hub = card.querySelector('.ind-hubungan')?.value;
+        if (hub === 'KK' || hub === 'Istri') {
+          ibuSelect.innerHTML = '<option value="">- Terkunci -</option>';
+          ibuSelect.disabled = true;
+        } else {
+          const currentVal = ibuSelect.value;
+          ibuSelect.innerHTML = '<option value="">-- Pilih Ibu Kandung --</option>';
+          istriList.forEach(istri => {
+            const opt = document.createElement('option');
+            opt.value = istri;
+            opt.textContent = istri;
+            ibuSelect.appendChild(opt);
+          });
+          const optLain = document.createElement('option');
+          optLain.value = 'Lainnya';
+          optLain.textContent = 'Lainnya';
+          ibuSelect.appendChild(optLain);
+          ibuSelect.value = currentVal;
+          ibuSelect.disabled = false;
+        }
+      });
+    }
+
+    function confirmIndividualAndProceed() {
+      const confirmAdd = confirm("Apakah seluruh data anggota keluarga sudah lengkap diisi? Klik 'Batal' (Cancel) jika ingin menambah data individu lagi.");
+      if (!confirmAdd) {
+        addIndividualRow();
+      } else {
+        goToStep(3);
+      }
+    }
+
+    // ================= STEP 3 & 4 TOGGLES =================
+    function toggleListrikDaya(val) {
+      document.getElementById('wrapper-daya-listrik').style.display = (val === 'Listrik PLN Meteran') ? 'block' : 'none';
+    }
+
+    function toggleHamil(val) {
+      document.getElementById('box-usia-hamil').style.display = (val === 'Ya') ? 'block' : 'none';
+    }
+
+    function toggleStatusKB(val) {
+      const isYa = (val === 'Ya');
+      document.getElementById('box-kb-bulan').style.display = isYa ? 'block' : 'none';
+      document.getElementById('box-kb-tahun').style.display = isYa ? 'block' : 'none';
+      document.getElementById('box-alat-kb').style.display = isYa ? 'block' : 'none';
+      document.getElementById('box-tidak-kb').style.display = isYa ? 'none' : 'block';
+    }
+
+    function togglePernahKB(val) {
+      document.getElementById('box-riwayat-kb').style.display = (val === 'Ya') ? 'grid' : 'none';
+    }
+
+    // ================= AUTHENTICATION LOGIC =================
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        setLoggedIn(data.user);
+      } catch (err) {
+        alert('Gagal Masuk: ' + err.message);
+      }
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      document.getElementById('app-view').classList.add('hidden');
+      document.getElementById('auth-view').classList.remove('hidden');
+      currentUser = null;
+    });
+
+    function setLoggedIn(user) {
+      currentUser = user;
+      document.getElementById('user-display').textContent = user.email;
+      document.getElementById('auth-view').classList.add('hidden');
+      document.getElementById('app-view').classList.remove('hidden');
+      loadStats();
+    }
+
+    // ================= DASHBOARD STATISTIK =================
+    async function loadStats() {
+      try {
+        const { count: countKeluarga } = await supabaseClient.from('keluarga').select('*', { count: 'exact', head: true });
+        const { count: countJiwa } = await supabaseClient.from('individu').select('*', { count: 'exact', head: true });
+        const { count: countKB } = await supabaseClient.from('keluarga_berencana').select('*', { count: 'exact', head: true }).eq('sedang_ber_kb', true);
+        const { count: countJKN } = await supabaseClient.from('individu').select('*', { count: 'exact', head: true }).neq('kepesertaan_jkn', 'TIDAK MEMILIKI');
+
+        document.getElementById('stat-total-keluarga').textContent = countKeluarga || 0;
+        document.getElementById('stat-total-jiwa').textContent = countJiwa || 0;
+        document.getElementById('stat-peserta-kb').textContent = countKB || 0;
+        
+        const persenJKN = (countJiwa && countJiwa > 0) ? Math.round(((countJKN || 0) / countJiwa) * 100) : 0;
+        document.getElementById('stat-cakupan-jkn').textContent = `${persenJKN}%`;
+      } catch (err) {
+        console.error('Error fetching dashboard statistics:', err);
+      }
+    }
+
+    document.getElementById('btn-refresh-stats').addEventListener('click', loadStats);
+
+    // ================= SUBMIT DATA LENGKAP KE SUPABASE =================
+    document.getElementById('survey-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-all');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Menyimpan...';
+
+      try {
+        // 1. Simpan Data Wilayah & Keluarga
+        const payloadKeluarga = {
+          id_keluarga: document.getElementById('w-id-keluarga').value,
+          kode_prov: document.getElementById('w-prov').getAttribute('data-code'),
+          kode_kab: document.getElementById('w-kab').getAttribute('data-code'),
+          kode_kec: document.getElementById('w-kec').getAttribute('data-code'),
+          kode_desa: document.getElementById('w-desa').getAttribute('data-code'),
+          kode_dusun: document.getElementById('w-dusun').getAttribute('data-code'),
+          kode_rt: document.getElementById('w-rt').value,
+          no_rumah: document.getElementById('w-no-rumah').value,
+          no_urut_keluarga: document.getElementById('w-no-urut').value,
+          no_kk: document.getElementById('w-no-kk').value,
+          no_telp: document.getElementById('w-no-telp').value,
+          alamat: document.getElementById('w-alamat').value,
+          jumlah_anggota: parseInt(document.getElementById('w-jml-anggota').value) || 1,
+          status_keluarga: document.getElementById('w-status-keluarga').value,
+          surveyor_id: currentUser ? currentUser.id : null
+        };
+
+        const { data: dataKeluarga, error: errKeluarga } = await supabaseClient
+          .from('keluarga')
+          .insert(payloadKeluarga)
+          .select()
+          .single();
+
+        if (errKeluarga) throw errKeluarga;
+        const keluargaUUID = dataKeluarga.id;
+
+        // 2. Simpan Data Individu
+        const indCards = document.querySelectorAll('#individus-container > div');
+        const listIndividuPayload = [];
+
+        indCards.forEach((card, idx) => {
+          const index = idx + 1;
+          const disabilitasSelected = [];
+          document.querySelectorAll(`.dis-check-${index}:checked`).forEach(cb => disabilitasSelected.push(cb.value));
+
+          listIndividuPayload.push({
+            keluarga_id: keluargaUUID,
+            no_urut: index,
+            nama_lengkap: card.querySelector('.ind-nama').value,
+            nik: card.querySelector('.ind-nik').value,
+            jenis_kelamin: document.getElementById(`jk-${index}`).value,
+            tanggal_lahir: card.querySelector('.ind-tgl-lahir').value,
+            usia: parseInt(document.getElementById(`usia-${index}`).value) || 0,
+            status_perkawinan: document.getElementById(`kawin-${index}`).value,
+            usia_kawin_pertama: parseInt(document.getElementById(`usia-kawin-${index}`).value) || null,
+            memiliki_akta_lahir: card.querySelector('.ind-akta').value === 'true',
+            status_hubungan: card.querySelector('.ind-hubungan').value,
+            kode_ibu_kandung: document.getElementById(`ibu-${index}`).value || null,
+            agama: card.querySelector('.ind-agama').value,
+            pekerjaan: card.querySelector('.ind-pekerjaan').value,
+            pendidikan: card.querySelector('.ind-pendidikan').value,
+            kepesertaan_jkn: card.querySelector('.ind-jkn').value,
+            bekerja_luar_negeri: document.getElementById(`luarnegeri-${index}`).value,
+            disabilitas: disabilitasSelected,
+            mutasi_anggota: card.querySelector('.ind-mutasi').value || null
+          });
+        });
+
+        const { error: errIndividu } = await supabaseClient.from('individu').insert(listIndividuPayload);
+        if (errIndividu) throw errIndividu;
+
+        // 3. Simpan Pembangunan Keluarga
+        const isPlnMeteran = document.getElementById('pk-penerangan').value === 'Listrik PLN Meteran';
+        const payloadPK = {
+          keluarga_id: keluargaUUID,
+          jenis_atap: document.getElementById('pk-atap').value,
+          kondisi_atap: document.getElementById('pk-kondisi-atap').value,
+          jenis_dinding: document.getElementById('pk-dinding').value,
+          kondisi_dinding: document.getElementById('pk-kondisi-dinding').value,
+          jenis_lantai: document.getElementById('pk-lantai').value,
+          kondisi_lantai: document.getElementById('pk-kondisi-lantai').value,
+          sumber_penerangan: document.getElementById('pk-penerangan').value,
+          daya_listrik: isPlnMeteran ? document.getElementById('pk-daya').value : null,
+          sumber_air_minum: document.getElementById('pk-air').value,
+          fasilitas_bab: document.getElementById('pk-bab').value,
+          luas_bangunan_m2: parseFloat(document.getElementById('pk-luas').value) || 0,
+          bahan_bakar_memasak: document.getElementById('pk-bahan-bakar').value
+        };
+
+        const { error: errPK } = await supabaseClient.from('pembangunan_keluarga').insert(payloadPK);
+        if (errPK) throw errPK;
+
+        // 4. Simpan Data KB
+        const isSedangKB = document.getElementById('kb-sedang-berkb').value === 'Ya';
+        const isHamil = document.getElementById('kb-hamil').value === 'Ya';
+        const isPernahKB = document.getElementById('kb-pernah-12bln').value === 'Ya';
+
+        const payloadKB = {
+          keluarga_id: keluargaUUID,
+          jml_melahirkan: parseInt(document.getElementById('kb-lahir-total').value) || 0,
+          jml_lahir_hidup_laki: parseInt(document.getElementById('kb-lh-laki').value) || 0,
+          jml_lahir_hidup_perempuan: parseInt(document.getElementById('kb-lh-perempuan').value) || 0,
+          jml_masih_hidup_laki: parseInt(document.getElementById('kb-mh-laki').value) || 0,
+          jml_masih_hidup_perempuan: parseInt(document.getElementById('kb-mh-perempuan').value) || 0,
+          sedang_hamil: isHamil,
+          usia_kehamilan_minggu: isHamil ? (parseInt(document.getElementById('kb-usia-hamil').value) || null) : null,
+          ias: document.getElementById('kb-ias').value,
+          sedang_ber_kb: isSedangKB,
+          kb_mulai_bulan: isSedangKB ? (parseInt(document.getElementById('kb-mulai-bln').value) || null) : null,
+          kb_mulai_tahun: isSedangKB ? (parseInt(document.getElementById('kb-mulai-thn').value) || null) : null,
+          alat_kontrasepsi: isSedangKB ? document.getElementById('kb-alat').value : null,
+          pernah_kb_12_bln: !isSedangKB ? isPernahKB : false,
+          pernah_kb_mulai_bln: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-mulai-bln').value) || null) : null,
+          pernah_kb_mulai_thn: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-mulai-thn').value) || null) : null,
+          pernah_kb_sampai_bln: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-sampai-bln').value) || null) : null,
+          pernah_kb_sampai_thn: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-sampai-thn').value) || null) : null,
+          alasan_tidak_kb: !isSedangKB ? document.getElementById('kb-alasan-tidak').value : null
+        };
+
+        const { error: errKB } = await supabaseClient.from('keluarga_berencana').insert(payloadKB);
+        if (errKB) throw errKB;
+
+        alert('✅ Data keluarga berhasil disimpan!');
+        document.getElementById('survey-form').reset();
+        initIndividuRows(2);
+        goToStep(1);
+        loadStats();
+
+      } catch (error) {
+        console.error('Error saat menyimpan:', error);
+        alert('Terjadi kesalahan penyimpanan: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> <span>Simpan Seluruh Data</span>';
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
