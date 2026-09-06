@@ -661,277 +661,412 @@
       window.scrollTo({ top: 120, behavior: 'smooth' });
     }
 
-    function initIndividuRows(count) {
-      const container = document.getElementById('individus-container');
-      container.innerHTML = '';
-      for (let i = 1; i <= count; i++) {
-        container.appendChild(createIndividualCard(i));
-      }
-      lucide.createIcons();
-      refreshMotherDropdowns();
-    }
+    // State indeks anggota yang sedang aktif dibuka
+let currentActiveIndividu = 1;
 
-    function addIndividualRow() {
-      const container = document.getElementById('individus-container');
-      const newIndex = container.children.length + 1;
-      container.appendChild(createIndividualCard(newIndex));
-      document.getElementById('w-jml-anggota').value = newIndex;
-      lucide.createIcons();
-      refreshMotherDropdowns();
-    }
+// Inisialisasi baris data individu
+function initIndividuRows(count) {
+  const container = document.getElementById('individus-container');
+  container.innerHTML = '';
+  currentActiveIndividu = 1;
 
-    function createIndividualCard(index) {
-      const card = document.createElement('div');
-      card.className = 'p-5 rounded-xl border border-slate-200 bg-white relative space-y-4 shadow-sm';
-      card.id = `ind-card-${index}`;
+  for (let i = 1; i <= count; i++) {
+    container.appendChild(createIndividualCard(i));
+  }
+  
+  renderIndividuTabs();
+  switchIndividuView(1);
+  evaluateNo2LockRules();
+  refreshMotherDropdowns();
+  lucide.createIcons();
+}
 
-      const isKK = (index === 1);
-      const isIstriCandidate = (index === 2);
+// Tambah anggota keluarga baru
+function addIndividualRow() {
+  const container = document.getElementById('individus-container');
+  const newIndex = container.children.length + 1;
+  
+  container.appendChild(createIndividualCard(newIndex));
+  document.getElementById('w-jml-anggota').value = newIndex;
 
-      card.innerHTML = `
-        <div class="flex items-center justify-between pb-2 border-b">
-          <span class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full">
-            Anggota #${index} ${isKK ? '(Kepala Keluarga)' : isIstriCandidate ? '(Calon Istri)' : ''}
-          </span>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
-            <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg" oninput="refreshMotherDropdowns()" required placeholder="Nama Lengkap">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">NIK</label>
-            <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg" required placeholder="3204...">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Status Hubungan</label>
-            <select class="ind-hubungan w-full px-3 py-2 border rounded-lg" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
-              ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
-                <option value="Istri" ${isIstriCandidate ? 'selected' : ''}>Istri</option>
-                <option value="Anak" ${!isIstriCandidate ? 'selected' : ''}>Anak</option>
-                <option value="Lainnya">Lainnya</option>
-              `}
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
-            <select class="ind-jk w-full px-3 py-2 border rounded-lg" id="jk-${index}">
-              <option value="Laki-laki">Laki-laki</option>
-              <option value="Perempuan">Perempuan</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Lahir</label>
-            <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg" onchange="calculateAge(${index}, this.value)" required>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Usia (Tahun)</label>
-            <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-50 font-bold">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Status Perkawinan</label>
-            <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
-              <option value="Belum Kawin">Belum Kawin</option>
-              <option value="Kawin Tercatat">Kawin Tercatat</option>
-              <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
-              <option value="Cerai Hidup tercatat">Cerai Hidup tercatat</option>
-              <option value="Cerai Hidup Belum Tercatat">Cerai Hidup Belum Tercatat</option>
-              <option value="Cerai Mati">Cerai Mati</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kawin Pertama</label>
-            <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg">
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Memiliki Akta Lahir?</label>
-            <select class="ind-akta w-full px-3 py-2 border rounded-lg">
-              <option value="true">Ya</option>
-              <option value="false">Tidak</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Ibu Kandung</label>
-            <select class="ind-ibu w-full px-3 py-2 border rounded-lg" id="ibu-${index}" ${isKK || isIstriCandidate ? 'disabled' : ''}>
-              <option value="">- Terkunci / Pilih -</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Agama</label>
-            <select class="ind-agama w-full px-3 py-2 border rounded-lg">
-              <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Pekerjaan</label>
-            <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg">
-              <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Pendidikan</label>
-            <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg">
-              <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Kepesertaan JKN</label>
-            <select class="ind-jkn w-full px-3 py-2 border rounded-lg">
-              <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Bekerja di Luar Negeri</label>
-            <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg" id="luarnegeri-${index}">
-              <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Mutasi Anggota</label>
-            <select class="ind-mutasi w-full px-3 py-2 border rounded-lg">
-              <option value="">Kosongkan</option><option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option><option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option><option value="Meninggal Dunia">Meninggal Dunia</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Ragam Disabilitas</label>
-          <div class="flex flex-wrap gap-4 text-sm mt-1">
-            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Tidak" checked onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Tidak</label>
-            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Fisik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Fisik</label>
-            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Sensorik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Sensorik</label>
-            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Mental" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Mental</label>
-            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Intelektual" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Intelektual</label>
-          </div>
-        </div>
-      `;
+  renderIndividuTabs();
+  switchIndividuView(newIndex);
+  refreshMotherDropdowns();
+  evaluateNo2LockRules();
+  lucide.createIcons();
+}
 
-      if (isIstriCandidate) {
-        setTimeout(() => applyIstriLocks(2), 50);
-      }
-      return card;
-    }
+// Render tab tombol nomor anggota
+function renderIndividuTabs() {
+  const tabsWrapper = document.getElementById('individu-tabs');
+  tabsWrapper.innerHTML = '';
+  const total = document.querySelectorAll('#individus-container > div').length;
 
-    function calculateAge(index, birthDateStr) {
-      if (!birthDateStr) return;
-      const birth = new Date(birthDateStr);
-      const today = new Date();
-      let age = today.getFullYear() - birth.getFullYear();
-      const m = today.getMonth() - birth.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-      age = Math.max(0, age);
-      document.getElementById(`usia-${index}`).value = age;
+  for (let i = 1; i <= total; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = `tab-btn-ind-${i}`;
+    btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ${
+      i === currentActiveIndividu ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+    }`;
+    btn.innerHTML = `<span class="w-4 h-4 rounded-full text-[10px] flex items-center justify-center ${i === currentActiveIndividu ? 'bg-white text-indigo-600' : 'bg-slate-300 text-slate-700'}">${i}</span> Orang #${i}`;
+    btn.onclick = () => switchIndividuView(i);
+    tabsWrapper.appendChild(btn);
+  }
+}
 
-      const lnSelect = document.getElementById(`luarnegeri-${index}`);
-      if (age < 5) {
-        lnSelect.value = 'Tidak';
-        lnSelect.disabled = true;
+// Beralih tampilan ke individu nomor tertentu
+function switchIndividuView(targetIndex) {
+  const allCards = document.querySelectorAll('#individus-container > div');
+  const total = allCards.length;
+  if (targetIndex < 1 || targetIndex > total) return;
+
+  currentActiveIndividu = targetIndex;
+
+  allCards.forEach((card, idx) => {
+    card.classList.toggle('hidden', (idx + 1) !== targetIndex);
+  });
+
+  for (let i = 1; i <= total; i++) {
+    const btn = document.getElementById(`tab-btn-ind-${i}`);
+    if (btn) {
+      if (i === targetIndex) {
+        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 whitespace-nowrap';
+        btn.querySelector('span').className = 'w-4 h-4 rounded-full text-[10px] flex items-center justify-center bg-white text-indigo-600';
       } else {
-        lnSelect.disabled = false;
+        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5 whitespace-nowrap';
+        btn.querySelector('span').className = 'w-4 h-4 rounded-full text-[10px] flex items-center justify-center bg-slate-300 text-slate-700';
       }
     }
+  }
 
-    function onKawinChanged(index, val) {
-      const fieldUsiaKawin = document.getElementById(`usia-kawin-${index}`);
-      if (val === 'Belum Kawin') {
-        fieldUsiaKawin.value = '';
-        fieldUsiaKawin.disabled = true;
-      } else {
-        fieldUsiaKawin.disabled = false;
-      }
+  // Tombol navigasi prev & next status
+  document.getElementById('btn-prev-ind').disabled = (targetIndex === 1);
+  document.getElementById('btn-next-ind').disabled = (targetIndex === total);
+  window.scrollTo({ top: 180, behavior: 'smooth' });
+}
 
-      if (index === 1) {
-        const ind2 = document.getElementById('ind-card-2');
-        if (ind2 && (val === 'Kawin Tercatat' || val === 'Kawin Belum Tercatat')) {
-          applyIstriLocks(2, val);
-        }
-      }
+function navigateIndividu(offset) {
+  switchIndividuView(currentActiveIndividu + offset);
+}
+
+// Buat elemen template kartu form per individu
+function createIndividualCard(index) {
+  const card = document.createElement('div');
+  card.className = 'p-6 rounded-xl border border-slate-200 bg-white space-y-4 shadow-sm';
+  card.id = `ind-card-${index}`;
+
+  const isKK = (index === 1);
+
+  card.innerHTML = `
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-md">
+          Anggota #${index} ${isKK ? '(Kepala Keluarga)' : ''}
+        </span>
+        <span id="lock-badge-${index}" class="hidden px-2 py-0.5 bg-rose-50 text-rose-600 text-[11px] font-semibold rounded">
+          Terkunci sebagai Istri
+        </span>
+      </div>
+      <span class="text-xs text-slate-400 font-mono">Form ${index}</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
+        <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg" oninput="refreshMotherDropdowns()" required placeholder="Nama Lengkap">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">NIK (16 Digit)</label>
+        <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg" required placeholder="3204...">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Status Hubungan</label>
+        <select class="ind-hubungan w-full px-3 py-2 border rounded-lg font-medium" id="hubungan-${index}" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
+          ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
+            <option value="Istri">Istri</option>
+            <option value="Anak" selected>Anak</option>
+            <option value="Lainnya">Lainnya</option>
+          `}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
+        <select class="ind-jk w-full px-3 py-2 border rounded-lg font-medium" id="jk-${index}" onchange="onJenisKelaminChanged(${index}, this.value)">
+          <option value="Laki-laki">Laki-laki</option>
+          <option value="Perempuan">Perempuan</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Lahir</label>
+        <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg" onchange="calculateAge(${index}, this.value)" required>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Usia (Tahun)</label>
+        <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-50 font-bold text-slate-700">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Status Perkawinan</label>
+        <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg font-medium" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
+          <option value="Belum Kawin">Belum Kawin</option>
+          <option value="Kawin Tercatat">Kawin Tercatat</option>
+          <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
+          <option value="Cerai Hidup tercatat">Cerai Hidup tercatat</option>
+          <option value="Cerai Hidup Belum Tercatat">Cerai Hidup Belum Tercatat</option>
+          <option value="Cerai Mati">Cerai Mati</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kawin Pertama</label>
+        <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci jika belum" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Memiliki Akta Lahir?</label>
+        <select class="ind-akta w-full px-3 py-2 border rounded-lg">
+          <option value="true">Ya</option>
+          <option value="false">Tidak</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Ibu Kandung</label>
+        <select class="ind-ibu w-full px-3 py-2 border rounded-lg" id="ibu-${index}" ${isKK ? 'disabled' : ''}>
+          <option value="">- Terkunci / Pilih Ibu -</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Agama</label>
+        <select class="ind-agama w-full px-3 py-2 border rounded-lg">
+          <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Pekerjaan</label>
+        <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg">
+          <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Pendidikan</label>
+        <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg">
+          <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Kepesertaan JKN</label>
+        <select class="ind-jkn w-full px-3 py-2 border rounded-lg">
+          <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Bekerja di Luar Negeri</label>
+        <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg" id="luarnegeri-${index}">
+          <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Mutasi Anggota</label>
+        <select class="ind-mutasi w-full px-3 py-2 border rounded-lg">
+          <option value="">Kosongkan</option><option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option><option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option><option value="Meninggal Dunia">Meninggal Dunia</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold text-slate-600 mb-1">Ragam Disabilitas</label>
+      <div class="flex flex-wrap gap-4 text-xs mt-1">
+        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Tidak" checked onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Tidak</label>
+        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Fisik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Fisik</label>
+        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Sensorik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Sensorik</label>
+        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Mental" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Mental</label>
+        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Intelektual" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Intelektual</label>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+// LOGIKA ATURAN KUNCI ANGGOTA NO. 2
+function evaluateNo2LockRules() {
+  const cardNo1 = document.getElementById('ind-card-1');
+  const cardNo2 = document.getElementById('ind-card-2');
+  if (!cardNo1 || !cardNo2) return;
+
+  const jkNo1 = document.getElementById('jk-1')?.value;
+  const hubNo1 = document.getElementById('hubungan-1')?.value;
+  const kawinNo1 = document.getElementById('kawin-1')?.value;
+
+  const hubNo2 = document.getElementById('hubungan-2');
+  const jkNo2 = document.getElementById('jk-2');
+  const kawinNo2 = document.getElementById('kawin-2');
+  const ibuNo2 = document.getElementById('ibu-2');
+  const badgeLock = document.getElementById('lock-badge-2');
+
+  // KONDISI SYARAT: No 1 Laki-laki + Status Hubungan KK + Status Kawin Tercatat / Belum Tercatat
+  const isEligibleForIstriLock = (
+    jkNo1 === 'Laki-laki' &&
+    hubNo1 === 'KK' &&
+    (kawinNo1 === 'Kawin Tercatat' || kawinNo1 === 'Kawin Belum Tercatat')
+  );
+
+  if (isEligibleForIstriLock) {
+    // Kunci No. 2 sebagai Istri
+    hubNo2.value = 'Istri';
+    hubNo2.disabled = true;
+
+    jkNo2.value = 'Perempuan';
+    jkNo2.disabled = true;
+
+    kawinNo2.value = kawinNo1;
+    kawinNo2.disabled = true;
+
+    if (ibuNo2) {
+      ibuNo2.value = '';
+      ibuNo2.disabled = true;
     }
 
-    function applyIstriLocks(index, statusKawinKK = null) {
-      const hubunganSelect = document.querySelector(`#ind-card-${index} .ind-hubungan`);
-      const jkSelect = document.getElementById(`jk-${index}`);
-      const kawinSelect = document.getElementById(`kawin-${index}`);
-      const ibuSelect = document.getElementById(`ibu-${index}`);
+    onKawinChanged(2, kawinNo1);
+    if (badgeLock) badgeLock.classList.remove('hidden');
+  } else {
+    // Buka kunci jika syarat tidak terpenuhi
+    hubNo2.disabled = false;
+    jkNo2.disabled = false;
+    kawinNo2.disabled = false;
+    if (ibuNo2) ibuNo2.disabled = false;
+    if (badgeLock) badgeLock.classList.add('hidden');
+  }
 
-      if (hubunganSelect) hubunganSelect.value = 'Istri';
-      if (jkSelect) { jkSelect.value = 'Perempuan'; jkSelect.disabled = true; }
-      if (statusKawinKK && kawinSelect) {
-        kawinSelect.value = statusKawinKK;
-        kawinSelect.disabled = true;
-        onKawinChanged(index, statusKawinKK);
-      }
-      if (ibuSelect) ibuSelect.disabled = true;
+  refreshMotherDropdowns();
+}
+
+// Listener perubahan jenis kelamin
+function onJenisKelaminChanged(index, val) {
+  if (index === 1) {
+    evaluateNo2LockRules();
+  }
+}
+
+// Listener perubahan status perkawinan
+function onKawinChanged(index, val) {
+  const fieldUsiaKawin = document.getElementById(`usia-kawin-${index}`);
+  if (fieldUsiaKawin) {
+    if (val === 'Belum Kawin') {
+      fieldUsiaKawin.value = '';
+      fieldUsiaKawin.disabled = true;
+    } else {
+      fieldUsiaKawin.disabled = false;
     }
+  }
 
-    function onHubunganChanged(index, val) {
-      const jkSelect = document.getElementById(`jk-${index}`);
-      const ibuSelect = document.getElementById(`ibu-${index}`);
-      if (val === 'Istri') {
-        jkSelect.value = 'Perempuan';
-        jkSelect.disabled = true;
-        ibuSelect.disabled = true;
-      } else {
-        jkSelect.disabled = false;
-        ibuSelect.disabled = (val === 'KK');
-      }
-      refreshMotherDropdowns();
+  if (index === 1) {
+    evaluateNo2LockRules();
+  }
+}
+
+// Listener perubahan status hubungan
+function onHubunganChanged(index, val) {
+  const jkSelect = document.getElementById(`jk-${index}`);
+  const ibuSelect = document.getElementById(`ibu-${index}`);
+
+  if (val === 'Istri') {
+    jkSelect.value = 'Perempuan';
+    jkSelect.disabled = true;
+    if (ibuSelect) ibuSelect.disabled = true;
+  } else {
+    jkSelect.disabled = false;
+    if (ibuSelect) ibuSelect.disabled = (val === 'KK');
+  }
+
+  refreshMotherDropdowns();
+}
+
+// Hitung usia otomatis & proteksi kerja luar negeri jika < 5 tahun
+function calculateAge(index, birthDateStr) {
+  if (!birthDateStr) return;
+  const birth = new Date(birthDateStr);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  age = Math.max(0, age);
+
+  document.getElementById(`usia-${index}`).value = age;
+
+  const lnSelect = document.getElementById(`luarnegeri-${index}`);
+  if (age < 5) {
+    lnSelect.value = 'Tidak';
+    lnSelect.disabled = true;
+  } else {
+    lnSelect.disabled = false;
+  }
+}
+
+// Dropdown pilihan nama ibu kandung
+function refreshMotherDropdowns() {
+  const cards = document.querySelectorAll('#individus-container > div');
+  const istriList = [];
+
+  cards.forEach(card => {
+    const hub = card.querySelector('.ind-hubungan')?.value;
+    const nama = card.querySelector('.ind-nama')?.value;
+    if (hub === 'Istri' && nama && nama.trim() !== '') {
+      istriList.push(nama.trim());
     }
+  });
 
-    function toggleDisabilitas(el, index) {
-      const checks = document.querySelectorAll(`.dis-check-${index}`);
-      if (el.value === 'Tidak' && el.checked) {
-        checks.forEach(c => { if (c.value !== 'Tidak') c.checked = false; });
-      } else if (el.value !== 'Tidak' && el.checked) {
-        checks.forEach(c => { if (c.value === 'Tidak') c.checked = false; });
-      }
-    }
+  cards.forEach((card, idx) => {
+    const index = idx + 1;
+    const ibuSelect = document.getElementById(`ibu-${index}`);
+    if (!ibuSelect) return;
 
-    function refreshMotherDropdowns() {
-      const cards = document.querySelectorAll('#individus-container > div');
-      const istriList = [];
-      cards.forEach(card => {
-        const hub = card.querySelector('.ind-hubungan')?.value;
-        const nama = card.querySelector('.ind-nama')?.value;
-        if (hub === 'Istri' && nama && nama.trim() !== '') istriList.push(nama.trim());
+    const hub = card.querySelector('.ind-hubungan')?.value;
+    if (hub === 'KK' || hub === 'Istri') {
+      ibuSelect.innerHTML = '<option value="">- Terkunci -</option>';
+      ibuSelect.disabled = true;
+    } else {
+      const currentVal = ibuSelect.value;
+      ibuSelect.innerHTML = '<option value="">-- Pilih Ibu Kandung --</option>';
+      istriList.forEach(istri => {
+        const opt = document.createElement('option');
+        opt.value = istri;
+        opt.textContent = istri;
+        ibuSelect.appendChild(opt);
       });
-
-      cards.forEach((card, idx) => {
-        const index = idx + 1;
-        const ibuSelect = document.getElementById(`ibu-${index}`);
-        const hub = card.querySelector('.ind-hubungan')?.value;
-        if (hub === 'KK' || hub === 'Istri') {
-          ibuSelect.innerHTML = '<option value="">- Terkunci -</option>';
-          ibuSelect.disabled = true;
-        } else {
-          const currentVal = ibuSelect.value;
-          ibuSelect.innerHTML = '<option value="">-- Pilih Ibu Kandung --</option>';
-          istriList.forEach(istri => {
-            const opt = document.createElement('option');
-            opt.value = istri; opt.textContent = istri;
-            ibuSelect.appendChild(opt);
-          });
-          const optLain = document.createElement('option');
-          optLain.value = 'Lainnya'; optLain.textContent = 'Lainnya';
-          ibuSelect.appendChild(optLain);
-          ibuSelect.value = currentVal;
-          ibuSelect.disabled = false;
-        }
-      });
+      const optLain = document.createElement('option');
+      optLain.value = 'Lainnya';
+      optLain.textContent = 'Lainnya';
+      ibuSelect.appendChild(optLain);
+      ibuSelect.value = currentVal;
+      ibuSelect.disabled = false;
     }
+  });
+}
 
-    function confirmIndividualAndProceed() {
-      if (!confirm("Apakah data individu sudah lengkap? Klik 'Batal' jika ingin menambah data individu lagi.")) {
-        addIndividualRow();
-      } else {
-        goToStep(3);
-      }
-    }
+function toggleDisabilitas(el, index) {
+  const checks = document.querySelectorAll(`.dis-check-${index}`);
+  if (el.value === 'Tidak' && el.checked) {
+    checks.forEach(c => { if (c.value !== 'Tidak') c.checked = false; });
+  } else if (el.value !== 'Tidak' && el.checked) {
+    checks.forEach(c => { if (c.value === 'Tidak') c.checked = false; });
+  }
+}
+
+function confirmIndividualAndProceed() {
+  if (!confirm("Apakah seluruh data individu anggota keluarga sudah selesai diisi? Klik 'Batal' jika masih ingin menambah anggota baru.")) {
+    addIndividualRow();
+  } else {
+    goToStep(3);
+  }
+}
 
     function toggleListrikDaya(val) {
       document.getElementById('wrapper-daya-listrik').style.display = (val === 'Listrik PLN Meteran') ? 'block' : 'none';
