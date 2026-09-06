@@ -475,8 +475,9 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
   btn.disabled = true;
 
   try {
+    // Memanggil tabel public.users
     const { data: user, error } = await supabaseClient
-      .from('app_users')
+      .from('users')
       .select('*')
       .eq('username', usernameInput)
       .eq('password', passwordInput)
