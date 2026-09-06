@@ -450,35 +450,68 @@
 
     let currentUserProfile = null;
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      lucide.createIcons();
-      bindIDGenerators();
-      initIndividuRows(2);
+    document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  bindIDGenerators();
+  initIndividuRows(2);
 
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) {
-        await loadUserProfile(session.user);
-      }
-    });
+  const savedUser = localStorage.getItem('simpk_session');
+  if (savedUser) {
+    currentUserProfile = JSON.parse(savedUser);
+    renderUserInterface(currentUserProfile);
+    setupWilayahPenugasan(currentUserProfile);
+    loadStats();
+    document.getElementById('auth-view').classList.add('hidden');
+    document.getElementById('app-view').classList.remove('hidden');
+  }
+});
 
-    // 1. AUTENTIKASI & PENGAMBILAN PROFIL WILAYAH
-    document.getElementById('form-login').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const btn = document.getElementById('btn-submit-login');
-      btn.disabled = true;
+// Verifikasi Login Manual ke Tabel app_users
+document.getElementById('form-login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const usernameInput = document.getElementById('login-username').value.trim();
+  const passwordInput = document.getElementById('login-password').value;
+  const btn = document.getElementById('btn-submit-login');
+  btn.disabled = true;
 
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        await loadUserProfile(data.user);
-      } catch (err) {
-        alert('Gagal Masuk: ' + err.message);
-      } finally {
-        btn.disabled = false;
-      }
-    });
+  try {
+    const { data: user, error } = await supabaseClient
+      .from('app_users')
+      .select('*')
+      .eq('username', usernameInput)
+      .eq('password', passwordInput)
+      .eq('is_active', true)
+      .single();
+
+    if (error || !user) {
+      throw new Error('Username atau kata sandi tidak cocok!');
+    }
+
+    currentUserProfile = user;
+    localStorage.setItem('simpk_session', JSON.stringify(user));
+
+    renderUserInterface(user);
+    setupWilayahPenugasan(user);
+    loadStats();
+
+    document.getElementById('auth-view').classList.add('hidden');
+    document.getElementById('app-view').classList.remove('hidden');
+    lucide.createIcons();
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// Tombol Logout
+document.getElementById('btn-logout').addEventListener('click', () => {
+  localStorage.removeItem('simpk_session');
+  currentUserProfile = null;
+  document.getElementById('app-view').classList.add('hidden');
+  document.getElementById('auth-view').classList.remove('hidden');
+  document.getElementById('form-login').reset();
+});
 
     async function loadUserProfile(authUser) {
       try {
