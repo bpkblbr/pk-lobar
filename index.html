@@ -1250,8 +1250,9 @@ function toggleDisabilitas(el, index) {
   }
 }
 
-function confirmIndividualAndProceed() {
-  if (!confirm("Apakah seluruh data individu anggota keluarga sudah selesai diisi? Klik 'Batal' jika masih ingin menambah anggota baru.")) {
+async function confirmIndividualAndProceed() {
+  const isDone = await showAppConfirm("Apakah seluruh data anggota keluarga sudah selesai diisi? Pilih Batal jika ingin menambah anggota lagi.", "Selesai Isi Individu?");
+  if (!isDone) {
     addIndividualRow();
   } else {
     goToStep(3);
