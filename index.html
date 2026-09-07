@@ -2563,7 +2563,319 @@ async function confirmIndividualAndProceed() {
     document.addEventListener('DOMContentLoaded', () => {
       handleAlurKB();
     });
-    
+  
+  // ================= VALIDASI PER BLOK FORMULIR =================
+  // Validasi Blok 1: Wilayah
+  async function validateStep1() {
+    const dusun = document.getElementById('w-dusun-select').value;
+    const rt = document.getElementById('w-rt').value;
+    const noRumah = document.getElementById('w-no-rumah').value.trim();
+    const noUrut = document.getElementById('w-no-urut').value.trim();
+    const noKK = document.getElementById('w-no-kk').value.trim();
+    const alamat = document.getElementById('w-alamat').value.trim();
+  
+    if (!dusun) {
+      await showAppAlert("Silakan pilih Dusun penugasan terlebih dahulu!", "Form Belum Lengkap", "danger");
+      document.getElementById('w-dusun-select').focus();
+      return false;
+    }
+    if (!rt) {
+      await showAppAlert("Silakan pilih RT penugasan!", "Form Belum Lengkap", "danger");
+      document.getElementById('w-rt').focus();
+      return false;
+    }
+    if (!noRumah) {
+      await showAppAlert("Nomor Rumah wajib diisi!", "Form Belum Lengkap", "danger");
+      document.getElementById('w-no-rumah').focus();
+      return false;
+    }
+    if (!noUrut) {
+      await showAppAlert("Nomor Urut Keluarga wajib diisi!", "Form Belum Lengkap", "danger");
+      document.getElementById('w-no-urut').focus();
+      return false;
+    }
+    if (!noKK || noKK.length < 16) {
+      await showAppAlert("Nomor Kartu Keluarga (KK) wajib diisi lengkap 16 digit!", "Form Belum Lengkap", "danger");
+      document.getElementById('w-no-kk').focus();
+      return false;
+    }
+    if (!alamat) {
+      await showAppAlert("Alamat lengkap rumah wajib diisi!", "Form Belum Lengkap", "danger");
+      document.getElementById('w-alamat').focus();
+      return false;
+    }
+  
+    return true;
+  }
+  
+  // Validasi Blok 2: Data Seluruh Individu
+  async function validateStep2() {
+    const cards = document.querySelectorAll('#individus-container > div');
+  
+    for (let idx = 0; idx < cards.length; idx++) {
+      const card = cards[idx];
+      const no = idx + 1;
+  
+      const nama = card.querySelector('.ind-nama').value.trim();
+      const nik = card.querySelector('.ind-nik').value.trim();
+      const hubungan = card.querySelector('.ind-hubungan').value;
+      const jk = document.getElementById(`jk-${no}`).value;
+      const tglLahir = card.querySelector('.ind-tgl-lahir').value;
+      const kawin = document.getElementById(`kawin-${no}`).value;
+      const usiaKawinEl = document.getElementById(`usia-kawin-${no}`);
+      const agama = card.querySelector('.ind-agama').value;
+      const pekerjaan = card.querySelector('.ind-pekerjaan').value;
+      const pendidikan = card.querySelector('.ind-pendidikan').value;
+      const jkn = card.querySelector('.ind-jkn').value;
+  
+      // Geser slider ke kartu yang bermasalah agar petugas langsung melihat letak kekurangannya
+      const jumpToCard = () => {
+        currentSlideIndex = idx;
+        updateSliderPosition();
+      };
+  
+      if (!nama) {
+        jumpToCard();
+        await showAppAlert(`Nama Lengkap pada Anggota #${no} belum diisi!`, "Form Belum Lengkap", "danger");
+        card.querySelector('.ind-nama').focus();
+        return false;
+      }
+      if (!nik || nik.length < 16) {
+        jumpToCard();
+        await showAppAlert(`NIK pada Anggota #${no} belum lengkap 16 digit!`, "Form Belum Lengkap", "danger");
+        card.querySelector('.ind-nik').focus();
+        return false;
+      }
+      if (!hubungan) {
+        jumpToCard();
+        await showAppAlert(`Status Hubungan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!jk) {
+        jumpToCard();
+        await showAppAlert(`Jenis Kelamin pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!tglLahir) {
+        jumpToCard();
+        await showAppAlert(`Tanggal Lahir pada Anggota #${no} belum diisi!`, "Form Belum Lengkap", "danger");
+        card.querySelector('.ind-tgl-lahir').focus();
+        return false;
+      }
+      if (!kawin) {
+        jumpToCard();
+        await showAppAlert(`Status Perkawinan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (kawin !== 'Belum Kawin' && (!usiaKawinEl.value || parseInt(usiaKawinEl.value) <= 0)) {
+        jumpToCard();
+        await showAppAlert(`Usia Kawin Pertama pada Anggota #${no} wajib diisi!`, "Form Belum Lengkap", "danger");
+        usiaKawinEl.focus();
+        return false;
+      }
+      if (!agama) {
+        jumpToCard();
+        await showAppAlert(`Agama pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!pekerjaan) {
+        jumpToCard();
+        await showAppAlert(`Pekerjaan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!pendidikan) {
+        jumpToCard();
+        await showAppAlert(`Pendidikan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!jkn) {
+        jumpToCard();
+        await showAppAlert(`Kepesertaan JKN pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+        return false;
+      }
+    }
+  
+    return true;
+  }
+  
+  // Validasi Blok 3: Keluarga Berencana (KB)
+  async function validateStep3() {
+    const lahirTotal = document.getElementById('kb-lahir-total').value;
+    const statusHamil = document.getElementById('kb-hamil').value;
+  
+    if (lahirTotal === '') {
+      await showAppAlert("Pertanyaan 1: Total riwayat Ibu melahirkan belum diisi!", "Form Belum Lengkap", "danger");
+      document.getElementById('kb-lahir-total').focus();
+      return false;
+    }
+  
+    if (!statusHamil) {
+      await showAppAlert("Pertanyaan 2: Status kehamilan saat ini belum dipilih!", "Form Belum Lengkap", "danger");
+      document.getElementById('kb-hamil').focus();
+      return false;
+    }
+  
+    if (statusHamil === 'Ya') {
+      const usiaHamil = document.getElementById('kb-usia-hamil').value;
+      const inginHamil = document.getElementById('kb-status-keinginan-hamil').value;
+      if (!usiaHamil) {
+        await showAppAlert("Usia kehamilan (minggu) wajib diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-usia-hamil').focus();
+        return false;
+      }
+      if (!inginHamil) {
+        await showAppAlert("Pilihan keinginan saat mulai hamil belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-status-keinginan-hamil').focus();
+        return false;
+      }
+    } else {
+      const inginAnak = document.getElementById('kb-keinginan-anak-lagi').value;
+      if (!inginAnak) {
+        await showAppAlert("Pilihan keinginan memiliki anak lagi belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-keinginan-anak-lagi').focus();
+        return false;
+      }
+  
+      const sedangKB = document.getElementById('kb-sedang-berkb').value;
+      if (!sedangKB) {
+        await showAppAlert("Pertanyaan 3: Status pemakaian KB saat ini belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-sedang-berkb').focus();
+        return false;
+      }
+  
+      if (sedangKB === 'Ya') {
+        const bln = document.getElementById('kb-mulai-bln').value;
+        const thn = document.getElementById('kb-mulai-thn').value;
+        if (!bln || !thn) {
+          await showAppAlert("Bulan dan Tahun mulai memakai KB wajib diisi!", "Form Belum Lengkap", "danger");
+          return false;
+        }
+      }
+    }
+  
+    // Cek Pertanyaan 4 jika terbuka
+    const boxQ4 = document.getElementById('box-q4');
+    if (!boxQ4.classList.contains('hidden')) {
+      const pernahKB = document.getElementById('kb-pernah-12bln').value;
+      if (!pernahKB) {
+        await showAppAlert("Pertanyaan 4: Riwayat pemakaian KB 12 bulan terakhir belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-pernah-12bln').focus();
+        return false;
+      }
+      if (pernahKB === 'Ya') {
+        const mBln = document.getElementById('kb-p-mulai-bln').value;
+        const mThn = document.getElementById('kb-p-mulai-thn').value;
+        const sBln = document.getElementById('kb-p-sampai-bln').value;
+        const sThn = document.getElementById('kb-p-sampai-thn').value;
+        if (!mBln || !mThn || !sBln || !sThn) {
+          await showAppAlert("Rentang Bulan/Tahun pemakaian kontrasepsi terakhir belum lengkap diisi!", "Form Belum Lengkap", "danger");
+          return false;
+        }
+      }
+    }
+  
+    // Cek Pertanyaan 5 jika terbuka
+    const boxQ5 = document.getElementById('box-q5');
+    if (!boxQ5.classList.contains('hidden')) {
+      const alasan = document.getElementById('kb-alasan-tidak').value;
+      if (!alasan) {
+        await showAppAlert("Pertanyaan 5: Alasan utama tidak ber-KB wajib dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-alasan-tidak').focus();
+        return false;
+      }
+    }
+  
+    // Cek Pertanyaan 6 & 7 jika terbuka
+    const boxQ6 = document.getElementById('box-q6');
+    if (!boxQ6.classList.contains('hidden')) {
+      const alat = document.getElementById('kb-alat').value;
+      if (!alat) {
+        await showAppAlert("Pertanyaan 6: Jenis metode kontrasepsi wajib dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-alat').focus();
+        return false;
+      }
+  
+      const boxQ7 = document.getElementById('box-q7');
+      if (!boxQ7.classList.contains('hidden')) {
+        const sumber = document.getElementById('kb-sumber-pelayanan').value;
+        if (!sumber) {
+          await showAppAlert("Pertanyaan 7: Sumber pelayanan KB wajib dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-sumber-pelayanan').focus();
+          return false;
+        }
+      }
+    }
+  
+    return true;
+  }
+  
+  // Validasi Blok 4: Pembangunan Keluarga
+  async function validateStep4() {
+    const atap = document.getElementById('pk-atap').value;
+    const kAtap = document.getElementById('pk-kondisi-atap').value;
+    const dinding = document.getElementById('pk-dinding').value;
+    const kDinding = document.getElementById('pk-kondisi-dinding').value;
+    const lantai = document.getElementById('pk-lantai').value;
+    const kLantai = document.getElementById('pk-kondisi-lantai').value;
+    const penerangan = document.getElementById('pk-penerangan').value;
+    const air = document.getElementById('pk-air').value;
+    const bab = document.getElementById('pk-bab').value;
+    const luas = document.getElementById('pk-luas').value;
+    const jmlPenghuni = document.getElementById('pk-jumlah-penghuni').value;
+    const kepemilikan = document.getElementById('pk-kepemilikan').value;
+    const bahanBakar = document.getElementById('pk-bahan-bakar').value;
+  
+    if (!atap || !kAtap) {
+      await showAppAlert("Pertanyaan 1: Jenis atau kondisi atap rumah belum dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (!dinding || !kDinding) {
+      await showAppAlert("Pertanyaan 2: Jenis atau kondisi dinding rumah belum dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (!lantai || !kLantai) {
+      await showAppAlert("Pertanyaan 3: Jenis atau kondisi lantai rumah belum dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (!penerangan) {
+      await showAppAlert("Pertanyaan 4: Sumber penerangan belum dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (penerangan === 'Listrik PLN Meteran' && !document.getElementById('pk-daya').value) {
+      await showAppAlert("Besar daya listrik PLN wajib dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (!air) {
+      await showAppAlert("Pertanyaan 5: Sumber air minum utama belum dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (!bab) {
+      await showAppAlert("Pertanyaan 6: Fasilitas buang air besar belum dipilih!", "Form Belum Lengkap", "danger");
+      return false;
+    }
+    if (!luas || parseFloat(luas) <= 0) {
+      await showAppAlert("Pertanyaan 7: Luas bangunan (m²) wajib diisi!", "Form Belum Lengkap", "danger");
+      document.getElementById('pk-luas').focus();
+      return false;
+    }
+    if (!jmlPenghuni || parseInt(jmlPenghuni) <= 0) {
+      await showAppAlert("Pertanyaan 8: Jumlah orang yang tinggal menetap wajib diisi!", "Form Belum Lengkap", "danger");
+      document.getElementById('pk-jumlah-penghuni').focus();
+      return false;
+    }
+    if (!kepemilikan) {
+      await showAppAlert("Pertanyaan 9: Status kepemilikan rumah belum dipilih!", "Form Belum Lengkap", "danger");
+      document.getElementById('pk-kepemilikan').focus();
+      return false;
+    }
+    if (!bahanBakar) {
+      await showAppAlert("Pertanyaan 10: Bahan bakar utama memasak belum dipilih!", "Form Belum Lengkap", "danger");
+      document.getElementById('pk-bahan-bakar').focus();
+      return false;
+    }
+  
+    return true;
+  }
   </script>
   <!-- CUSTOM NOTIFICATION & CONFIRM MODAL -->
   <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden p-4">
