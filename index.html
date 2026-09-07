@@ -2440,79 +2440,99 @@ async function confirmIndividualAndProceed() {
     
     // Kontrol percabangan pertanyaan Form KB sesuai ketentuan
     function handleAlurKB() {
-      const isHamil = document.getElementById('kb-hamil').value === 'Ya';
-      const subHamilYa = document.getElementById('sub-hamil-ya');
-      const subHamilTidak = document.getElementById('sub-hamil-tidak');
-    
-      const boxQ3 = document.getElementById('box-q3');
-      const isSedangKB = document.getElementById('kb-sedang-berkb').value === 'Ya';
-      const subQ3Ya = document.getElementById('sub-q3-ya');
-    
-      const boxQ4 = document.getElementById('box-q4');
-      const isPernahKB = document.getElementById('kb-pernah-12bln').value === 'Ya';
-      const subQ4Ya = document.getElementById('sub-q4-ya');
-    
-      const boxQ5 = document.getElementById('box-q5');
-      const boxQ6 = document.getElementById('box-q6');
-      const boxQ7 = document.getElementById('box-q7');
-      const jenisAlat = document.getElementById('kb-alat').value;
-    
-      // 1. Alur Pertanyaan No. 2 (Hamil)
-      if (isHamil) {
-        subHamilYa.classList.remove('hidden');
-        subHamilTidak.classList.add('hidden');
-        // Jika YA hamil -> lewati No. 3, langsung ke No. 4
-        boxQ3.classList.add('hidden');
+    const statusHamil = document.getElementById('kb-hamil').value;
+    const subHamilYa = document.getElementById('sub-hamil-ya');
+    const subHamilTidak = document.getElementById('sub-hamil-tidak');
+  
+    const boxQ3 = document.getElementById('box-q3');
+    const statusSedangKB = document.getElementById('kb-sedang-berkb').value;
+    const subQ3Ya = document.getElementById('sub-q3-ya');
+  
+    const boxQ4 = document.getElementById('box-q4');
+    const statusPernahKB = document.getElementById('kb-pernah-12bln').value;
+    const subQ4Ya = document.getElementById('sub-q4-ya');
+  
+    const boxQ5 = document.getElementById('box-q5');
+    const boxQ6 = document.getElementById('box-q6');
+    const boxQ7 = document.getElementById('box-q7');
+    const jenisAlat = document.getElementById('kb-alat').value;
+  
+    // Reset semua jika belum memilih pertanyaan No. 2
+    if (!statusHamil) {
+      subHamilYa.classList.add('hidden');
+      subHamilTidak.classList.add('hidden');
+      boxQ3.classList.add('hidden');
+      boxQ4.classList.add('hidden');
+      boxQ5.classList.add('hidden');
+      boxQ6.classList.add('hidden');
+      boxQ7.classList.add('hidden');
+      return;
+    }
+  
+    // 1. Alur Pertanyaan No. 2
+    if (statusHamil === 'Ya') {
+      subHamilYa.classList.remove('hidden');
+      subHamilTidak.classList.add('hidden');
+      boxQ3.classList.add('hidden');
+      boxQ4.classList.remove('hidden');
+    } else {
+      subHamilYa.classList.add('hidden');
+      subHamilTidak.classList.remove('hidden');
+      boxQ3.classList.remove('hidden');
+    }
+  
+    // 2. Alur Pertanyaan No. 3
+    if (statusHamil === 'Tidak') {
+      if (statusSedangKB === 'Ya') {
+        subQ3Ya.classList.remove('hidden');
+        boxQ4.classList.add('hidden');
+        boxQ5.classList.add('hidden');
+        boxQ6.classList.remove('hidden');
+      } else if (statusSedangKB === 'Tidak') {
+        subQ3Ya.classList.add('hidden');
         boxQ4.classList.remove('hidden');
       } else {
-        subHamilYa.classList.add('hidden');
-        subHamilTidak.classList.remove('hidden');
-        // Jika TIDAK hamil -> buka No. 3
-        boxQ3.classList.remove('hidden');
-      }
-    
-      // 2. Alur Pertanyaan No. 3 & No. 4
-      if (!isHamil) {
-        if (isSedangKB) {
-          subQ3Ya.classList.remove('hidden');
-          boxQ4.classList.add('hidden'); // Lewati No. 4
-          boxQ5.classList.add('hidden'); // Lewati No. 5
-          boxQ6.classList.remove('hidden'); // Langsung ke No. 6
-        } else {
-          subQ3Ya.classList.add('hidden');
-          boxQ4.classList.remove('hidden'); // Buka No. 4
-        }
-      }
-    
-      // 3. Evaluasi Pertanyaan No. 4 (Pernah KB 12 Bulan Terakhir)
-      if (boxQ4.offsetParent !== null || !boxQ4.classList.contains('hidden')) {
-        if (isPernahKB) {
-          subQ4Ya.classList.remove('hidden');
-          boxQ5.classList.remove('hidden'); // Munculkan No. 5
-          boxQ6.classList.remove('hidden'); // Munculkan No. 6
-        } else {
-          subQ4Ya.classList.add('hidden');
-          // Jika No. 3 = Tidak dan No. 4 = Tidak
-          boxQ5.classList.remove('hidden'); // Tetap isi alasan di No. 5
-          boxQ6.classList.add('hidden');    // Lewati No. 6
-          boxQ7.classList.add('hidden');    // Lewati No. 7
-        }
-      }
-    
-      // 4. Evaluasi Pertanyaan No. 6 & No. 7
-      if (!boxQ6.classList.contains('hidden')) {
-        const isTradisional = jenisAlat.startsWith('Tradisional');
-        if (isTradisional) {
-          // Khusus jawaban Tradisional, STOP -> Lewati No. 7
-          boxQ7.classList.add('hidden');
-        } else {
-          // Selain tradisional -> Munculkan No. 7
-          boxQ7.classList.remove('hidden');
-        }
-      } else {
+        subQ3Ya.classList.add('hidden');
+        boxQ4.classList.add('hidden');
+        boxQ5.classList.add('hidden');
+        boxQ6.classList.add('hidden');
         boxQ7.classList.add('hidden');
+        return;
       }
     }
+  
+    // 3. Alur Pertanyaan No. 4
+    if (!boxQ4.classList.contains('hidden')) {
+      if (statusPernahKB === 'Ya') {
+        subQ4Ya.classList.remove('hidden');
+        boxQ5.classList.remove('hidden');
+        boxQ6.classList.remove('hidden');
+      } else if (statusPernahKB === 'Tidak') {
+        subQ4Ya.classList.add('hidden');
+        boxQ5.classList.remove('hidden');
+        boxQ6.classList.add('hidden');
+        boxQ7.classList.add('hidden');
+      } else {
+        subQ4Ya.classList.add('hidden');
+        boxQ5.classList.add('hidden');
+        boxQ6.classList.add('hidden');
+        boxQ7.classList.add('hidden');
+        return;
+      }
+    }
+  
+    // 4. Alur Pertanyaan No. 6 & No. 7
+    if (!boxQ6.classList.contains('hidden') && jenisAlat) {
+      const isTradisional = jenisAlat.startsWith('Tradisional');
+      if (isTradisional) {
+        boxQ7.classList.add('hidden');
+      } else {
+        boxQ7.classList.remove('hidden');
+      }
+    } else {
+      boxQ7.classList.add('hidden');
+    }
+  }
     
     // Inisialisasi alur saat aplikasi dimuat
     document.addEventListener('DOMContentLoaded', () => {
