@@ -963,86 +963,86 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
     });
     
     function renderUserInterface(profile) {
-      document.getElementById('user-nama').textContent = profile.nama_lengkap;
-      document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
-      document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
-    
-      // Tampilkan tombol menu admin jika role adalah admin
-      const adminNav = document.getElementById('admin-nav-menu');
-      if (profile.role !== 'pendata') {
-        adminNav.classList.remove('hidden');
-      } else {
-        adminNav.classList.add('hidden');
-        switchMainView('pendataan');
-      }
-    
-      // Set default form wilayah induk
-      const provEl = document.getElementById('w-prov');
-      provEl.value = profile.nama_prov;
-      provEl.setAttribute('data-code', profile.kode_prov);
-    
-      const kabEl = document.getElementById('w-kab');
-      kabEl.value = profile.nama_kab;
-      kabEl.setAttribute('data-code', profile.kode_kab);
-    
-      const kecEl = document.getElementById('w-kec');
-      kecEl.value = profile.nama_kec;
-      kecEl.setAttribute('data-code', profile.kode_kec);
-    
-      const desaEl = document.getElementById('w-desa');
-      desaEl.value = profile.nama_desa;
-      desaEl.setAttribute('data-code', profile.kode_desa);
+    document.getElementById('user-nama').textContent = profile.nama_lengkap;
+    document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
+    document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
+  
+    // Tampilkan tombol menu admin jika role adalah admin
+    const adminNav = document.getElementById('admin-nav-menu');
+    if (profile.role !== 'pendata') {
+      adminNav.classList.remove('hidden');
+    } else {
+      adminNav.classList.add('hidden');
+      switchMainView('pendataan');
     }
+  
+    // Set default form wilayah induk
+    const provEl = document.getElementById('w-prov');
+    provEl.value = profile.nama_prov;
+    provEl.setAttribute('data-code', profile.kode_prov);
+  
+    const kabEl = document.getElementById('w-kab');
+    kabEl.value = profile.nama_kab;
+    kabEl.setAttribute('data-code', profile.kode_kab);
+  
+    const kecEl = document.getElementById('w-kec');
+    kecEl.value = profile.nama_kec;
+    kecEl.setAttribute('data-code', profile.kode_kec);
+  
+    const desaEl = document.getElementById('w-desa');
+    desaEl.value = profile.nama_desa;
+    desaEl.setAttribute('data-code', profile.kode_desa);
+  }
 
-    // 2. SETUP WILAYAH TUGAS DINAMIS (DUSUN & RT TERTENTU)    
-    function setupWilayahPenugasan(profile) {
-      const dusunSelect = document.getElementById('w-dusun-select');
-      const rtSelect = document.getElementById('w-rt');
-      dusunSelect.innerHTML = '';
-      rtSelect.innerHTML = '';
-    
-      let listTugas = [];
-    
-      if (profile.role === 'pendata' && Array.isArray(profile.wilayah_tugas) && profile.wilayah_tugas.length > 0) {
-        // Wilayah spesifik tugas kader pendata
-        listTugas = profile.wilayah_tugas;
-      } else {
-        // Admin Desa / role di atasnya memiliki akses standar seluruh wilayah desa
-        listTugas = [
-          { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
-          { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
-        ];
-      }
-    
-      // Isi dropdown Dusun (Kode 4 Digit)
-      listTugas.forEach((item, index) => {
-        const opt = document.createElement('option');
-        opt.value = item.kode_dusun.padStart(4, '0');
-        opt.textContent = `${item.nama_dusun} (${item.kode_dusun.padStart(4, '0')})`;
-        opt.dataset.index = index;
-        dusunSelect.appendChild(opt);
-      });
-    
-      // Handler sinkronisasi Dusun -> RT
-      dusunSelect.onchange = function() {
-        const selectedIdx = this.options[this.selectedIndex].dataset.index;
-        const selectedData = listTugas[selectedIdx];
-        
-        // Set kode dusun 4 digit untuk generate ID Keluarga
-        document.getElementById('w-dusun').setAttribute('data-code', selectedData.kode_dusun.padStart(4, '0'));
-        rtSelect.innerHTML = '';
-    
-        // Isi opsi RT (Kode 3 Digit)
-        selectedData.rt.forEach(rtNomor => {
-          const rtOpt = document.createElement('option');
-          const paddedRT = String(rtNomor).padStart(3, '0');
-          rtOpt.value = paddedRT;
-          rtOpt.textContent = `RT ${paddedRT}`;
-          rtSelect.appendChild(rtOpt);
-        });
-    
+  // 2. SETUP WILAYAH TUGAS DINAMIS (DUSUN & RT TERTENTU)    
+  function setupWilayahPenugasan(profile) {
+    const dusunSelect = document.getElementById('w-dusun-select');
+    const rtSelect = document.getElementById('w-rt');
+    dusunSelect.innerHTML = '<option value="">-- PILIH DUSUN --</option>';
+    rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
+  
+    let listTugas = [];
+    if (profile.role === 'pendata' && Array.isArray(profile.wilayah_tugas) && profile.wilayah_tugas.length > 0) {
+      listTugas = profile.wilayah_tugas;
+    } else {
+      listTugas = [
+        { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
+        { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
+      ];
+    }
+  
+    listTugas.forEach((item, index) => {
+      const opt = document.createElement('option');
+      opt.value = item.kode_dusun.padStart(4, '0');
+      opt.textContent = `${item.nama_dusun} (${item.kode_dusun.padStart(4, '0')})`;
+      opt.dataset.index = index;
+      dusunSelect.appendChild(opt);
+    });
+  
+    dusunSelect.onchange = function() {
+      if (!this.value) {
+        rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
+        document.getElementById('w-dusun').setAttribute('data-code', '');
         updateIDKeluarga();
-      };
+        return;
+      }
+  
+      const selectedIdx = this.options[this.selectedIndex].dataset.index;
+      const selectedData = listTugas[selectedIdx];
+      document.getElementById('w-dusun').setAttribute('data-code', selectedData.kode_dusun.padStart(4, '0'));
+      
+      rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
+      selectedData.rt.forEach(rtNomor => {
+        const rtOpt = document.createElement('option');
+        const paddedRT = String(rtNomor).padStart(3, '0');
+        rtOpt.value = paddedRT;
+        rtOpt.textContent = `RT ${paddedRT}`;
+        rtSelect.appendChild(rtOpt);
+      });
+  
+      updateIDKeluarga();
+    };
+  }
     
       // Jalankan perubahan pertama kali
       dusunSelect.dispatchEvent(new Event('change'));
