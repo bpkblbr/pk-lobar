@@ -404,9 +404,127 @@
             <div id="individus-container"></div>           
           </div>
 
-          <!-- FORM C: PEMBANGUNAN KELUARGA -->
+          <!-- ================= STEP 3: FORM KELUARGA BERENCANA (KB) ================= -->
           <div id="step-3" class="step-content hidden space-y-6">
-            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">D. Form Pembangunan Keluarga</h3>
+            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">D. Form Keluarga Berencana (KB)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Ibu Melahirkan</label>
+                <input type="number" id="kb-lahir-total" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Lahir Hidup (L)</label>
+                <input type="number" id="kb-lh-laki" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Lahir Hidup (P)</label>
+                <input type="number" id="kb-lh-perempuan" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Masih Hidup (L)</label>
+                <input type="number" id="kb-mh-laki" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Masih Hidup (P)</label>
+                <input type="number" id="kb-mh-perempuan" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+            </div>
+          
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Sedang Hamil?</label>
+                <select id="kb-hamil" onchange="toggleHamil(this.value)" class="w-full px-3 py-2 border rounded-lg">
+                  <option value="Tidak">Tidak</option>
+                  <option value="Ya">Ya</option>
+                </select>
+              </div>
+              <div id="box-usia-hamil" class="hidden">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kehamilan (Minggu)</label>
+                <input type="number" id="kb-usia-hamil" min="1" max="44" class="w-full px-3 py-2 border rounded-lg">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Ingin Anak (IAS)</label>
+                <select id="kb-ias" class="w-full px-3 py-2 border rounded-lg">
+                  <option>Ingin Anak Segera</option>
+                  <option>Ingin Anak Nanti/Kemudian</option>
+                  <option>Tidak Ingin Anak Lagi</option>
+                </select>
+              </div>
+            </div>
+          
+            <div class="p-4 bg-slate-50 border rounded-xl space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Saat ini Menggunakan KB?</label>
+                  <select id="kb-sedang-berkb" onchange="toggleStatusKB(this.value)" class="w-full px-3 py-2 border rounded-lg bg-white">
+                    <option value="Tidak">Tidak</option>
+                    <option value="Ya">Ya</option>
+                  </select>
+                </div>
+                <div id="box-kb-bulan" class="hidden">
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Mulai Pakai Bulan</label>
+                  <input type="number" min="1" max="12" id="kb-mulai-bln" placeholder="1-12" class="w-full px-3 py-2 border rounded-lg bg-white">
+                </div>
+                <div id="box-kb-tahun" class="hidden">
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Mulai Pakai Tahun</label>
+                  <input type="number" min="1990" max="2030" id="kb-mulai-thn" placeholder="2024" class="w-full px-3 py-2 border rounded-lg bg-white">
+                </div>
+              </div>
+          
+              <div id="box-alat-kb" class="hidden">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Alat Kontrasepsi Digunakan</label>
+                <select id="kb-alat" class="w-full px-3 py-2 border rounded-lg bg-white">
+                  <option>MOW</option><option>MOP</option><option>IUD</option><option>Implan</option><option>Suntik</option><option>Pil</option><option>Kondom</option>
+                </select>
+              </div>
+          
+              <div id="box-tidak-kb" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">12 Bulan Terakhir Pernah Ber-KB?</label>
+                  <select id="kb-pernah-12bln" onchange="togglePernahKB(this.value)" class="w-full px-3 py-2 border rounded-lg bg-white">
+                    <option value="Tidak">Tidak</option>
+                    <option value="Ya">Ya</option>
+                  </select>
+                </div>
+                <div id="box-riwayat-kb" class="hidden grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div><label class="block text-xs text-slate-500">Mulai Bln</label><input type="number" min="1" max="12" id="kb-p-mulai-bln" class="w-full px-2 py-1.5 border rounded"></div>
+                  <div><label class="block text-xs text-slate-500">Mulai Thn</label><input type="number" min="1990" max="2030" id="kb-p-mulai-thn" class="w-full px-2 py-1.5 border rounded"></div>
+                  <div><label class="block text-xs text-slate-500">Sampai Bln</label><input type="number" min="1" max="12" id="kb-p-sampai-bln" class="w-full px-2 py-1.5 border rounded"></div>
+                  <div><label class="block text-xs text-slate-500">Sampai Thn</label><input type="number" min="1990" max="2030" id="kb-p-sampai-thn" class="w-full px-2 py-1.5 border rounded"></div>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Alasan Tidak Ber-KB</label>
+                  <select id="kb-alasan-tidak" class="w-full px-3 py-2 border rounded-lg bg-white">
+                    <option>Ingin hamil/anak</option>
+                    <option>Tidak Tahu tentang KB</option>
+                    <option>Alasan kesehatan</option>
+                    <option>Efek samping</option>
+                    <option>Tempat pelayanan jauh</option>
+                    <option>Alat/Obat/cara KB tidak tersedia</option>
+                    <option>Biaya mahal</option>
+                    <option>Tidak ada alat/obat/cara KB yang cocok</option>
+                    <option>Suami/ keluarga menolak</option>
+                    <option>Alasan agama</option>
+                    <option>Suami tinggal jauh/jarang berhubungan</option>
+                    <option>Tidak ada petugas pelayanan KB</option>
+                    <option>Infertilitas/Menopause</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          
+            <!-- Navigasi Step 3 (KB) -->
+            <div class="flex justify-between pt-4 border-t">
+              <button type="button" onclick="goToStep(2)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium text-xs">Kembali</button>
+              <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs rounded-lg flex items-center gap-2">
+                <span>Lanjut: Pembangunan Keluarga</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= STEP 4: PEMBANGUNAN KELUARGA (FINAL FORM) ================= -->
+          <div id="step-4" class="step-content hidden space-y-6">
+            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">E. Form Pembangunan Keluarga</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Atap Terluas</label>
@@ -486,127 +604,12 @@
                 </select>
               </div>
             </div>
+          
+            <!-- Navigasi Step 4 (Simpan Data) -->
             <div class="flex justify-between pt-4 border-t">
-              <button type="button" onclick="goToStep(2)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium">Kembali</button>
-              <button type="button" onclick="goToStep(4)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center gap-2">
-                <span>Lanjut: Form KB</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- FORM D: KELUARGA BERENCANA -->
-          <div id="step-4" class="step-content hidden space-y-6">
-            <h3 class="text-lg font-bold text-slate-900 pb-2 border-b">E. Form Keluarga Berencana (KB)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Ibu Melahirkan</label>
-                <input type="number" id="kb-lahir-total" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Lahir Hidup (L)</label>
-                <input type="number" id="kb-lh-laki" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Lahir Hidup (P)</label>
-                <input type="number" id="kb-lh-perempuan" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Masih Hidup (L)</label>
-                <input type="number" id="kb-mh-laki" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Masih Hidup (P)</label>
-                <input type="number" id="kb-mh-perempuan" min="0" value="0" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Sedang Hamil?</label>
-                <select id="kb-hamil" onchange="toggleHamil(this.value)" class="w-full px-3 py-2 border rounded-lg">
-                  <option value="Tidak">Tidak</option>
-                  <option value="Ya">Ya</option>
-                </select>
-              </div>
-              <div id="box-usia-hamil" class="hidden">
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kehamilan (Minggu)</label>
-                <input type="number" id="kb-usia-hamil" min="1" max="44" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Ingin Anak (IAS)</label>
-                <select id="kb-ias" class="w-full px-3 py-2 border rounded-lg">
-                  <option>Ingin Anak Segera</option>
-                  <option>Ingin Anak Nanti/Kemudian</option>
-                  <option>Tidak Ingin Anak Lagi</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="p-4 bg-slate-50 border rounded-xl space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Saat ini Menggunakan KB?</label>
-                  <select id="kb-sedang-berkb" onchange="toggleStatusKB(this.value)" class="w-full px-3 py-2 border rounded-lg bg-white">
-                    <option value="Tidak">Tidak</option>
-                    <option value="Ya">Ya</option>
-                  </select>
-                </div>
-                <div id="box-kb-bulan" class="hidden">
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Mulai Pakai Bulan</label>
-                  <input type="number" min="1" max="12" id="kb-mulai-bln" placeholder="1-12" class="w-full px-3 py-2 border rounded-lg bg-white">
-                </div>
-                <div id="box-kb-tahun" class="hidden">
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Mulai Pakai Tahun</label>
-                  <input type="number" min="1990" max="2030" id="kb-mulai-thn" placeholder="2024" class="w-full px-3 py-2 border rounded-lg bg-white">
-                </div>
-              </div>
-
-              <div id="box-alat-kb" class="hidden">
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Alat Kontrasepsi Digunakan</label>
-                <select id="kb-alat" class="w-full px-3 py-2 border rounded-lg bg-white">
-                  <option>MOW</option><option>MOP</option><option>IUD</option><option>Implan</option><option>Suntik</option><option>Pil</option><option>Kondom</option>
-                </select>
-              </div>
-
-              <div id="box-tidak-kb" class="space-y-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">12 Bulan Terakhir Pernah Ber-KB?</label>
-                  <select id="kb-pernah-12bln" onchange="togglePernahKB(this.value)" class="w-full px-3 py-2 border rounded-lg bg-white">
-                    <option value="Tidak">Tidak</option>
-                    <option value="Ya">Ya</option>
-                  </select>
-                </div>
-                <div id="box-riwayat-kb" class="hidden grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div><label class="block text-xs text-slate-500">Mulai Bln</label><input type="number" min="1" max="12" id="kb-p-mulai-bln" class="w-full px-2 py-1.5 border rounded"></div>
-                  <div><label class="block text-xs text-slate-500">Mulai Thn</label><input type="number" min="1990" max="2030" id="kb-p-mulai-thn" class="w-full px-2 py-1.5 border rounded"></div>
-                  <div><label class="block text-xs text-slate-500">Sampai Bln</label><input type="number" min="1" max="12" id="kb-p-sampai-bln" class="w-full px-2 py-1.5 border rounded"></div>
-                  <div><label class="block text-xs text-slate-500">Sampai Thn</label><input type="number" min="1990" max="2030" id="kb-p-sampai-thn" class="w-full px-2 py-1.5 border rounded"></div>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Alasan Tidak Ber-KB</label>
-                  <select id="kb-alasan-tidak" class="w-full px-3 py-2 border rounded-lg bg-white">
-                    <option>Ingin hamil/anak</option>
-                    <option>Tidak Tahu tentang KB</option>
-                    <option>Alasan kesehatan</option>
-                    <option>Efek samping</option>
-                    <option>Tempat pelayanan jauh</option>
-                    <option>Alat/Obat/cara KB tidak tersedia</option>
-                    <option>Biaya mahal</option>
-                    <option>Tidak ada alat/obat/cara KB yang cocok</option>
-                    <option>Suami/ keluarga menolak</option>
-                    <option>Alasan agama</option>
-                    <option>Suami tinggal jauh/jarang berhubungan</option>
-                    <option>Tidak ada petugas pelayanan KB</option>
-                    <option>Infertilitas/Menopause</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex justify-between pt-4 border-t">
-              <button type="button" onclick="goToStep(3)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium">Kembali</button>
-              <button type="submit" id="btn-save-all" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-lg shadow-emerald-100 flex items-center gap-2">
-                <i data-lucide="check-circle" class="w-5 h-5"></i> <span>Simpan Seluruh Data</span>
+              <button type="button" onclick="goToStep(3)" class="px-5 py-2.5 border rounded-lg hover:bg-slate-50 font-medium text-xs">Kembali</button>
+              <button type="submit" id="btn-save-all" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-lg shadow-emerald-100 flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> <span>Simpan Seluruh Data</span>
               </button>
             </div>
           </div>
