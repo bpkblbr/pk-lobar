@@ -1692,10 +1692,12 @@ async function confirmIndividualAndProceed() {
         const { error: errPK } = await supabaseClient.from('pembangunan_keluarga').insert(payloadPK);
         if (errPK) throw errPK;
 
-        const isSedangKB = document.getElementById('kb-sedang-berkb').value === 'Ya';
         const isHamil = document.getElementById('kb-hamil').value === 'Ya';
+        const isSedangKB = !isHamil && (document.getElementById('kb-sedang-berkb').value === 'Ya');
         const isPernahKB = document.getElementById('kb-pernah-12bln').value === 'Ya';
-
+        const alatKB = document.getElementById('kb-alat').value;
+        const isTradisional = alatKB.startsWith('Tradisional');
+        
         const payloadKB = {
           keluarga_id: keluargaUUID,
           jml_melahirkan: parseInt(document.getElementById('kb-lahir-total').value) || 0,
@@ -1705,18 +1707,21 @@ async function confirmIndividualAndProceed() {
           jml_masih_hidup_perempuan: parseInt(document.getElementById('kb-mh-perempuan').value) || 0,
           sedang_hamil: isHamil,
           usia_kehamilan_minggu: isHamil ? (parseInt(document.getElementById('kb-usia-hamil').value) || null) : null,
-          ias: document.getElementById('kb-ias').value,
+          status_keinginan_hamil: isHamil ? document.getElementById('kb-status-keinginan-hamil').value : null,
+          keinginan_anak_lagi: !isHamil ? document.getElementById('kb-keinginan-anak-lagi').value : null,
           sedang_ber_kb: isSedangKB,
           kb_mulai_bulan: isSedangKB ? (parseInt(document.getElementById('kb-mulai-bln').value) || null) : null,
           kb_mulai_tahun: isSedangKB ? (parseInt(document.getElementById('kb-mulai-thn').value) || null) : null,
-          alat_kontrasepsi: isSedangKB ? document.getElementById('kb-alat').value : null,
-          pernah_kb_12_bln: !isSedangKB ? isPernahKB : false,
-          pernah_kb_mulai_bln: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-mulai-bln').value) || null) : null,
-          pernah_kb_mulai_thn: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-mulai-thn').value) || null) : null,
-          pernah_kb_sampai_bln: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-sampai-bln').value) || null) : null,
-          pernah_kb_sampai_thn: (!isSedangKB && isPernahKB) ? (parseInt(document.getElementById('kb-p-sampai-thn').value) || null) : null,
-          alasan_tidak_kb: !isSedangKB ? document.getElementById('kb-alasan-tidak').value : null
+          pernah_kb_12_bln: isPernahKB,
+          pernah_kb_mulai_bln: isPernahKB ? (parseInt(document.getElementById('kb-p-mulai-bln').value) || null) : null,
+          pernah_kb_mulai_thn: isPernahKB ? (parseInt(document.getElementById('kb-p-mulai-thn').value) || null) : null,
+          pernah_kb_sampai_bln: isPernahKB ? (parseInt(document.getElementById('kb-p-sampai-bln').value) || null) : null,
+          pernah_kb_sampai_thn: isPernahKB ? (parseInt(document.getElementById('kb-p-sampai-thn').value) || null) : null,
+          alasan_tidak_kb: (!isSedangKB) ? document.getElementById('kb-alasan-tidak').value : null,
+          alat_kontrasepsi: (isSedangKB || isPernahKB) ? alatKB : null,
+          sumber_pelayanan_kb: ((isSedangKB || isPernahKB) && !isTradisional) ? document.getElementById('kb-sumber-pelayanan').value : null
         };
+        
         const { error: errKB } = await supabaseClient.from('keluarga_berencana').insert(payloadKB);
         if (errKB) throw errKB;
 
