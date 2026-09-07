@@ -853,7 +853,11 @@
         document.getElementById('app-view').classList.remove('hidden');
       }
     });
-    
+
+    document.getElementById('w-no-rumah')?.addEventListener('input', updateIDKeluarga);
+    document.getElementById('w-no-urut')?.addEventListener('input', updateIDKeluarga);
+    document.getElementById('w-rt')?.addEventListener('change', updateIDKeluarga);
+        
 // Helper Modal Pengganti alert() dan confirm()
 function showAppAlert(message, title = "Informasi", type = "info") {
   return new Promise((resolve) => {
