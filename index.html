@@ -423,10 +423,10 @@
           </div>
 
           <!-- ================= STEP 3: FORM KELUARGA BERENCANA (KB) ================= -->          
-          <div id="step-3" class="step-content hidden space-y-5">
+          <div id="step-3" class="step-content hidden max-w-3xl mx-auto space-y-4">
             <div class="pb-2 border-b border-slate-200">
               <h3 class="text-base font-bold text-slate-900">D. Form Keluarga Berencana (KB)</h3>
-              <p class="text-xs text-slate-500">Isi data riwayat melahirkan, kehamilan, dan kontrasepsi</p>
+              <p class="text-xs text-slate-500">Pilih opsi atau isi riwayat melahirkan, kehamilan, dan kontrasepsi</p>
             </div>
           
             <!-- PERTANYAAN 1 -->
@@ -434,7 +434,7 @@
               <label class="block text-xs font-bold text-slate-900">1. Sudah berapa kali Ibu melahirkan?</label>
               <div>
                 <label class="block text-[11px] font-medium text-slate-600 mb-1">Total Melahirkan</label>
-                <input type="number" id="kb-lahir-total" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-bold">
+                <input type="number" id="kb-lahir-total" min="0" placeholder="Ketik jumlah..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-bold">
               </div>
           
               <!-- Sub Pertanyaan 1: Lahir Hidup -->
@@ -442,11 +442,11 @@
                 <span class="block text-[11px] font-semibold text-slate-700">Jumlah anak lahir hidup:</span>
                 <div>
                   <label class="block text-[11px] text-slate-500 mb-1">Laki - laki</label>
-                  <input type="number" id="kb-lh-laki" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-lh-laki" min="0" placeholder="Ketik jumlah..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-500 mb-1">Perempuan</label>
-                  <input type="number" id="kb-lh-perempuan" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-lh-perempuan" min="0" placeholder="Ketik jumlah..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
               </div>
           
@@ -455,11 +455,11 @@
                 <span class="block text-[11px] font-semibold text-slate-700">Jumlah anak masih hidup:</span>
                 <div>
                   <label class="block text-[11px] text-slate-500 mb-1">Laki - laki</label>
-                  <input type="number" id="kb-mh-laki" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-mh-laki" min="0" placeholder="Ketik jumlah..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-500 mb-1">Perempuan</label>
-                  <input type="number" id="kb-mh-perempuan" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-mh-perempuan" min="0" placeholder="Ketik jumlah..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
               </div>
             </div>
@@ -468,6 +468,7 @@
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">2. Apakah Ibu saat ini sedang hamil?</label>
               <select id="kb-hamil" onchange="handleAlurKB()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium bg-white">
+                <option value="">-- PILIH STATUS KEHAMILAN --</option>
                 <option value="Tidak">Tidak</option>
                 <option value="Ya">Ya</option>
               </select>
@@ -476,11 +477,12 @@
               <div id="sub-hamil-ya" class="hidden p-3 bg-indigo-50/60 rounded-lg border border-indigo-100 space-y-3">
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-700 mb-1">Usia kehamilan (minggu):</label>
-                  <input type="number" id="kb-usia-hamil" min="1" max="44" placeholder="Contoh: 12" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-usia-hamil" min="1" max="44" placeholder="Ketik minggu (contoh: 12)..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
                 <div>
                   <label class="block text-[11px] font-semibold text-slate-700 mb-1">Saat mulai hamil, apakah ibu memang ingin hamil saat itu, ingin hamil nanti atau tidak ingin anak lagi?</label>
                   <select id="kb-status-keinginan-hamil" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                    <option value="">-- PILIH KEINGINAN SAAT HAMIL --</option>
                     <option value="Ya, ingin hamil saat itu">Ya, ingin hamil saat itu</option>
                     <option value="Ingin hamil nanti/kemudian">Ingin hamil nanti/kemudian</option>
                     <option value="Tidak ingin anak lagi">Tidak ingin anak lagi</option>
@@ -489,9 +491,10 @@
               </div>
           
               <!-- Sub Pertanyaan jika Tidak Hamil -->
-              <div id="sub-hamil-tidak" class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div id="sub-hamil-tidak" class="hidden p-3 bg-slate-50 rounded-lg border border-slate-200">
                 <label class="block text-[11px] font-semibold text-slate-700 mb-1">Apakah ibu menginginkan anak lagi?</label>
                 <select id="kb-keinginan-anak-lagi" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH KEINGINAN MEMILIKI ANAK --</option>
                   <option value="Ya, ingin anak segera (<=2 tahun)">Ya, ingin anak segera (&lt;=2 tahun)</option>
                   <option value="Ya, ingin anak nanti/kemudian (>2 tahun)">Ya, ingin anak nanti/kemudian (&gt;2 tahun)</option>
                   <option value="Tidak ingin anak lagi">Tidak ingin anak lagi</option>
@@ -500,9 +503,10 @@
             </div>
           
             <!-- PERTANYAAN 3 -->
-            <div id="box-q3" class="p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+            <div id="box-q3" class="hidden p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">3. Apakah saat ini IBU atau SUAMI menggunakan alat/obat/cara KB (kontrasepsi)?</label>
               <select id="kb-sedang-berkb" onchange="handleAlurKB()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium bg-white">
+                <option value="">-- PILIH STATUS PEMAKAIAN KB --</option>
                 <option value="Tidak">Tidak</option>
                 <option value="Ya">Ya</option>
               </select>
@@ -512,19 +516,20 @@
                 <span class="block text-[11px] font-semibold text-slate-700">Kapan mulai menggunakan alat/obat KB (Kontrasepsi) yang dipakai saat ini?</span>
                 <div>
                   <label class="block text-[11px] text-slate-500 mb-1">Bulan (1-12)</label>
-                  <input type="number" id="kb-mulai-bln" min="1" max="12" placeholder="Contoh: 5" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-mulai-bln" min="1" max="12" placeholder="Ketik bulan (1-12)..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-500 mb-1">Tahun</label>
-                  <input type="number" id="kb-mulai-thn" min="1990" max="2030" placeholder="Contoh: 2024" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <input type="number" id="kb-mulai-thn" min="1990" max="2030" placeholder="Ketik tahun (contoh: 2024)..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 </div>
               </div>
             </div>
           
             <!-- PERTANYAAN 4 -->
-            <div id="box-q4" class="p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+            <div id="box-q4" class="hidden p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">4. Apakah dalam 12 bulan terakhir IBU atau SUAMI “PERNAH” menggunakan alat/obat/cara kontrasepsi?</label>
               <select id="kb-pernah-12bln" onchange="handleAlurKB()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium bg-white">
+                <option value="">-- PILIH STATUS RIWAYAT 12 BULAN --</option>
                 <option value="Tidak">Tidak</option>
                 <option value="Ya">Ya</option>
               </select>
@@ -535,11 +540,11 @@
                   <span class="block text-[11px] font-semibold text-slate-700">Kapan mulai menggunakan alat/obat/cara kontrasepsi terakhir?</span>
                   <div>
                     <label class="block text-[11px] text-slate-500 mb-1">Mulai Bulan (1-12)</label>
-                    <input type="number" id="kb-p-mulai-bln" min="1" max="12" placeholder="Contoh: 1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                    <input type="number" id="kb-p-mulai-bln" min="1" max="12" placeholder="Ketik bulan..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                   </div>
                   <div>
                     <label class="block text-[11px] text-slate-500 mb-1">Mulai Tahun</label>
-                    <input type="number" id="kb-p-mulai-thn" min="1990" max="2030" placeholder="Contoh: 2023" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                    <input type="number" id="kb-p-mulai-thn" min="1990" max="2030" placeholder="Ketik tahun..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                   </div>
                 </div>
           
@@ -547,20 +552,21 @@
                   <span class="block text-[11px] font-semibold text-slate-700">Kapan berhenti menggunakan alat/obat/cara kontrasepsi terakhir?</span>
                   <div>
                     <label class="block text-[11px] text-slate-500 mb-1">Berhenti Bulan (1-12)</label>
-                    <input type="number" id="kb-p-sampai-bln" min="1" max="12" placeholder="Contoh: 11" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                    <input type="number" id="kb-p-sampai-bln" min="1" max="12" placeholder="Ketik bulan..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                   </div>
                   <div>
                     <label class="block text-[11px] text-slate-500 mb-1">Berhenti Tahun</label>
-                    <input type="number" id="kb-p-sampai-thn" min="1990" max="2030" placeholder="Contoh: 2024" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                    <input type="number" id="kb-p-sampai-thn" min="1990" max="2030" placeholder="Ketik tahun..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                   </div>
                 </div>
               </div>
             </div>
           
             <!-- PERTANYAAN 5 -->
-            <div id="box-q5" class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+            <div id="box-q5" class="hidden p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">5. Alasan utama tidak pakai KB atau putus pakai KB (PILIH HANYA SATU JAWABAN!)</label>
               <select id="kb-alasan-tidak" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium bg-white">
+                <option value="">-- PILIH ALASAN TIDAK BER-KB --</option>
                 <option value="Ingin hamil/anak">Ingin hamil/anak</option>
                 <option value="Tidak tahu tentang KB">Tidak tahu tentang KB</option>
                 <option value="Alasan Kesehatan">Alasan Kesehatan</option>
@@ -581,9 +587,10 @@
             </div>
           
             <!-- PERTANYAAN 6 -->
-            <div id="box-q6" class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+            <div id="box-q6" class="hidden p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">6. Jenis alat/obat/cara KB (Kontrasepsi) yang dipakai saat ini atau terakhir dipakai</label>
               <select id="kb-alat" onchange="handleAlurKB()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium bg-white">
+                <option value="">-- PILIH METODE KONTRASEPSI --</option>
                 <option value="MOW">MOW</option>
                 <option value="MOP">MOP</option>
                 <option value="IUD">IUD</option>
@@ -597,9 +604,10 @@
             </div>
           
             <!-- PERTANYAAN 7 -->
-            <div id="box-q7" class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+            <div id="box-q7" class="hidden p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">7. Sumber mendapatkan pelayanan alat/obat/cara KB terakhir?</label>
               <select id="kb-sumber-pelayanan" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium bg-white">
+                <option value="">-- PILIH SUMBER PELAYANAN KB --</option>
                 <option value="RS Pemerintah/TNI/Polri">RS Pemerintah/TNI/Polri</option>
                 <option value="RS Swasta">RS Swasta</option>
                 <option value="Puskesmas/Klinik TNI/Polri">Puskesmas/Klinik TNI/Polri</option>
