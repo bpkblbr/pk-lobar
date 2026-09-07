@@ -74,6 +74,16 @@
           </div>
         </div>
         <div class="flex items-center gap-4">
+          <!-- Tombol Switch Nav Khusus Admin -->
+          <div id="admin-nav-menu" class="hidden flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+            <button type="button" id="tab-btn-pendataan" onclick="switchMainView('pendataan')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition">
+              Form Pendataan
+            </button>
+            <button type="button" id="tab-btn-admin" onclick="switchMainView('admin')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition">
+              Panel Admin
+            </button>
+          </div>
+
           <div class="text-right hidden sm:block">
             <span id="user-nama" class="block text-xs font-bold text-slate-900 leading-none">Petugas Lapangan</span>
             <span id="user-wilayah-info" class="text-[10px] text-slate-500 leading-none">Wilayah Tugas</span>
@@ -82,16 +92,6 @@
             <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Keluar
           </button>
         </div>
-      </div>
-      
-      <!-- Tombol Menu Khusus Admin (Hanya tampil jika role admin) -->
-      <div id="admin-nav-menu" class="hidden flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
-        <button type="button" id="tab-btn-pendataan" onclick="switchMainView('pendataan')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition">
-          Form Pendataan
-        </button>
-        <button type="button" id="tab-btn-admin" onclick="switchMainView('admin')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition">
-          Panel Admin
-        </button>
       </div>
     </header>
 
@@ -141,136 +141,133 @@
       </section>
 
       <!-- ================= ADMIN PANEL SECTION ================= -->
-<div id="admin-panel-view" class="hidden space-y-6">
-  <!-- Navigasi Sub-Modul Admin -->
-  <div class="flex border-b border-slate-200 bg-white rounded-t-xl px-4 gap-4">
-    <button type="button" onclick="switchAdminSubTab('wilayah')" id="subtab-wilayah" class="py-3 px-2 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600">
-      Master Wilayah
-    </button>
-    <button type="button" onclick="switchAdminSubTab('pendata')" id="subtab-pendata" class="py-3 px-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700">
-      Manajemen Pendata
-    </button>
-    <button type="button" onclick="switchAdminSubTab('keluarga')" id="subtab-keluarga" class="py-3 px-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700">
-      Cari & Edit Data Keluarga
-    </button>
-  </div>
-
-  <div class="bg-white p-6 rounded-b-xl border border-slate-200 shadow-sm">
-    
-    <!-- SUB-TAB 1: MASTER WILAYAH -->
-    <div id="panel-wilayah" class="space-y-4">
-      <div class="flex justify-between items-center">
-        <div>
-          <h3 class="text-sm font-bold text-slate-900">Pengaturan Master Wilayah (Dusun & RT)</h3>
-          <p class="text-xs text-slate-500">Kelola daftar Dusun (4 Digit) dan Jumlah RT di wilayah yurisdiksi Anda</p>
+      <div id="admin-panel-view" class="hidden space-y-6">
+        <div class="flex border-b border-slate-200 bg-white rounded-t-xl px-4 gap-4">
+          <button type="button" onclick="switchAdminSubTab('wilayah')" id="subtab-wilayah" class="py-3 px-2 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600">
+            Master Wilayah
+          </button>
+          <button type="button" onclick="switchAdminSubTab('pendata')" id="subtab-pendata" class="py-3 px-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+            Manajemen Pendata
+          </button>
+          <button type="button" onclick="switchAdminSubTab('keluarga')" id="subtab-keluarga" class="py-3 px-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700">
+            Cari & Edit Data Keluarga
+          </button>
         </div>
-        <button type="button" onclick="openModalTambahWilayah()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Dusun
-        </button>
-      </div>
 
-      <div class="overflow-x-auto border border-slate-200 rounded-lg">
-        <table class="w-full text-xs text-left">
-          <thead class="bg-slate-50 text-slate-600 font-bold border-b">
-            <tr>
-              <th class="p-3">Kode Desa</th>
-              <th class="p-3">Nama Desa</th>
-              <th class="p-3">Kode Dusun (4 Digit)</th>
-              <th class="p-3">Nama Dusun</th>
-              <th class="p-3 text-center">Jumlah RT</th>
-              <th class="p-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-wilayah" class="divide-y divide-slate-100">
-            <!-- Diisi lewat JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
+        <div class="bg-white p-6 rounded-b-xl border border-slate-200 shadow-sm">
+          <!-- SUB-TAB 1: MASTER WILAYAH -->
+          <div id="panel-wilayah" class="space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Pengaturan Master Wilayah (Dusun & RT)</h3>
+                <p class="text-xs text-slate-500">Kelola daftar Dusun (4 Digit) dan Jumlah RT di wilayah yurisdiksi Anda</p>
+              </div>
+              <button type="button" onclick="openModalTambahWilayah()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Dusun
+              </button>
+            </div>
 
-    <!-- SUB-TAB 2: MANAJEMEN AKUN PENDATA -->
-    <div id="panel-pendata" class="hidden space-y-4">
-      <div class="flex justify-between items-center">
-        <div>
-          <h3 class="text-sm font-bold text-slate-900">Daftar Akun Kader Pendata</h3>
-          <p class="text-xs text-slate-500">Buat akun login dan tentukan wilayah penugasan (dusun & RT)</p>
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold border-b">
+                  <tr>
+                    <th class="p-3">Kode Desa</th>
+                    <th class="p-3">Nama Desa</th>
+                    <th class="p-3">Kode Dusun (4 Digit)</th>
+                    <th class="p-3">Nama Dusun</th>
+                    <th class="p-3 text-center">Jumlah RT</th>
+                    <th class="p-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-wilayah" class="divide-y divide-slate-100">
+                  <!-- Diisi via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 2: MANAJEMEN AKUN PENDATA -->
+          <div id="panel-pendata" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Daftar Akun Kader Pendata</h3>
+                <p class="text-xs text-slate-500">Buat akun login dan tentukan wilayah penugasan (dusun & RT)</p>
+              </div>
+              <button type="button" onclick="openModalTambahPendata()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Pendata Baru
+              </button>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold border-b">
+                  <tr>
+                    <th class="p-3">Username</th>
+                    <th class="p-3">Nama Lengkap</th>
+                    <th class="p-3">No. HP</th>
+                    <th class="p-3">Wilayah Tugas yang Diizinkan</th>
+                    <th class="p-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-pendata" class="divide-y divide-slate-100">
+                  <!-- Diisi via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 3: CARI & EDIT DATA KELUARGA -->
+          <div id="panel-keluarga" class="hidden space-y-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Pencarian & Koreksi Data Pendataan</h3>
+              <p class="text-xs text-slate-500">Cari berdasarkan No. KK, ID Keluarga, atau Nama Kepala Keluarga</p>
+            </div>
+
+            <div class="flex gap-2">
+              <input type="text" id="search-keluarga-input" placeholder="Ketik No. KK / ID Keluarga / Nama KK..." class="flex-1 px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
+              <button type="button" onclick="cariDataKeluarga()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg flex items-center gap-1">
+                <i data-lucide="search" class="w-3.5 h-3.5"></i> Cari
+              </button>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold border-b">
+                  <tr>
+                    <th class="p-3">ID Keluarga</th>
+                    <th class="p-3">No. KK</th>
+                    <th class="p-3">Kepala Keluarga</th>
+                    <th class="p-3">Wilayah (Dusun/RT)</th>
+                    <th class="p-3 text-center">Status</th>
+                    <th class="p-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-cari-keluarga" class="divide-y divide-slate-100">
+                  <tr><td colspan="6" class="p-4 text-center text-slate-400">Gunakan kolom pencarian di atas untuk memuat data.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
-        <button type="button" onclick="openModalTambahPendata()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Pendata Baru
-        </button>
       </div>
 
-      <div class="overflow-x-auto border border-slate-200 rounded-lg">
-        <table class="w-full text-xs text-left">
-          <thead class="bg-slate-50 text-slate-600 font-bold border-b">
-            <tr>
-              <th class="p-3">Username</th>
-              <th class="p-3">Nama Lengkap</th>
-              <th class="p-3">No. HP</th>
-              <th class="p-3">Wilayah Tugas yang Diizinkan</th>
-              <th class="p-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-pendata" class="divide-y divide-slate-100">
-            <!-- Diisi lewat JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SUB-TAB 3: CARI & EDIT DATA KELUARGA -->
-    <div id="panel-keluarga" class="hidden space-y-4">
-      <div>
-        <h3 class="text-sm font-bold text-slate-900">Pencarian & Koreksi Data Pendataan</h3>
-        <p class="text-xs text-slate-500">Cari berdasarkan No. KK, ID Keluarga, atau Nama Kepala Keluarga</p>
-      </div>
-
-      <div class="flex gap-2">
-        <input type="text" id="search-keluarga-input" placeholder="Ketik No. KK / ID Keluarga / Nama KK..." class="flex-1 px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
-        <button type="button" onclick="cariDataKeluarga()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg flex items-center gap-1">
-          <i data-lucide="search" class="w-3.5 h-3.5"></i> Cari
-        </button>
-      </div>
-
-      <div class="overflow-x-auto border border-slate-200 rounded-lg">
-        <table class="w-full text-xs text-left">
-          <thead class="bg-slate-50 text-slate-600 font-bold border-b">
-            <tr>
-              <th class="p-3">ID Keluarga</th>
-              <th class="p-3">No. KK</th>
-              <th class="p-3">Kepala Keluarga</th>
-              <th class="p-3">Wilayah (Dusun/RT)</th>
-              <th class="p-3 text-center">Status</th>
-              <th class="p-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-cari-keluarga" class="divide-y divide-slate-100">
-            <tr><td colspan="6" class="p-4 text-center text-slate-400">Gunakan kolom pencarian di atas untuk memuat data.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-      <!-- WIZARD CONTAINER -->
-      <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
-        <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600 flex items-center justify-center gap-2 whitespace-nowrap" data-step="1">
-          <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center">1</span> Form Wilayah
-        </button>
-        <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="2">
-          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">2</span> Data Individu
-        </button>
-        <!-- STEP 3 SEKARANG KB -->
-        <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="3">
-          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">3</span> Keluarga Berencana (KB)
-        </button>
-        <!-- STEP 4 SEKARANG PEMBANGUNAN KELUARGA -->
-        <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="4">
-          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">4</span> Pembangunan Keluarga
-        </button>
-      </div>
+      <!-- ================= FORM WIZARD CONTAINER ================= -->
+      <div id="form-wizard-wrapper" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
+          <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600 flex items-center justify-center gap-2 whitespace-nowrap" data-step="1">
+            <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center">1</span> Form Wilayah
+          </button>
+          <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="2">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">2</span> Data Individu
+          </button>
+          <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="3">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">3</span> Keluarga Berencana (KB)
+          </button>
+          <button type="button" class="step-tab flex-1 py-4 px-6 text-sm font-semibold text-slate-500 flex items-center justify-center gap-2 whitespace-nowrap" data-step="4">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">4</span> Pembangunan Keluarga
+          </button>
+        </div>
 
         <form id="survey-form" class="p-6 sm:p-8 space-y-6">
 
@@ -353,13 +350,13 @@
               <input type="number" id="w-jml-anggota" min="1" max="20" value="2" class="w-full px-3 py-2 border rounded-lg text-xs font-bold">
             </div>
           
-            <!-- 6. Alamat Lengkap Rumah (NAIK KE NOMOR 6) -->
+            <!-- 6. Alamat Lengkap Rumah -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">6. Alamat Lengkap Rumah</label>
               <textarea id="w-alamat" rows="2" required placeholder="Jl. Melati No..." class="w-full px-3 py-2 border rounded-lg text-xs"></textarea>
             </div>
           
-            <!-- 7. Status Keberadaan Keluarga (TURUN KE PALING BAWAH - NOMOR 7) -->
+            <!-- 7. Status Keberadaan Keluarga -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">7. Status Keberadaan Keluarga</label>
               <select id="w-status-keluarga" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white font-medium">
@@ -386,7 +383,6 @@
                 <p class="text-xs text-slate-500">Geser panel ke kiri atau kanan untuk mengisi data setiap anggota keluarga</p>
               </div>
               <div class="flex items-center gap-2">
-                <!-- Indikator Angka Posisi Slider -->
                 <span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg border border-slate-200" id="slider-counter">
                   1 dari 1 Anggota
                 </span>
@@ -397,15 +393,12 @@
             </div>
           
             <!-- Indikator Dots Progres Slider -->
-            <div class="flex justify-center items-center gap-1.5 py-1" id="slider-dots">
-              <!-- Dots di-generate otomatis via JS -->
-            </div>
+            <div class="flex justify-center items-center gap-1.5 py-1" id="slider-dots"></div>
           
-            <!-- VIEWPORT SLIDER (OVERFLOW HIDDEN) -->
+            <!-- VIEWPORT SLIDER -->
             <div class="overflow-hidden w-full rounded-xl">
-              <!-- TRACK SLIDER (FLEX TRACK BERGESER HORIZONTAL) -->
               <div id="individus-container" class="flex transition-transform duration-300 ease-out w-full">
-                <!-- Kartu individu masing-masing berukuran w-full shrink-0 -->
+                <!-- Kartu individu diisi via JS -->
               </div>
             </div>
           
@@ -424,19 +417,10 @@
                 </button>
               </div>
           
-              <button type="button" onclick="handleNextFromStep3()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg flex items-center gap-1.5 shadow-sm">
-                <span>Lanjut: Pembangunan</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              <button type="button" onclick="confirmIndividualAndProceed()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg flex items-center gap-1.5 shadow-sm">
+                <span>Lanjut: Form KB</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
-          </div>
-          
-            <!-- Tab Paginasi Per Orang -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-100" id="individu-tabs">
-              <!-- Tombol tab di-generate dinamis: [Anggota 1] [Anggota 2] ... -->
-            </div>
-          
-            <!-- Kontainer Form (Hanya 1 kartu yang aktif / visible dalam satu waktu) -->
-            <div id="individus-container"></div>           
           </div>
 
           <!-- ================= STEP 3: FORM KELUARGA BERENCANA (KB) ================= -->          
@@ -638,12 +622,12 @@
               </select>
             </div>
           
-            <!-- Navigasi Bawah Wizard -->
+            <!-- Navigasi Bawah Step 3 -->
             <div class="flex items-center justify-between pt-4 border-t border-slate-200">
               <button type="button" onclick="goToStep(2)" class="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-700">
                 &larr; Data Individu
               </button>
-              <button type="button" onclick="goToStep(4)" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg flex items-center gap-1.5 shadow-sm">
+              <button type="button" onclick="handleNextFromStep3()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg flex items-center gap-1.5 shadow-sm">
                 <span>Lanjut: Pembangunan</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
@@ -793,7 +777,7 @@
               <input type="number" step="0.1" id="pk-luas" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs" placeholder="Ketik luas bangunan (contoh: 36)...">
             </div>
           
-            <!-- 8. Jumlah Orang yang Tinggal dan Menetap (BARU) -->
+            <!-- 8. Jumlah Orang yang Tinggal dan Menetap -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">8. Berapa jumlah orang yang tinggal dan menetap di rumah/bangunan ini?</label>
               <div class="relative">
@@ -802,7 +786,7 @@
               </div>
             </div>
           
-            <!-- 9. Kepemilikan Rumah/Bangunan (BARU) -->
+            <!-- 9. Kepemilikan Rumah/Bangunan -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">9. Kepemilikan rumah/bangunan tempat tinggal?</label>
               <select id="pk-kepemilikan" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
@@ -853,6 +837,8 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let currentUserProfile = null;
+    let currentSlideIndex = 0;
+    let editingKeluargaUUID = null;
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
@@ -871,105 +857,99 @@
       }
     });
 
-    document.getElementById('w-no-rumah')?.addEventListener('input', updateIDKeluarga);
-    document.getElementById('w-no-urut')?.addEventListener('input', updateIDKeluarga);
-    document.getElementById('w-rt')?.addEventListener('change', updateIDKeluarga);
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById('login-password');
+      const eyeIcon = document.getElementById('eye-icon');
 
-function togglePasswordVisibility() {
-  const pwdInput = document.getElementById('login-password');
-  const eyeIcon = document.getElementById('eye-icon');
-
-  if (pwdInput.type === 'password') {
-    pwdInput.type = 'text';
-    eyeIcon.setAttribute('data-lucide', 'eye-off');
-  } else {
-    pwdInput.type = 'password';
-    eyeIcon.setAttribute('data-lucide', 'eye');
-  }
-
-  // Refresh ikon Lucide agar tampilan mata berubah secara real-time
-  lucide.createIcons();
-}
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeIcon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        pwdInput.type = 'password';
+        eyeIcon.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+    }
     
-// Helper Modal Pengganti alert() dan confirm()
-function showAppAlert(message, title = "Informasi", type = "info") {
-  return new Promise((resolve) => {
-    const modal = document.getElementById('custom-modal');
-    const titleEl = document.getElementById('modal-title');
-    const msgEl = document.getElementById('modal-message');
-    const iconEl = document.getElementById('modal-icon');
-    const iconContainer = document.getElementById('modal-icon-container');
-    const actionsEl = document.getElementById('modal-actions');
+    // Helper Modal Pengganti alert() dan confirm()
+    function showAppAlert(message, title = "Informasi", type = "info") {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('custom-modal');
+        const titleEl = document.getElementById('modal-title');
+        const msgEl = document.getElementById('modal-message');
+        const iconEl = document.getElementById('modal-icon');
+        const iconContainer = document.getElementById('modal-icon-container');
+        const actionsEl = document.getElementById('modal-actions');
 
-    titleEl.textContent = title;
-    msgEl.textContent = message;
+        titleEl.textContent = title;
+        msgEl.textContent = message;
 
-    // Warna ikon sesuai tipe
-    if (type === "danger") {
-      iconContainer.className = "p-2.5 rounded-xl bg-rose-50 text-rose-600 shrink-0";
-      iconEl.setAttribute('data-lucide', 'alert-triangle');
-    } else if (type === "success") {
-      iconContainer.className = "p-2.5 rounded-xl bg-emerald-50 text-emerald-600 shrink-0";
-      iconEl.setAttribute('data-lucide', 'check-circle-2');
-    } else {
-      iconContainer.className = "p-2.5 rounded-xl bg-indigo-50 text-indigo-600 shrink-0";
-      iconEl.setAttribute('data-lucide', 'info');
+        if (type === "danger") {
+          iconContainer.className = "p-2.5 rounded-xl bg-rose-50 text-rose-600 shrink-0";
+          iconEl.setAttribute('data-lucide', 'alert-triangle');
+        } else if (type === "success") {
+          iconContainer.className = "p-2.5 rounded-xl bg-emerald-50 text-emerald-600 shrink-0";
+          iconEl.setAttribute('data-lucide', 'check-circle-2');
+        } else {
+          iconContainer.className = "p-2.5 rounded-xl bg-indigo-50 text-indigo-600 shrink-0";
+          iconEl.setAttribute('data-lucide', 'info');
+        }
+
+        actionsEl.innerHTML = `
+          <button type="button" id="modal-btn-ok" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">
+            Mengerti
+          </button>
+        `;
+
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+
+        document.getElementById('modal-btn-ok').onclick = () => {
+          modal.classList.add('hidden');
+          resolve(true);
+        };
+      });
     }
 
-    actionsEl.innerHTML = `
-      <button type="button" id="modal-btn-ok" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">
-        Mengerti
-      </button>
-    `;
+    function showAppConfirm(message, title = "Konfirmasi Tindakan") {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('custom-modal');
+        const titleEl = document.getElementById('modal-title');
+        const msgEl = document.getElementById('modal-message');
+        const iconContainer = document.getElementById('modal-icon-container');
+        const iconEl = document.getElementById('modal-icon');
+        const actionsEl = document.getElementById('modal-actions');
 
-    modal.classList.remove('hidden');
-    lucide.createIcons();
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        iconContainer.className = "p-2.5 rounded-xl bg-amber-50 text-amber-600 shrink-0";
+        iconEl.setAttribute('data-lucide', 'help-circle');
 
-    document.getElementById('modal-btn-ok').onclick = () => {
-      modal.classList.add('hidden');
-      resolve(true);
-    };
-  });
-}
+        actionsEl.innerHTML = `
+          <button type="button" id="modal-btn-cancel" class="px-3.5 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold rounded-lg transition">
+            Batal
+          </button>
+          <button type="button" id="modal-btn-confirm" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">
+            Ya, Lanjutkan
+          </button>
+        `;
 
-function showAppConfirm(message, title = "Konfirmasi Tindakan") {
-  return new Promise((resolve) => {
-    const modal = document.getElementById('custom-modal');
-    const titleEl = document.getElementById('modal-title');
-    const msgEl = document.getElementById('modal-message');
-    const iconEl = document.getElementById('modal-icon');
-    const iconContainer = document.getElementById('modal-icon-container');
-    const actionsEl = document.getElementById('modal-actions');
+        modal.classList.remove('hidden');
+        lucide.createIcons();
 
-    titleEl.textContent = title;
-    msgEl.textContent = message;
-    iconContainer.className = "p-2.5 rounded-xl bg-amber-50 text-amber-600 shrink-0";
-    iconEl.setAttribute('data-lucide', 'help-circle');
+        document.getElementById('modal-btn-cancel').onclick = () => {
+          modal.classList.add('hidden');
+          resolve(false);
+        };
 
-    actionsEl.innerHTML = `
-      <button type="button" id="modal-btn-cancel" class="px-3.5 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold rounded-lg transition">
-        Batal
-      </button>
-      <button type="button" id="modal-btn-confirm" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">
-        Ya, Lanjutkan
-      </button>
-    `;
+        document.getElementById('modal-btn-confirm').onclick = () => {
+          modal.classList.add('hidden');
+          resolve(true);
+        };
+      });
+    }
 
-    modal.classList.remove('hidden');
-    lucide.createIcons();
-
-    document.getElementById('modal-btn-cancel').onclick = () => {
-      modal.classList.add('hidden');
-      resolve(false);
-    };
-
-    document.getElementById('modal-btn-confirm').onclick = () => {
-      modal.classList.add('hidden');
-      resolve(true);
-    };
-  });
-}
-    // Verifikasi Login Manual ke Tabel users
+    // Login Handler
     document.getElementById('form-login').addEventListener('submit', async (e) => {
       e.preventDefault();
       const usernameInput = document.getElementById('login-username').value.trim();
@@ -984,16 +964,10 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
           .eq('username', usernameInput)
           .eq('password', passwordInput)
           .eq('is_active', true)
-          .maybeSingle(); // Gunakan maybeSingle agar tidak melempar PGRST116 jika 0 baris
+          .maybeSingle();
 
-        if (error) {
-          console.error("Supabase Error:", error);
-          throw new Error('Database Error: ' + error.message);
-        }
-
-        if (!user) {
-          throw new Error('Username atau kata sandi tidak cocok!');
-        }
+        if (error) throw new Error('Database Error: ' + error.message);
+        if (!user) throw new Error('Username atau kata sandi tidak cocok!');
 
         currentUserProfile = user;
         localStorage.setItem('simpk_session', JSON.stringify(user));
@@ -1006,13 +980,13 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
         document.getElementById('app-view').classList.remove('hidden');
         lucide.createIcons();
       } catch (err) {
-        alert(err.message);
+        showAppAlert(err.message, "Gagal Masuk", "danger");
       } finally {
         btn.disabled = false;
       }
     });
 
-    // Tombol Logout (Satu listener bersih)
+    // Logout Handler
     document.getElementById('btn-logout').addEventListener('click', () => {
       localStorage.removeItem('simpk_session');
       currentUserProfile = null;
@@ -1021,137 +995,137 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
       document.getElementById('form-login').reset();
     });
     
+    function getFormWizardContainer() {
+      return document.getElementById('form-wizard-wrapper');
+    }
+
     function renderUserInterface(profile) {
-    document.getElementById('user-nama').textContent = profile.nama_lengkap;
-    document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
-    document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
-  
-    // Tampilkan tombol menu admin jika role adalah admin
-    const adminNav = document.getElementById('admin-nav-menu');
-    if (profile.role !== 'pendata') {
-      adminNav.classList.remove('hidden');
-    } else {
-      adminNav.classList.add('hidden');
-      switchMainView('pendataan');
-    }
-  
-    // Set default form wilayah induk
-    const provEl = document.getElementById('w-prov');
-    provEl.value = profile.nama_prov;
-    provEl.setAttribute('data-code', profile.kode_prov);
-  
-    const kabEl = document.getElementById('w-kab');
-    kabEl.value = profile.nama_kab;
-    kabEl.setAttribute('data-code', profile.kode_kab);
-  
-    const kecEl = document.getElementById('w-kec');
-    kecEl.value = profile.nama_kec;
-    kecEl.setAttribute('data-code', profile.kode_kec);
-  
-    const desaEl = document.getElementById('w-desa');
-    desaEl.value = profile.nama_desa;
-    desaEl.setAttribute('data-code', profile.kode_desa);
-  }
-
-  // 2. SETUP WILAYAH TUGAS DINAMIS (DUSUN & RT TERTENTU)    
-  function setupWilayahPenugasan(profile) {
-    const dusunSelect = document.getElementById('w-dusun-select');
-    const rtSelect = document.getElementById('w-rt');
-    dusunSelect.innerHTML = '<option value="">-- PILIH DUSUN --</option>';
-    rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
-  
-    let listTugas = [];
-    if (profile.role === 'pendata' && Array.isArray(profile.wilayah_tugas) && profile.wilayah_tugas.length > 0) {
-      listTugas = profile.wilayah_tugas;
-    } else {
-      listTugas = [
-        { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
-        { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
-      ];
-    }
-  
-    listTugas.forEach((item, index) => {
-      const opt = document.createElement('option');
-      opt.value = item.kode_dusun.padStart(4, '0');
-      opt.textContent = `${item.nama_dusun} (${item.kode_dusun.padStart(4, '0')})`;
-      opt.dataset.index = index;
-      dusunSelect.appendChild(opt);
-    });
-  
-    dusunSelect.onchange = function() {
-      if (!this.value) {
-        rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
-        document.getElementById('w-dusun').setAttribute('data-code', '');
-        updateIDKeluarga();
-        return;
-      }
-  
-      const selectedIdx = this.options[this.selectedIndex].dataset.index;
-      const selectedData = listTugas[selectedIdx];
-      document.getElementById('w-dusun').setAttribute('data-code', selectedData.kode_dusun.padStart(4, '0'));
-      
-      rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
-      selectedData.rt.forEach(rtNomor => {
-        const rtOpt = document.createElement('option');
-        const paddedRT = String(rtNomor).padStart(3, '0');
-        rtOpt.value = paddedRT;
-        rtOpt.textContent = `RT ${paddedRT}`;
-        rtSelect.appendChild(rtOpt);
-      });
-  
-      updateIDKeluarga();
-    };  
+      document.getElementById('user-nama').textContent = profile.nama_lengkap;
+      document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
+      document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
     
-      // Jalankan perubahan pertama kali
-      dusunSelect.dispatchEvent(new Event('change'));
+      const adminNav = document.getElementById('admin-nav-menu');
+      const formContainer = getFormWizardContainer();
+      const adminSection = document.getElementById('admin-panel-view');
+
+      if (profile.role !== 'pendata') {
+        // Mode ADMIN:
+        adminNav.classList.remove('hidden');
+        formContainer.classList.add('hidden');
+        adminSection.classList.remove('hidden');
+        switchMainView('admin');
+        switchAdminSubTab('keluarga');
+      } else {
+        // Mode PENDATA:
+        adminNav.classList.add('hidden');
+        adminSection.classList.add('hidden');
+        formContainer.classList.remove('hidden');
+        switchMainView('pendataan');
+        goToStep(1);
+      }
+    
+      // Set default form wilayah induk
+      const provEl = document.getElementById('w-prov');
+      provEl.value = profile.nama_prov || 'Jawa Barat';
+      provEl.setAttribute('data-code', profile.kode_prov || '32');
+    
+      const kabEl = document.getElementById('w-kab');
+      kabEl.value = profile.nama_kab || 'Bandung';
+      kabEl.setAttribute('data-code', profile.kode_kab || '04');
+    
+      const kecEl = document.getElementById('w-kec');
+      kecEl.value = profile.nama_kec || 'Cangkuang';
+      kecEl.setAttribute('data-code', profile.kode_kec || '01');
+    
+      const desaEl = document.getElementById('w-desa');
+      desaEl.value = profile.nama_desa || 'Cangkuang';
+      desaEl.setAttribute('data-code', profile.kode_desa || '0001');
     }
 
-    // 3. GENERATE ID KELUARGA (Format 4 Digit Desa & Dusun)
-    function bindIDGenerators() {
-      ['w-rt', 'w-no-rumah', 'w-no-urut'].forEach(id => {
-        document.getElementById(id).addEventListener('input', updateIDKeluarga);
+    function setupWilayahPenugasan(profile) {
+      const dusunSelect = document.getElementById('w-dusun-select');
+      const rtSelect = document.getElementById('w-rt');
+      dusunSelect.innerHTML = '<option value="">-- PILIH DUSUN --</option>';
+      rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
+    
+      let listTugas = [];
+      if (profile.role === 'pendata' && Array.isArray(profile.wilayah_tugas) && profile.wilayah_tugas.length > 0) {
+        listTugas = profile.wilayah_tugas;
+      } else {
+        listTugas = [
+          { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
+          { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
+        ];
+      }
+    
+      listTugas.forEach((item, index) => {
+        const opt = document.createElement('option');
+        opt.value = item.kode_dusun.padStart(4, '0');
+        opt.textContent = `${item.nama_dusun} (${item.kode_dusun.padStart(4, '0')})`;
+        opt.dataset.index = index;
+        dusunSelect.appendChild(opt);
       });
-      document.getElementById('w-jml-anggota').addEventListener('change', (e) => {
+    
+      dusunSelect.onchange = function() {
+        if (!this.value) {
+          rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
+          document.getElementById('w-dusun').setAttribute('data-code', '');
+          updateIDKeluarga();
+          return;
+        }
+    
+        const selectedIdx = this.options[this.selectedIndex].dataset.index;
+        const selectedData = listTugas[selectedIdx];
+        document.getElementById('w-dusun').setAttribute('data-code', selectedData.kode_dusun.padStart(4, '0'));
+        
+        rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
+        selectedData.rt.forEach(rtNomor => {
+          const rtOpt = document.createElement('option');
+          const paddedRT = String(rtNomor).padStart(3, '0');
+          rtOpt.value = paddedRT;
+          rtOpt.textContent = `RT ${paddedRT}`;
+          rtSelect.appendChild(rtOpt);
+        });
+    
+        updateIDKeluarga();
+      };  
+    }
+
+    function bindIDGenerators() {
+      ['w-no-rumah', 'w-no-urut'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updateIDKeluarga);
+      });
+      document.getElementById('w-rt')?.addEventListener('change', updateIDKeluarga);
+      document.getElementById('w-jml-anggota')?.addEventListener('change', (e) => {
         const val = parseInt(e.target.value) || 1;
         initIndividuRows(val);
       });
     }
 
     function updateIDKeluarga() {
-      // Blok 1: Wilayah Induk sampai Dusun (Tanpa Spasi)
       const prov = (document.getElementById('w-prov')?.getAttribute('data-code') || '00').padStart(2, '0');
       const kab  = (document.getElementById('w-kab')?.getAttribute('data-code') || '00').padStart(2, '0');
       const kec  = (document.getElementById('w-kec')?.getAttribute('data-code') || '00').padStart(2, '0');
       const desa = (document.getElementById('w-desa')?.getAttribute('data-code') || '0000').padStart(4, '0');
-    
       const dusunRaw = document.getElementById('w-dusun')?.getAttribute('data-code') || document.getElementById('w-dusun-select')?.value || '';
       const dusun = dusunRaw ? String(dusunRaw).padStart(4, '0') : '0000';
-    
-      // Blok 2: RT, No. Rumah, dan No. Urut (RT 3 digit, Rumah 3 digit, Urut 3 digit)
+
       const rtRaw = document.getElementById('w-rt')?.value || '';
       const rt = rtRaw ? String(rtRaw).padStart(3, '0') : '000';
-    
       const noRumahRaw = document.getElementById('w-no-rumah')?.value.trim() || '';
       const noRumah = noRumahRaw ? String(noRumahRaw).padStart(3, '0') : '000';
-    
       const noUrutRaw = document.getElementById('w-no-urut')?.value.trim() || '';
       const noUrut = noUrutRaw ? String(noUrutRaw).padStart(3, '0') : '000';
-    
-      // Gabungkan: Prov+Kab+Kec+Desa+Dusun + [SPASI] + RT+Rumah+Urut
+
       const blokWilayahDusun = `${prov}${kab}${kec}${desa}${dusun}`;
       const blokRtRumahUrut  = `${rt}${noRumah}${noUrut}`;
-    
       const generatedID = `${blokWilayahDusun} ${blokRtRumahUrut}`;
-    
+
       const idInput = document.getElementById('w-id-keluarga');
-      if (idInput) {
-        idInput.value = generatedID;
-      }
-    
+      if (idInput) idInput.value = generatedID;
       return generatedID;
     }
 
-    // 4. NAVIGASI WIZARD & LOGIKA FORM
     function goToStep(stepNumber) {
       document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
@@ -1171,620 +1145,495 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
 
     async function handleNextFromStep1() {
       const isValid = await validateStep1();
-      if (isValid) {
-        goToStep(2);
-      }
+      if (isValid) goToStep(2);
     }
-
-    // State indeks anggota yang sedang aktif dibuka
-let currentActiveIndividu = 1;
-
-// Current slide index (0-based: 0 = orang ke-1, 1 = orang ke-2, dst.)
-let currentSlideIndex = 0;
-
-// ================= 1. KONTROL SLIDER INDIVIDU =================
-function updateSliderPosition() {
-  const track = document.getElementById('individus-container');
-  const cards = Array.from(track.children);
-  const total = cards.length;
-
-  if (total === 0) return;
-
-  // Batasi rentang index slide
-  if (currentSlideIndex < 0) currentSlideIndex = 0;
-  if (currentSlideIndex >= total) currentSlideIndex = total - 1;
-
-  // Geser track ke kiri-kanan menggunakan CSS Transform translateX
-  const offsetPercentage = currentSlideIndex * 100;
-  track.style.transform = `translateX(-${offsetPercentage}%)`;
-
-  // Update teks counter
-  document.getElementById('slider-counter').textContent = `${currentSlideIndex + 1} dari ${total} Anggota`;
-
-  // Update status tombol navigasi slide
-  document.getElementById('btn-slide-prev').disabled = (currentSlideIndex === 0);
-  document.getElementById('btn-slide-next').disabled = (currentSlideIndex === total - 1);
-
-  // Update titik-titik indikator (dots)
-  const dotsContainer = document.getElementById('slider-dots');
-  dotsContainer.innerHTML = '';
-  for (let i = 0; i < total; i++) {
-    const dot = document.createElement('button');
-    dot.type = 'button';
-    dot.className = `h-2 rounded-full transition-all duration-200 ${
-      i === currentSlideIndex ? 'w-6 bg-indigo-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
-    }`;
-    dot.onclick = () => {
-      currentSlideIndex = i;
-      updateSliderPosition();
-    };
-    dotsContainer.appendChild(dot);
-  }
-}
-
-function slideIndividu(direction) {
-  currentSlideIndex += direction;
-  updateSliderPosition();
-}
-
-// Inisialisasi baris data individu
-function initIndividuRows(count) {
-  const track = document.getElementById('individus-container');
-  track.innerHTML = '';
-  currentSlideIndex = 0;
-
-  for (let i = 1; i <= count; i++) {
-    track.appendChild(createIndividualCard(i));
-  }
-
-  updateSliderPosition();
-  evaluateNo2LockRules();
-  refreshMotherDropdowns();
-  lucide.createIcons();
-}
-
-// Tambah anggota baru dan langsung geser ke slide paling akhir
-function addIndividualRow() {
-  const track = document.getElementById('individus-container');
-  const newIndex = track.children.length + 1;
-
-  track.appendChild(createIndividualCard(newIndex));
-  document.getElementById('w-jml-anggota').value = newIndex;
-
-  currentSlideIndex = newIndex - 1; // Lompat langsung ke slide anggota baru
-  updateSliderPosition();
-  evaluateNo2LockRules();
-  refreshMotherDropdowns();
-  lucide.createIcons();
-}
-
-// Buat elemen slide kartu (w-full shrink-0 untuk sistem slider)
-function createIndividualCard(index) {
-  const card = document.createElement('div');
-  card.className = 'w-full flex-none shrink-0 p-4 sm:p-6 rounded-xl border border-slate-200 bg-white space-y-4 shadow-sm';
-  card.id = `ind-card-${index}`;
-
-  const isKK = (index === 1);
-
-  card.innerHTML = `
-    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-      <div class="flex items-center gap-2">
-        <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-md">
-          Anggota #${index} ${isKK ? '(Kepala Keluarga)' : ''}
-        </span>
-        <span id="lock-badge-${index}" class="hidden px-2 py-0.5 bg-rose-50 text-rose-600 text-[11px] font-semibold rounded">
-          Terkunci sebagai Istri
-        </span>
-      </div>
-      <div class="flex items-center gap-2">
-        ${!isKK ? `
-          <button type="button" onclick="removeIndividualRow(${index})" class="px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-md border border-rose-200 flex items-center gap-1 transition">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus
-          </button>
-        ` : ''}
-        <span class="text-xs text-slate-400 font-mono">Slide ${index}</span>
-      </div>
-    </div>
-
-    <!-- 1. Nama Lengkap -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">1. Nama Lengkap</label>
-      <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg text-xs" oninput="refreshMotherDropdowns()" required placeholder="Nama Lengkap">
-    </div>
-
-    <!-- 2. NIK -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">2. NIK (16 Digit)</label>
-      <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg text-xs font-mono" required placeholder="3204...">
-    </div>
-
-    <!-- 3. Status Hubungan -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">3. Status Hubungan dengan Kepala Keluarga</label>
-      <select class="ind-hubungan w-full px-3 py-2 border rounded-lg text-xs font-medium" id="hubungan-${index}" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
-        ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
-          <option value="Istri">Istri</option>
-          <option value="Anak" selected>Anak</option>
-          <option value="Lainnya">Lainnya</option>
-        `}
-      </select>
-    </div>
-
-    <!-- 4. Jenis Kelamin -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">4. Jenis Kelamin</label>
-      <select class="ind-jk w-full px-3 py-2 border rounded-lg text-xs font-medium" id="jk-${index}" onchange="onJenisKelaminChanged(${index}, this.value)">
-        <option value="Laki-laki">Laki-laki</option>
-        <option value="Perempuan">Perempuan</option>
-      </select>
-    </div>
-
-    <!-- 5. Tanggal Lahir & Usia -->
-    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
-      <label class="block text-xs font-bold text-slate-800">5. Kelahiran & Usia</label>
-      <div>
-        <label class="block text-[11px] text-slate-600 mb-1">Tanggal Lahir</label>
-        <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg text-xs bg-white" onchange="calculateAge(${index}, this.value)" required>
-      </div>
-      <div>
-        <label class="block text-[11px] text-slate-600 mb-1">Usia (Tahun)</label>
-        <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-100 font-bold text-slate-800 text-xs">
-      </div>
-    </div>
-
-    <!-- 6. Status Perkawinan -->
-    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
-      <label class="block text-xs font-bold text-slate-800">6. Status Perkawinan</label>
-      <div>
-        <label class="block text-[11px] text-slate-600 mb-1">Status Saat Ini</label>
-        <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg text-xs bg-white font-medium" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
-          <option value="Belum Kawin">Belum Kawin</option>
-          <option value="Kawin Tercatat">Kawin Tercatat</option>
-          <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
-          <option value="Cerai Hidup tercatat">Cerai Hidup tercatat</option>
-          <option value="Cerai Hidup Belum Tercatat">Cerai Hidup Belum Tercatat</option>
-          <option value="Cerai Mati">Cerai Mati</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-[11px] text-slate-600 mb-1">Usia Kawin Pertama</label>
-        <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci jika belum kawin" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg text-xs bg-white">
-      </div>
-    </div>
-
-    <!-- 7. Akta Lahir -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">7. Memiliki Akta Lahir?</label>
-      <select class="ind-akta w-full px-3 py-2 border rounded-lg text-xs">
-        <option value="true">Ya</option>
-        <option value="false">Tidak</option>
-      </select>
-    </div>
-
-    <!-- 8. Ibu Kandung -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">8. Ibu Kandung</label>
-      <select class="ind-ibu w-full px-3 py-2 border rounded-lg text-xs" id="ibu-${index}" ${isKK ? 'disabled' : ''}>
-        <option value="">- Terkunci / Pilih Ibu -</option>
-      </select>
-    </div>
-
-    <!-- 9. Agama -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">9. Agama</label>
-      <select class="ind-agama w-full px-3 py-2 border rounded-lg text-xs">
-        <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
-      </select>
-    </div>
-
-    <!-- 10. Pekerjaan -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">10. Pekerjaan</label>
-      <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg text-xs">
-        <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
-      </select>
-    </div>
-
-    <!-- 11. Pendidikan -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">11. Pendidikan Terakhir / Sedang Ditempuh</label>
-      <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg text-xs">
-        <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
-      </select>
-    </div>
-
-    <!-- 12. Kepesertaan JKN -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">12. Kepesertaan JKN / Asuransi Kesehatan</label>
-      <select class="ind-jkn w-full px-3 py-2 border rounded-lg text-xs">
-        <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
-      </select>
-    </div>
-
-    <!-- 13. Bekerja di Luar Negeri -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">13. Bekerja di Luar Negeri</label>
-      <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg text-xs" id="luarnegeri-${index}">
-        <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
-      </select>
-    </div>
-
-    <!-- 14. Ragam Disabilitas -->
-    <div class="space-y-1">
-      <label class="block text-xs font-bold text-slate-800">14. Ragam Disabilitas</label>
-      <div class="flex flex-wrap gap-3 text-xs pt-1">
-        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Tidak" checked onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Tidak</label>
-        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Fisik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Fisik</label>
-        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Sensorik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Sensorik</label>
-        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Mental" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Mental</label>
-        <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Intelektual" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Intelektual</label>
-      </div>
-    </div>
-
-    <!-- Mutasi Anggota (Opsional jika ada) -->
-    <div class="space-y-1 pt-1 border-t border-slate-100">
-      <label class="block text-[11px] font-semibold text-slate-500">Mutasi Anggota (Jika Ada)</label>
-      <select class="ind-mutasi w-full px-3 py-2 border rounded-lg text-xs">
-        <option value="">Kosongkan (Tidak Bermutasi)</option>
-        <option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option>
-        <option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option>
-        <option value="Meninggal Dunia">Meninggal Dunia</option>
-      </select>
-    </div>
-  `;
-
-  return card;
-}
-
-// Hapus baris data individu
-async function removeIndividualRow(indexToRemove) {
-  if (indexToRemove === 1) {
-    await showAppAlert("Kepala Keluarga (Anggota #1) tidak dapat dihapus!", "Peringatan", "danger");
-    return;
-  }
-
-  const container = document.getElementById('individus-container');
-  const cards = Array.from(container.children);
-  const total = cards.length;
-
-  if (total <= 1) {
-    await showAppAlert("Minimal harus ada 1 anggota keluarga!", "Peringatan", "danger");
-    return;
-  }
-
-  const confirmed = await showAppConfirm(`Apakah Anda yakin ingin menghapus data Anggota #${indexToRemove}?`, "Hapus Anggota");
-  if (!confirmed) return;
-
-  const preservedData = [];
-  cards.forEach((card, idx) => {
-    const currentIdx = idx + 1;
-    if (currentIdx !== indexToRemove) {
-      const dis = [];
-      card.querySelectorAll(`.dis-check-${currentIdx}:checked`).forEach(cb => dis.push(cb.value));
-
-      preservedData.push({
-        nama: card.querySelector('.ind-nama')?.value || '',
-        nik: card.querySelector('.ind-nik')?.value || '',
-        hubungan: card.querySelector('.ind-hubungan')?.value || 'Anak',
-        jk: document.getElementById(`jk-${currentIdx}`)?.value || 'Laki-laki',
-        tgl_lahir: card.querySelector('.ind-tgl-lahir')?.value || '',
-        usia: document.getElementById(`usia-${currentIdx}`)?.value || '',
-        kawin: document.getElementById(`kawin-${currentIdx}`)?.value || 'Belum Kawin',
-        usia_kawin: document.getElementById(`usia-kawin-${currentIdx}`)?.value || '',
-        akta: card.querySelector('.ind-akta')?.value || 'false',
-        ibu: document.getElementById(`ibu-${currentIdx}`)?.value || '',
-        agama: card.querySelector('.ind-agama')?.value || 'Islam',
-        pekerjaan: card.querySelector('.ind-pekerjaan')?.value || 'Tidak/Belum Bekerja',
-        pendidikan: card.querySelector('.ind-pendidikan')?.value || 'Tidak/Belum Sekolah',
-        jkn: card.querySelector('.ind-jkn')?.value || 'PBI',
-        luar_negeri: document.getElementById(`luarnegeri-${currentIdx}`)?.value || 'Tidak',
-        mutasi: card.querySelector('.ind-mutasi')?.value || '',
-        disabilitas: dis
-      });
-    }
-  });
-
-  container.innerHTML = '';
-  preservedData.forEach((data, idx) => {
-    const newIdx = idx + 1;
-    const newCard = createIndividualCard(newIdx);
-    container.appendChild(newCard);
-
-    newCard.querySelector('.ind-nama').value = data.nama;
-    newCard.querySelector('.ind-nik').value = data.nik;
-    if (newIdx !== 1) newCard.querySelector('.ind-hubungan').value = data.hubungan;
-    document.getElementById(`jk-${newIdx}`).value = data.jk;
-    newCard.querySelector('.ind-tgl-lahir').value = data.tgl_lahir;
-    document.getElementById(`usia-${newIdx}`).value = data.usia;
-    document.getElementById(`kawin-${newIdx}`).value = data.kawin;
-
-    const usiaKawinEl = document.getElementById(`usia-kawin-${newIdx}`);
-    if (usiaKawinEl) {
-      usiaKawinEl.value = data.usia_kawin;
-      usiaKawinEl.disabled = (data.kawin === 'Belum Kawin');
-    }
-
-    newCard.querySelector('.ind-akta').value = data.akta;
-    newCard.querySelector('.ind-agama').value = data.agama;
-    newCard.querySelector('.ind-pekerjaan').value = data.pekerjaan;
-    newCard.querySelector('.ind-pendidikan').value = data.pendidikan;
-    newCard.querySelector('.ind-jkn').value = data.jkn;
-    document.getElementById(`luarnegeri-${newIdx}`).value = data.luar_negeri;
-    newCard.querySelector('.ind-mutasi').value = data.mutasi;
-
-    newCard.querySelectorAll(`.dis-check-${newIdx}`).forEach(cb => {
-      cb.checked = data.disabilitas.includes(cb.value);
-    });
-  });
-
-  const newTotal = preservedData.length;
-  document.getElementById('w-jml-anggota').value = newTotal;
-
-  // Sesuaikan posisi index slider agar tidak out of bounds
-  currentSlideIndex = Math.min(currentSlideIndex, newTotal - 1);
-  updateSliderPosition();
-  evaluateNo2LockRules();
-  refreshMotherDropdowns();
-  lucide.createIcons();
-}
-
-// ================= 2. PENGATURAN MODE ADMIN (FORM DISEMBUNYIKAN) =================
-
-// Helper untuk mengambil kontainer Form Input Wizard
-function getFormWizardContainer() {
-  return document.getElementById('survey-form').parentElement;
-}
-
-// Sinkronkan UI saat user berhasil login
-function renderUserInterface(profile) {
-  document.getElementById('user-nama').textContent = profile.nama_lengkap;
-  document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
-  document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
-
-  const adminNav = document.getElementById('admin-nav-menu');
-  const formContainer = getFormWizardContainer();
-  const adminSection = document.getElementById('admin-panel-view');
-
-  if (profile.role !== 'pendata') {
-    // Mode ADMIN:
-    adminNav.classList.remove('hidden');
-    formContainer.classList.add('hidden'); // Sembunyikan form input pendataan
-    adminSection.classList.remove('hidden'); // Tampilkan panel admin
-    switchAdminSubTab('keluarga'); // Arahkan default ke tab pencarian keluarga
-  } else {
-    // Mode KADER PENDATA:
-    adminNav.classList.add('hidden');
-    adminSection.classList.add('hidden');
-    formContainer.classList.remove('hidden'); // Kader langsung disajikan form pendataan
-    goToStep(1);
-  }
-
-  // Set default data wilayah induk
-  const provEl = document.getElementById('w-prov');
-  provEl.value = profile.nama_prov;
-  provEl.setAttribute('data-code', profile.kode_prov);
-
-  const kabEl = document.getElementById('w-kab');
-  kabEl.value = profile.nama_kab;
-  kabEl.setAttribute('data-code', profile.kode_kab);
-
-  const kecEl = document.getElementById('w-kec');
-  kecEl.value = profile.nama_kec;
-  kecEl.setAttribute('data-code', profile.kode_kec);
-
-  const desaEl = document.getElementById('w-desa');
-  desaEl.value = profile.nama_desa;
-  desaEl.setAttribute('data-code', profile.kode_desa);
-}
-
-// Override / Update fungsi muatDataKeluargaKeForm
-// Menampilkan form wizard hanya saat admin menekan tombol "Edit Lengkap"
-const originalMuatDataKeluargaKeForm = muatDataKeluargaKeForm;
-muatDataKeluargaKeForm = async function(keluargaUUID) {
-  const formContainer = getFormWizardContainer();
-  const adminSection = document.getElementById('admin-panel-view');
-
-  // Munculkan kontainer form & sembunyikan admin panel
-  formContainer.classList.remove('hidden');
-  adminSection.classList.add('hidden');
-
-  // Jalankan pemuatan data keluarga ke formulir
-  await originalMuatDataKeluargaKeForm(keluargaUUID);
-
-  // Pastikan slider individu kembali ke awal (slide 1) dan posisinya di-refresh
-  currentSlideIndex = 0;
-  updateSliderPosition();
-
-  // Scroll halus menuju form
-  formContainer.scrollIntoView({ behavior: 'smooth' });
-};
-
-// LOGIKA ATURAN KUNCI ANGGOTA NO. 2
-function evaluateNo2LockRules() {
-  const cardNo1 = document.getElementById('ind-card-1');
-  const cardNo2 = document.getElementById('ind-card-2');
-  if (!cardNo1 || !cardNo2) return;
-
-  const jkNo1 = document.getElementById('jk-1')?.value;
-  const hubNo1 = document.getElementById('hubungan-1')?.value;
-  const kawinNo1 = document.getElementById('kawin-1')?.value;
-
-  const hubNo2 = document.getElementById('hubungan-2');
-  const jkNo2 = document.getElementById('jk-2');
-  const kawinNo2 = document.getElementById('kawin-2');
-  const ibuNo2 = document.getElementById('ibu-2');
-  const badgeLock = document.getElementById('lock-badge-2');
-
-  // KONDISI SYARAT: No 1 Laki-laki + Status Hubungan KK + Status Kawin Tercatat / Belum Tercatat
-  const isEligibleForIstriLock = (
-    jkNo1 === 'Laki-laki' &&
-    hubNo1 === 'KK' &&
-    (kawinNo1 === 'Kawin Tercatat' || kawinNo1 === 'Kawin Belum Tercatat')
-  );
-
-  if (isEligibleForIstriLock) {
-    // Kunci No. 2 sebagai Istri
-    hubNo2.value = 'Istri';
-    hubNo2.disabled = true;
-
-    jkNo2.value = 'Perempuan';
-    jkNo2.disabled = true;
-
-    kawinNo2.value = kawinNo1;
-    kawinNo2.disabled = true;
-
-    if (ibuNo2) {
-      ibuNo2.value = '';
-      ibuNo2.disabled = true;
-    }
-
-    onKawinChanged(2, kawinNo1);
-    if (badgeLock) badgeLock.classList.remove('hidden');
-  } else {
-    // Buka kunci jika syarat tidak terpenuhi
-    hubNo2.disabled = false;
-    jkNo2.disabled = false;
-    kawinNo2.disabled = false;
-    if (ibuNo2) ibuNo2.disabled = false;
-    if (badgeLock) badgeLock.classList.add('hidden');
-  }
-
-  refreshMotherDropdowns();
-}
-
-// Listener perubahan jenis kelamin
-function onJenisKelaminChanged(index, val) {
-  if (index === 1) {
-    evaluateNo2LockRules();
-  }
-}
-
-// Listener perubahan status perkawinan
-function onKawinChanged(index, val) {
-  const fieldUsiaKawin = document.getElementById(`usia-kawin-${index}`);
-  if (fieldUsiaKawin) {
-    if (val === 'Belum Kawin') {
-      fieldUsiaKawin.value = '';
-      fieldUsiaKawin.disabled = true;
-    } else {
-      fieldUsiaKawin.disabled = false;
-    }
-  }
-
-  if (index === 1) {
-    evaluateNo2LockRules();
-  }
-}
-
-// Listener perubahan status hubungan
-function onHubunganChanged(index, val) {
-  const jkSelect = document.getElementById(`jk-${index}`);
-  const ibuSelect = document.getElementById(`ibu-${index}`);
-
-  if (val === 'Istri') {
-    jkSelect.value = 'Perempuan';
-    jkSelect.disabled = true;
-    if (ibuSelect) ibuSelect.disabled = true;
-  } else {
-    jkSelect.disabled = false;
-    if (ibuSelect) ibuSelect.disabled = (val === 'KK');
-  }
-
-  refreshMotherDropdowns();
-}
-
-// Hitung usia otomatis & proteksi kerja luar negeri jika < 5 tahun
-function calculateAge(index, birthDateStr) {
-  if (!birthDateStr) return;
-  const birth = new Date(birthDateStr);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  age = Math.max(0, age);
-
-  document.getElementById(`usia-${index}`).value = age;
-
-  const lnSelect = document.getElementById(`luarnegeri-${index}`);
-  if (age < 5) {
-    lnSelect.value = 'Tidak';
-    lnSelect.disabled = true;
-  } else {
-    lnSelect.disabled = false;
-  }
-}
-
-// Dropdown pilihan nama ibu kandung
-function refreshMotherDropdowns() {
-  const cards = document.querySelectorAll('#individus-container > div');
-  const istriList = [];
-
-  cards.forEach(card => {
-    const hub = card.querySelector('.ind-hubungan')?.value;
-    const nama = card.querySelector('.ind-nama')?.value;
-    if (hub === 'Istri' && nama && nama.trim() !== '') {
-      istriList.push(nama.trim());
-    }
-  });
-
-  cards.forEach((card, idx) => {
-    const index = idx + 1;
-    const ibuSelect = document.getElementById(`ibu-${index}`);
-    if (!ibuSelect) return;
-
-    const hub = card.querySelector('.ind-hubungan')?.value;
-    if (hub === 'KK' || hub === 'Istri') {
-      ibuSelect.innerHTML = '<option value="">- Terkunci -</option>';
-      ibuSelect.disabled = true;
-    } else {
-      const currentVal = ibuSelect.value;
-      ibuSelect.innerHTML = '<option value="">-- Pilih Ibu Kandung --</option>';
-      istriList.forEach(istri => {
-        const opt = document.createElement('option');
-        opt.value = istri;
-        opt.textContent = istri;
-        ibuSelect.appendChild(opt);
-      });
-      const optLain = document.createElement('option');
-      optLain.value = 'Lainnya';
-      optLain.textContent = 'Lainnya';
-      ibuSelect.appendChild(optLain);
-      ibuSelect.value = currentVal;
-      ibuSelect.disabled = false;
-    }
-  });
-}
-
-function toggleDisabilitas(el, index) {
-  const checks = document.querySelectorAll(`.dis-check-${index}`);
-  if (el.value === 'Tidak' && el.checked) {
-    checks.forEach(c => { if (c.value !== 'Tidak') c.checked = false; });
-  } else if (el.value !== 'Tidak' && el.checked) {
-    checks.forEach(c => { if (c.value === 'Tidak') c.checked = false; });
-  }
-}
-
-async function confirmIndividualAndProceed() {
-  // Validasi seluruh anggota terlebih dahulu
-  const isValid = await validateStep2();
-  if (!isValid) return;
-
-  const isDone = await showAppConfirm(
-    "Apakah seluruh data anggota keluarga sudah selesai diisi? Klik Batal jika masih ingin menambah anggota baru.", 
-    "Konfirmasi Data Individu"
-  );
-  
-  if (!isDone) {
-    addIndividualRow();
-  } else {
-    goToStep(3); // Menuju ke Form KB
-  }
-}
 
     async function handleNextFromStep3() {
       const isValid = await validateStep3();
-      if (isValid) {
-        goToStep(4); // Pindah ke Form Pembangunan Keluarga
+      if (isValid) goToStep(4);
+    }
+
+    // ================= KONTROL SLIDER INDIVIDU =================
+    function updateSliderPosition() {
+      const track = document.getElementById('individus-container');
+      const cards = Array.from(track.children);
+      const total = cards.length;
+
+      if (total === 0) return;
+      if (currentSlideIndex < 0) currentSlideIndex = 0;
+      if (currentSlideIndex >= total) currentSlideIndex = total - 1;
+
+      const offsetPercentage = currentSlideIndex * 100;
+      track.style.transform = `translateX(-${offsetPercentage}%)`;
+
+      document.getElementById('slider-counter').textContent = `${currentSlideIndex + 1} dari ${total} Anggota`;
+      document.getElementById('btn-slide-prev').disabled = (currentSlideIndex === 0);
+      document.getElementById('btn-slide-next').disabled = (currentSlideIndex === total - 1);
+
+      const dotsContainer = document.getElementById('slider-dots');
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = `h-2 rounded-full transition-all duration-200 ${
+          i === currentSlideIndex ? 'w-6 bg-indigo-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
+        }`;
+        dot.onclick = () => {
+          currentSlideIndex = i;
+          updateSliderPosition();
+        };
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function slideIndividu(direction) {
+      currentSlideIndex += direction;
+      updateSliderPosition();
+    }
+
+    function initIndividuRows(count) {
+      const track = document.getElementById('individus-container');
+      track.innerHTML = '';
+      currentSlideIndex = 0;
+
+      for (let i = 1; i <= count; i++) {
+        track.appendChild(createIndividualCard(i));
+      }
+
+      updateSliderPosition();
+      evaluateNo2LockRules();
+      refreshMotherDropdowns();
+      lucide.createIcons();
+    }
+
+    function addIndividualRow() {
+      const track = document.getElementById('individus-container');
+      const newIndex = track.children.length + 1;
+
+      track.appendChild(createIndividualCard(newIndex));
+      document.getElementById('w-jml-anggota').value = newIndex;
+
+      currentSlideIndex = newIndex - 1;
+      updateSliderPosition();
+      evaluateNo2LockRules();
+      refreshMotherDropdowns();
+      lucide.createIcons();
+    }
+
+    function createIndividualCard(index) {
+      const card = document.createElement('div');
+      card.className = 'w-full flex-none shrink-0 p-4 sm:p-6 rounded-xl border border-slate-200 bg-white space-y-4 shadow-sm';
+      card.id = `ind-card-${index}`;
+      const isKK = (index === 1);
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-md">
+              Anggota #${index} ${isKK ? '(Kepala Keluarga)' : ''}
+            </span>
+            <span id="lock-badge-${index}" class="hidden px-2 py-0.5 bg-rose-50 text-rose-600 text-[11px] font-semibold rounded">
+              Terkunci sebagai Istri
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            ${!isKK ? `
+              <button type="button" onclick="removeIndividualRow(${index})" class="px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-md border border-rose-200 flex items-center gap-1 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus
+              </button>
+            ` : ''}
+            <span class="text-xs text-slate-400 font-mono">Slide ${index}</span>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">1. Nama Lengkap</label>
+          <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg text-xs" oninput="refreshMotherDropdowns()" required placeholder="Nama Lengkap">
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">2. NIK (16 Digit)</label>
+          <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg text-xs font-mono" required placeholder="3204...">
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">3. Status Hubungan dengan Kepala Keluarga</label>
+          <select class="ind-hubungan w-full px-3 py-2 border rounded-lg text-xs font-medium" id="hubungan-${index}" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
+            ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
+              <option value="Istri">Istri</option>
+              <option value="Anak" selected>Anak</option>
+              <option value="Lainnya">Lainnya</option>
+            `}
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">4. Jenis Kelamin</label>
+          <select class="ind-jk w-full px-3 py-2 border rounded-lg text-xs font-medium" id="jk-${index}" onchange="onJenisKelaminChanged(${index}, this.value)">
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+          </select>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
+          <label class="block text-xs font-bold text-slate-800">5. Kelahiran & Usia</label>
+          <div>
+            <label class="block text-[11px] text-slate-600 mb-1">Tanggal Lahir</label>
+            <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg text-xs bg-white" onchange="calculateAge(${index}, this.value)" required>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-600 mb-1">Usia (Tahun)</label>
+            <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-100 font-bold text-slate-800 text-xs">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
+          <label class="block text-xs font-bold text-slate-800">6. Status Perkawinan</label>
+          <div>
+            <label class="block text-[11px] text-slate-600 mb-1">Status Saat Ini</label>
+            <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg text-xs bg-white font-medium" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
+              <option value="Belum Kawin">Belum Kawin</option>
+              <option value="Kawin Tercatat">Kawin Tercatat</option>
+              <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
+              <option value="Cerai Hidup tercatat">Cerai Hidup tercatat</option>
+              <option value="Cerai Hidup Belum Tercatat">Cerai Hidup Belum Tercatat</option>
+              <option value="Cerai Mati">Cerai Mati</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-600 mb-1">Usia Kawin Pertama</label>
+            <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci jika belum kawin" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg text-xs bg-white">
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">7. Memiliki Akta Lahir?</label>
+          <select class="ind-akta w-full px-3 py-2 border rounded-lg text-xs">
+            <option value="true">Ya</option>
+            <option value="false">Tidak</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">8. Ibu Kandung</label>
+          <select class="ind-ibu w-full px-3 py-2 border rounded-lg text-xs" id="ibu-${index}" ${isKK ? 'disabled' : ''}>
+            <option value="">- Terkunci / Pilih Ibu -</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">9. Agama</label>
+          <select class="ind-agama w-full px-3 py-2 border rounded-lg text-xs">
+            <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">10. Pekerjaan</label>
+          <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg text-xs">
+            <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">11. Pendidikan Terakhir / Sedang Ditempuh</label>
+          <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg text-xs">
+            <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">12. Kepesertaan JKN / Asuransi Kesehatan</label>
+          <select class="ind-jkn w-full px-3 py-2 border rounded-lg text-xs">
+            <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">13. Bekerja di Luar Negeri</label>
+          <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg text-xs" id="luarnegeri-${index}">
+            <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-800">14. Ragam Disabilitas</label>
+          <div class="flex flex-wrap gap-3 text-xs pt-1">
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Tidak" checked onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Tidak</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Fisik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Fisik</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Sensorik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Sensorik</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Mental" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Mental</label>
+            <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Intelektual" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Intelektual</label>
+          </div>
+        </div>
+
+        <div class="space-y-1 pt-1 border-t border-slate-100">
+          <label class="block text-[11px] font-semibold text-slate-500">Mutasi Anggota (Jika Ada)</label>
+          <select class="ind-mutasi w-full px-3 py-2 border rounded-lg text-xs">
+            <option value="">Kosongkan (Tidak Bermutasi)</option>
+            <option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option>
+            <option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option>
+            <option value="Meninggal Dunia">Meninggal Dunia</option>
+          </select>
+        </div>
+      `;
+
+      return card;
+    }
+
+    async function removeIndividualRow(indexToRemove) {
+      if (indexToRemove === 1) {
+        await showAppAlert("Kepala Keluarga (Anggota #1) tidak dapat dihapus!", "Peringatan", "danger");
+        return;
+      }
+
+      const container = document.getElementById('individus-container');
+      const cards = Array.from(container.children);
+      const total = cards.length;
+
+      if (total <= 1) {
+        await showAppAlert("Minimal harus ada 1 anggota keluarga!", "Peringatan", "danger");
+        return;
+      }
+
+      const confirmed = await showAppConfirm(`Apakah Anda yakin ingin menghapus data Anggota #${indexToRemove}?`, "Hapus Anggota");
+      if (!confirmed) return;
+
+      const preservedData = [];
+      cards.forEach((card, idx) => {
+        const currentIdx = idx + 1;
+        if (currentIdx !== indexToRemove) {
+          const dis = [];
+          card.querySelectorAll(`.dis-check-${currentIdx}:checked`).forEach(cb => dis.push(cb.value));
+
+          preservedData.push({
+            nama: card.querySelector('.ind-nama')?.value || '',
+            nik: card.querySelector('.ind-nik')?.value || '',
+            hubungan: card.querySelector('.ind-hubungan')?.value || 'Anak',
+            jk: document.getElementById(`jk-${currentIdx}`)?.value || 'Laki-laki',
+            tgl_lahir: card.querySelector('.ind-tgl-lahir')?.value || '',
+            usia: document.getElementById(`usia-${currentIdx}`)?.value || '',
+            kawin: document.getElementById(`kawin-${currentIdx}`)?.value || 'Belum Kawin',
+            usia_kawin: document.getElementById(`usia-kawin-${currentIdx}`)?.value || '',
+            akta: card.querySelector('.ind-akta')?.value || 'false',
+            ibu: document.getElementById(`ibu-${currentIdx}`)?.value || '',
+            agama: card.querySelector('.ind-agama')?.value || 'Islam',
+            pekerjaan: card.querySelector('.ind-pekerjaan')?.value || 'Tidak/Belum Bekerja',
+            pendidikan: card.querySelector('.ind-pendidikan')?.value || 'Tidak/Belum Sekolah',
+            jkn: card.querySelector('.ind-jkn')?.value || 'PBI',
+            luar_negeri: document.getElementById(`luarnegeri-${currentIdx}`)?.value || 'Tidak',
+            mutasi: card.querySelector('.ind-mutasi')?.value || '',
+            disabilitas: dis
+          });
+        }
+      });
+
+      container.innerHTML = '';
+      preservedData.forEach((data, idx) => {
+        const newIdx = idx + 1;
+        const newCard = createIndividualCard(newIdx);
+        container.appendChild(newCard);
+
+        newCard.querySelector('.ind-nama').value = data.nama;
+        newCard.querySelector('.ind-nik').value = data.nik;
+        if (newIdx !== 1) newCard.querySelector('.ind-hubungan').value = data.hubungan;
+        document.getElementById(`jk-${newIdx}`).value = data.jk;
+        newCard.querySelector('.ind-tgl-lahir').value = data.tgl_lahir;
+        document.getElementById(`usia-${newIdx}`).value = data.usia;
+        document.getElementById(`kawin-${newIdx}`).value = data.kawin;
+
+        const usiaKawinEl = document.getElementById(`usia-kawin-${newIdx}`);
+        if (usiaKawinEl) {
+          usiaKawinEl.value = data.usia_kawin;
+          usiaKawinEl.disabled = (data.kawin === 'Belum Kawin');
+        }
+
+        newCard.querySelector('.ind-akta').value = data.akta;
+        newCard.querySelector('.ind-agama').value = data.agama;
+        newCard.querySelector('.ind-pekerjaan').value = data.pekerjaan;
+        newCard.querySelector('.ind-pendidikan').value = data.pendidikan;
+        newCard.querySelector('.ind-jkn').value = data.jkn;
+        document.getElementById(`luarnegeri-${newIdx}`).value = data.luar_negeri;
+        newCard.querySelector('.ind-mutasi').value = data.mutasi;
+
+        newCard.querySelectorAll(`.dis-check-${newIdx}`).forEach(cb => {
+          cb.checked = data.disabilitas.includes(cb.value);
+        });
+      });
+
+      const newTotal = preservedData.length;
+      document.getElementById('w-jml-anggota').value = newTotal;
+      currentSlideIndex = Math.min(currentSlideIndex, newTotal - 1);
+      updateSliderPosition();
+      evaluateNo2LockRules();
+      refreshMotherDropdowns();
+      lucide.createIcons();
+    }
+
+    function evaluateNo2LockRules() {
+      const cardNo1 = document.getElementById('ind-card-1');
+      const cardNo2 = document.getElementById('ind-card-2');
+      if (!cardNo1 || !cardNo2) return;
+
+      const jkNo1 = document.getElementById('jk-1')?.value;
+      const hubNo1 = document.getElementById('hubungan-1')?.value;
+      const kawinNo1 = document.getElementById('kawin-1')?.value;
+
+      const hubNo2 = document.getElementById('hubungan-2');
+      const jkNo2 = document.getElementById('jk-2');
+      const kawinNo2 = document.getElementById('kawin-2');
+      const ibuNo2 = document.getElementById('ibu-2');
+      const badgeLock = document.getElementById('lock-badge-2');
+
+      const isEligibleForIstriLock = (
+        jkNo1 === 'Laki-laki' &&
+        hubNo1 === 'KK' &&
+        (kawinNo1 === 'Kawin Tercatat' || kawinNo1 === 'Kawin Belum Tercatat')
+      );
+
+      if (isEligibleForIstriLock) {
+        hubNo2.value = 'Istri';
+        hubNo2.disabled = true;
+
+        jkNo2.value = 'Perempuan';
+        jkNo2.disabled = true;
+
+        kawinNo2.value = kawinNo1;
+        kawinNo2.disabled = true;
+
+        if (ibuNo2) {
+          ibuNo2.value = '';
+          ibuNo2.disabled = true;
+        }
+
+        onKawinChanged(2, kawinNo1);
+        if (badgeLock) badgeLock.classList.remove('hidden');
+      } else {
+        hubNo2.disabled = false;
+        jkNo2.disabled = false;
+        kawinNo2.disabled = false;
+        if (ibuNo2) ibuNo2.disabled = false;
+        if (badgeLock) badgeLock.classList.add('hidden');
+      }
+
+      refreshMotherDropdowns();
+    }
+
+    function onJenisKelaminChanged(index, val) {
+      if (index === 1) evaluateNo2LockRules();
+    }
+
+    function onKawinChanged(index, val) {
+      const fieldUsiaKawin = document.getElementById(`usia-kawin-${index}`);
+      if (fieldUsiaKawin) {
+        if (val === 'Belum Kawin') {
+          fieldUsiaKawin.value = '';
+          fieldUsiaKawin.disabled = true;
+        } else {
+          fieldUsiaKawin.disabled = false;
+        }
+      }
+      if (index === 1) evaluateNo2LockRules();
+    }
+
+    function onHubunganChanged(index, val) {
+      const jkSelect = document.getElementById(`jk-${index}`);
+      const ibuSelect = document.getElementById(`ibu-${index}`);
+
+      if (val === 'Istri') {
+        jkSelect.value = 'Perempuan';
+        jkSelect.disabled = true;
+        if (ibuSelect) ibuSelect.disabled = true;
+      } else {
+        jkSelect.disabled = false;
+        if (ibuSelect) ibuSelect.disabled = (val === 'KK');
+      }
+
+      refreshMotherDropdowns();
+    }
+
+    function calculateAge(index, birthDateStr) {
+      if (!birthDateStr) return;
+      const birth = new Date(birthDateStr);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      age = Math.max(0, age);
+
+      document.getElementById(`usia-${index}`).value = age;
+
+      const lnSelect = document.getElementById(`luarnegeri-${index}`);
+      if (age < 5) {
+        lnSelect.value = 'Tidak';
+        lnSelect.disabled = true;
+      } else {
+        lnSelect.disabled = false;
+      }
+    }
+
+    function refreshMotherDropdowns() {
+      const cards = document.querySelectorAll('#individus-container > div');
+      const istriList = [];
+
+      cards.forEach(card => {
+        const hub = card.querySelector('.ind-hubungan')?.value;
+        const nama = card.querySelector('.ind-nama')?.value;
+        if (hub === 'Istri' && nama && nama.trim() !== '') {
+          istriList.push(nama.trim());
+        }
+      });
+
+      cards.forEach((card, idx) => {
+        const index = idx + 1;
+        const ibuSelect = document.getElementById(`ibu-${index}`);
+        if (!ibuSelect) return;
+
+        const hub = card.querySelector('.ind-hubungan')?.value;
+        if (hub === 'KK' || hub === 'Istri') {
+          ibuSelect.innerHTML = '<option value="">- Terkunci -</option>';
+          ibuSelect.disabled = true;
+        } else {
+          const currentVal = ibuSelect.value;
+          ibuSelect.innerHTML = '<option value="">-- Pilih Ibu Kandung --</option>';
+          istriList.forEach(istri => {
+            const opt = document.createElement('option');
+            opt.value = istri;
+            opt.textContent = istri;
+            ibuSelect.appendChild(opt);
+          });
+          const optLain = document.createElement('option');
+          optLain.value = 'Lainnya';
+          optLain.textContent = 'Lainnya';
+          ibuSelect.appendChild(optLain);
+          ibuSelect.value = currentVal;
+          ibuSelect.disabled = false;
+        }
+      });
+    }
+
+    function toggleDisabilitas(el, index) {
+      const checks = document.querySelectorAll(`.dis-check-${index}`);
+      if (el.value === 'Tidak' && el.checked) {
+        checks.forEach(c => { if (c.value !== 'Tidak') c.checked = false; });
+      } else if (el.value !== 'Tidak' && el.checked) {
+        checks.forEach(c => { if (c.value === 'Tidak') c.checked = false; });
+      }
+    }
+
+    async function confirmIndividualAndProceed() {
+      const isValid = await validateStep2();
+      if (!isValid) return;
+
+      const isDone = await showAppConfirm(
+        "Apakah seluruh data anggota keluarga sudah selesai diisi? Klik Batal jika masih ingin menambah anggota baru.", 
+        "Konfirmasi Data Individu"
+      );
+      
+      if (!isDone) {
+        addIndividualRow();
+      } else {
+        goToStep(3);
       }
     }
 
@@ -1826,11 +1675,9 @@ async function confirmIndividualAndProceed() {
     }
     document.getElementById('btn-refresh-stats').addEventListener('click', loadStats);
 
-    // 5. SUBMIT DATA KE SUPABASE
+    // ================= SUBMIT DATA FORMULIR =================
     document.getElementById('survey-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-    
-      // Validasi ulang blok terakhir sebelum mengirim data ke Supabase
       const isValidPK = await validateStep4();
       if (!isValidPK) return;
     
@@ -1860,19 +1707,16 @@ async function confirmIndividualAndProceed() {
         let keluargaUUID = editingKeluargaUUID;
 
         if (editingKeluargaUUID) {
-          // UPDATE KELUARGA
           const { error: errUpdate } = await supabaseClient
             .from('keluarga')
             .update(payloadKeluarga)
             .eq('id', editingKeluargaUUID);
           if (errUpdate) throw errUpdate;
         
-          // Hapus data anak lama untuk diisi ulang dengan data hasil edit
           await supabaseClient.from('individu').delete().eq('keluarga_id', editingKeluargaUUID);
           await supabaseClient.from('pembangunan_keluarga').delete().eq('keluarga_id', editingKeluargaUUID);
           await supabaseClient.from('keluarga_berencana').delete().eq('keluarga_id', editingKeluargaUUID);
         } else {
-          // INSERT KELUARGA BARU
           const { data: dataKeluarga, error: errKeluarga } = await supabaseClient
             .from('keluarga')
             .insert(payloadKeluarga)
@@ -1882,7 +1726,6 @@ async function confirmIndividualAndProceed() {
           keluargaUUID = dataKeluarga.id;
         }
         
-        // Reset mode edit
         editingKeluargaUUID = null;
         
         const indCards = document.querySelectorAll('#individus-container > div');
@@ -1973,28 +1816,29 @@ async function confirmIndividualAndProceed() {
         const { error: errKB } = await supabaseClient.from('keluarga_berencana').insert(payloadKB);
         if (errKB) throw errKB;
 
-        alert('✅ Data keluarga berhasil disimpan!');
+        await showAppAlert("✅ Data keluarga berhasil disimpan!", "Sukses", "success");
         document.getElementById('survey-form').reset();
         initIndividuRows(2);
         setupWilayahPenugasan(currentUserProfile);
         goToStep(1);
         loadStats();
 
+        if (currentUserProfile.role !== 'pendata') {
+          switchMainView('admin');
+        }
+
       } catch (error) {
-        alert('Gagal: ' + error.message);
+        showAppAlert('Gagal menyimpan: ' + error.message, "Terjadi Kesalahan", "danger");
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> <span>Simpan Seluruh Data</span>';
         lucide.createIcons();
       }
     });
-    
-    // State untuk melacak ID keluarga yang sedang diedit oleh admin
-    let editingKeluargaUUID = null;
-    
+
     // ================= TOGGLE TAMPILAN ADMIN =================
     function switchMainView(view) {
-      const formSection = document.querySelector('.bg-white.rounded-2xl.border.border-slate-200.shadow-sm.overflow-hidden');
+      const formSection = getFormWizardContainer();
       const adminSection = document.getElementById('admin-panel-view');
       const btnForm = document.getElementById('tab-btn-pendataan');
       const btnAdmin = document.getElementById('tab-btn-admin');
@@ -2002,14 +1846,14 @@ async function confirmIndividualAndProceed() {
       if (view === 'admin') {
         formSection.classList.add('hidden');
         adminSection.classList.remove('hidden');
-        btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
-        btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+        if (btnAdmin) btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
+        if (btnForm) btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
         loadMasterWilayahTable();
       } else {
         adminSection.classList.add('hidden');
         formSection.classList.remove('hidden');
-        btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
-        btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+        if (btnForm) btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
+        if (btnAdmin) btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
       }
     }
     
@@ -2034,7 +1878,7 @@ async function confirmIndividualAndProceed() {
       tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center">Memuat master wilayah...</td></tr>';
     
       let query = supabaseClient.from('master_wilayah').select('*').order('kode_dusun', { ascending: true });
-      if (currentUserProfile.kode_desa) {
+      if (currentUserProfile && currentUserProfile.kode_desa) {
         query = query.eq('kode_desa', currentUserProfile.kode_desa);
       }
     
@@ -2148,7 +1992,7 @@ async function confirmIndividualAndProceed() {
       tbody.innerHTML = '<tr><td colspan="5" class="p-3 text-center">Memuat daftar pendata...</td></tr>';
     
       let query = supabaseClient.from('users').select('*').eq('role', 'pendata');
-      if (currentUserProfile.kode_desa) {
+      if (currentUserProfile && currentUserProfile.kode_desa) {
         query = query.eq('kode_desa', currentUserProfile.kode_desa);
       }
     
@@ -2187,7 +2031,6 @@ async function confirmIndividualAndProceed() {
       const modal = document.getElementById('admin-form-modal');
       document.getElementById('admin-modal-title').textContent = userId ? "Edit Akun & Wilayah Pendata" : "Tambah Pendata Baru";
       
-      // Ambil daftar dusun yang tersedia di desa ini untuk dipilih penugasannya
       const { data: listDusun } = await supabaseClient
         .from('master_wilayah')
         .select('*')
@@ -2223,13 +2066,10 @@ async function confirmIndividualAndProceed() {
             </div>
           </div>
     
-          <!-- Konfigurasi Dusun & RT Tugas -->
           <div class="pt-2 border-t">
             <label class="block font-bold text-slate-700 mb-1">Wilayah Penugasan (Dusun & RT Spesifik)</label>
             <p class="text-[10px] text-slate-500 mb-2">Centang RT yang ditugaskan kepada kader ini:</p>
-            <div class="space-y-3 max-h-44 overflow-y-auto border p-2.5 rounded-lg bg-slate-50" id="list-tugas-wrapper">
-              <!-- Opsi Dusun dan RT dinamis -->
-            </div>
+            <div class="space-y-3 max-h-44 overflow-y-auto border p-2.5 rounded-lg bg-slate-50" id="list-tugas-wrapper"></div>
           </div>
     
           <div class="flex justify-end gap-2 pt-3 border-t">
@@ -2239,7 +2079,6 @@ async function confirmIndividualAndProceed() {
         </form>
       `;
     
-      // Render opsi Dusun & Checkbox RT
       const tugasWrapper = document.getElementById('list-tugas-wrapper');
       if (!listDusun || listDusun.length === 0) {
         tugasWrapper.innerHTML = '<p class="text-rose-500 text-center">Belum ada master dusun. Buat master dusun terlebih dahulu!</p>';
@@ -2247,8 +2086,6 @@ async function confirmIndividualAndProceed() {
         listDusun.forEach(dusun => {
           const fieldset = document.createElement('div');
           fieldset.className = "p-2 bg-white border rounded";
-    
-          // Cek apakah user sudah punya penugasan di dusun ini
           const assignedDusun = existingUser?.wilayah_tugas?.find(t => t.kode_dusun === dusun.kode_dusun);
           const assignedRTs = assignedDusun ? assignedDusun.rt : [];
     
@@ -2275,8 +2112,6 @@ async function confirmIndividualAndProceed() {
     
       document.getElementById('form-admin-pendata').onsubmit = async (e) => {
         e.preventDefault();
-    
-        // Kumpulkan array JSON wilayah tugas
         const wilayahTugasPayload = [];
         listDusun.forEach(dusun => {
           const selectedRTs = [];
@@ -2351,7 +2186,6 @@ async function confirmIndividualAndProceed() {
     
       tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center">Mencari data...</td></tr>';
     
-      // Cari di tabel keluarga dan gabungkan dengan individu untuk mendapatkan Kepala Keluarga
       const { data, error } = await supabaseClient
         .from('keluarga')
         .select(`
@@ -2388,24 +2222,19 @@ async function confirmIndividualAndProceed() {
       });
     }
     
-    // Buka data keluarga yang sudah tersimpan ke form wizard utama untuk diedit
     async function muatDataKeluargaKeForm(keluargaUUID) {
       try {
-        // 1. Ambil data keluarga
         const { data: kData, error: kErr } = await supabaseClient.from('keluarga').select('*').eq('id', keluargaUUID).single();
         if (kErr) throw kErr;
     
-        // 2. Ambil data individu
         const { data: indData, error: indErr } = await supabaseClient.from('individu').select('*').eq('keluarga_id', keluargaUUID).order('no_urut', { ascending: true });
         if (indErr) throw indErr;
     
-        // 3. Ambil data pembangunan keluarga & KB
         const { data: pkData } = await supabaseClient.from('pembangunan_keluarga').select('*').eq('keluarga_id', keluargaUUID).maybeSingle();
         const { data: kbData } = await supabaseClient.from('keluarga_berencana').select('*').eq('keluarga_id', keluargaUUID).maybeSingle();
     
         editingKeluargaUUID = keluargaUUID;
     
-        // Isi Form Wilayah
         document.getElementById('w-no-rumah').value = kData.no_rumah;
         document.getElementById('w-no-urut').value = kData.no_urut_keluarga;
         document.getElementById('w-no-kk').value = kData.no_kk;
@@ -2414,7 +2243,6 @@ async function confirmIndividualAndProceed() {
         document.getElementById('w-jml-anggota').value = kData.jumlah_anggota;
         document.getElementById('w-status-keluarga').value = kData.status_keluarga;
     
-        // Set Dusun & RT
         const dusunSelect = document.getElementById('w-dusun-select');
         if (dusunSelect) {
           dusunSelect.value = kData.kode_dusun;
@@ -2425,7 +2253,6 @@ async function confirmIndividualAndProceed() {
           }, 50);
         }
     
-        // Isi Baris Data Individu
         const totalInd = indData.length || 1;
         initIndividuRows(totalInd);
     
@@ -2458,7 +2285,6 @@ async function confirmIndividualAndProceed() {
             document.getElementById(`luarnegeri-${index}`).value = ind.bekerja_luar_negeri;
             card.querySelector('.ind-mutasi').value = ind.mutasi_anggota || '';
     
-            // Disabilitas
             if (Array.isArray(ind.disabilitas)) {
               card.querySelectorAll(`.dis-check-${index}`).forEach(cb => {
                 cb.checked = ind.disabilitas.includes(cb.value);
@@ -2469,7 +2295,6 @@ async function confirmIndividualAndProceed() {
           refreshMotherDropdowns();
         }, 100);
     
-        // Isi Form Pembangunan Keluarga jika ada
         if (pkData) {
           document.getElementById('pk-atap').value = pkData.jenis_atap || '';
           document.getElementById('pk-kondisi-atap').value = pkData.kondisi_atap || '';
@@ -2488,7 +2313,6 @@ async function confirmIndividualAndProceed() {
           document.getElementById('pk-bahan-bakar').value = pkData.bahan_bakar_memasak || '';
         }        
     
-        // Isi Form KB jika ada
         if (kbData) {
           document.getElementById('kb-lahir-total').value = kbData.jml_melahirkan;
           document.getElementById('kb-lh-laki').value = kbData.jml_lahir_hidup_laki;
@@ -2496,28 +2320,31 @@ async function confirmIndividualAndProceed() {
           document.getElementById('kb-mh-laki').value = kbData.jml_masih_hidup_laki;
           document.getElementById('kb-mh-perempuan').value = kbData.jml_masih_hidup_perempuan;
           document.getElementById('kb-hamil').value = kbData.sedang_hamil ? 'Ya' : 'Tidak';
-          toggleHamil(document.getElementById('kb-hamil').value);
           if (kbData.usia_kehamilan_minggu) document.getElementById('kb-usia-hamil').value = kbData.usia_kehamilan_minggu;
-          document.getElementById('kb-ias').value = kbData.ias;
+          if (kbData.status_keinginan_hamil) document.getElementById('kb-status-keinginan-hamil').value = kbData.status_keinginan_hamil;
+          if (kbData.keinginan_anak_lagi) document.getElementById('kb-keinginan-anak-lagi').value = kbData.keinginan_anak_lagi;
     
           document.getElementById('kb-sedang-berkb').value = kbData.sedang_ber_kb ? 'Ya' : 'Tidak';
-          toggleStatusKB(document.getElementById('kb-sedang-berkb').value);
           if (kbData.kb_mulai_bulan) document.getElementById('kb-mulai-bln').value = kbData.kb_mulai_bulan;
           if (kbData.kb_mulai_tahun) document.getElementById('kb-mulai-thn').value = kbData.kb_mulai_tahun;
           if (kbData.alat_kontrasepsi) document.getElementById('kb-alat').value = kbData.alat_kontrasepsi;
     
           document.getElementById('kb-pernah-12bln').value = kbData.pernah_kb_12_bln ? 'Ya' : 'Tidak';
-          togglePernahKB(document.getElementById('kb-pernah-12bln').value);
           if (kbData.pernah_kb_mulai_bln) document.getElementById('kb-p-mulai-bln').value = kbData.pernah_kb_mulai_bln;
           if (kbData.pernah_kb_mulai_thn) document.getElementById('kb-p-mulai-thn').value = kbData.pernah_kb_mulai_thn;
           if (kbData.pernah_kb_sampai_bln) document.getElementById('kb-p-sampai-bln').value = kbData.pernah_kb_sampai_bln;
           if (kbData.pernah_kb_sampai_thn) document.getElementById('kb-p-sampai-thn').value = kbData.pernah_kb_sampai_thn;
           if (kbData.alasan_tidak_kb) document.getElementById('kb-alasan-tidak').value = kbData.alasan_tidak_kb;
+          if (kbData.sumber_pelayanan_kb) document.getElementById('kb-sumber-pelayanan').value = kbData.sumber_pelayanan_kb;
+
+          handleAlurKB();
         }
     
-        // Pindah tampilan ke form wizard
+        // Buka form wizard & scroll ke atas
         switchMainView('pendataan');
         goToStep(1);
+        currentSlideIndex = 0;
+        updateSliderPosition();
         await showAppAlert("Data keluarga berhasil dimuat ke formulir untuk diedit.", "Mode Edit Aktif", "info");
     
       } catch (err) {
@@ -2543,420 +2370,402 @@ async function confirmIndividualAndProceed() {
       document.getElementById('admin-form-modal').classList.add('hidden');
     }
     
-    // Kontrol percabangan pertanyaan Form KB sesuai ketentuan
     function handleAlurKB() {
-    const statusHamil = document.getElementById('kb-hamil').value;
-    const subHamilYa = document.getElementById('sub-hamil-ya');
-    const subHamilTidak = document.getElementById('sub-hamil-tidak');
-  
-    const boxQ3 = document.getElementById('box-q3');
-    const statusSedangKB = document.getElementById('kb-sedang-berkb').value;
-    const subQ3Ya = document.getElementById('sub-q3-ya');
-  
-    const boxQ4 = document.getElementById('box-q4');
-    const statusPernahKB = document.getElementById('kb-pernah-12bln').value;
-    const subQ4Ya = document.getElementById('sub-q4-ya');
-  
-    const boxQ5 = document.getElementById('box-q5');
-    const boxQ6 = document.getElementById('box-q6');
-    const boxQ7 = document.getElementById('box-q7');
-    const jenisAlat = document.getElementById('kb-alat').value;
-  
-    // Reset semua jika belum memilih pertanyaan No. 2
-    if (!statusHamil) {
-      subHamilYa.classList.add('hidden');
-      subHamilTidak.classList.add('hidden');
-      boxQ3.classList.add('hidden');
-      boxQ4.classList.add('hidden');
-      boxQ5.classList.add('hidden');
-      boxQ6.classList.add('hidden');
-      boxQ7.classList.add('hidden');
-      return;
-    }
-  
-    // 1. Alur Pertanyaan No. 2
-    if (statusHamil === 'Ya') {
-      subHamilYa.classList.remove('hidden');
-      subHamilTidak.classList.add('hidden');
-      boxQ3.classList.add('hidden');
-      boxQ4.classList.remove('hidden');
-    } else {
-      subHamilYa.classList.add('hidden');
-      subHamilTidak.classList.remove('hidden');
-      boxQ3.classList.remove('hidden');
-    }
-  
-    // 2. Alur Pertanyaan No. 3
-    if (statusHamil === 'Tidak') {
-      if (statusSedangKB === 'Ya') {
-        subQ3Ya.classList.remove('hidden');
+      const statusHamil = document.getElementById('kb-hamil').value;
+      const subHamilYa = document.getElementById('sub-hamil-ya');
+      const subHamilTidak = document.getElementById('sub-hamil-tidak');
+    
+      const boxQ3 = document.getElementById('box-q3');
+      const statusSedangKB = document.getElementById('kb-sedang-berkb').value;
+      const subQ3Ya = document.getElementById('sub-q3-ya');
+    
+      const boxQ4 = document.getElementById('box-q4');
+      const statusPernahKB = document.getElementById('kb-pernah-12bln').value;
+      const subQ4Ya = document.getElementById('sub-q4-ya');
+    
+      const boxQ5 = document.getElementById('box-q5');
+      const boxQ6 = document.getElementById('box-q6');
+      const boxQ7 = document.getElementById('box-q7');
+      const jenisAlat = document.getElementById('kb-alat').value;
+    
+      if (!statusHamil) {
+        subHamilYa.classList.add('hidden');
+        subHamilTidak.classList.add('hidden');
+        boxQ3.classList.add('hidden');
         boxQ4.classList.add('hidden');
         boxQ5.classList.add('hidden');
-        boxQ6.classList.remove('hidden');
-      } else if (statusSedangKB === 'Tidak') {
-        subQ3Ya.classList.add('hidden');
+        boxQ6.classList.add('hidden');
+        boxQ7.classList.add('hidden');
+        return;
+      }
+    
+      if (statusHamil === 'Ya') {
+        subHamilYa.classList.remove('hidden');
+        subHamilTidak.classList.add('hidden');
+        boxQ3.classList.add('hidden');
         boxQ4.classList.remove('hidden');
       } else {
-        subQ3Ya.classList.add('hidden');
-        boxQ4.classList.add('hidden');
-        boxQ5.classList.add('hidden');
-        boxQ6.classList.add('hidden');
-        boxQ7.classList.add('hidden');
-        return;
+        subHamilYa.classList.add('hidden');
+        subHamilTidak.classList.remove('hidden');
+        boxQ3.classList.remove('hidden');
       }
-    }
-  
-    // 3. Alur Pertanyaan No. 4
-    if (!boxQ4.classList.contains('hidden')) {
-      if (statusPernahKB === 'Ya') {
-        subQ4Ya.classList.remove('hidden');
-        boxQ5.classList.remove('hidden');
-        boxQ6.classList.remove('hidden');
-      } else if (statusPernahKB === 'Tidak') {
-        subQ4Ya.classList.add('hidden');
-        boxQ5.classList.remove('hidden');
-        boxQ6.classList.add('hidden');
-        boxQ7.classList.add('hidden');
-      } else {
-        subQ4Ya.classList.add('hidden');
-        boxQ5.classList.add('hidden');
-        boxQ6.classList.add('hidden');
-        boxQ7.classList.add('hidden');
-        return;
-      }
-    }
-  
-    // 4. Alur Pertanyaan No. 6 & No. 7
-    if (!boxQ6.classList.contains('hidden') && jenisAlat) {
-      const isTradisional = jenisAlat.startsWith('Tradisional');
-      if (isTradisional) {
-        boxQ7.classList.add('hidden');
-      } else {
-        boxQ7.classList.remove('hidden');
-      }
-    } else {
-      boxQ7.classList.add('hidden');
-    }
-  }
     
-    // Inisialisasi alur saat aplikasi dimuat
-    document.addEventListener('DOMContentLoaded', () => {
-      handleAlurKB();
-    });
-  
-  // ================= VALIDASI PER BLOK FORMULIR =================
-  // Validasi Blok 1: Wilayah
-  async function validateStep1() {
-    const dusun = document.getElementById('w-dusun-select').value;
-    const rt = document.getElementById('w-rt').value;
-    const noRumah = document.getElementById('w-no-rumah').value.trim();
-    const noUrut = document.getElementById('w-no-urut').value.trim();
-    const noKK = document.getElementById('w-no-kk').value.trim();
-    const alamat = document.getElementById('w-alamat').value.trim();
-  
-    if (!dusun) {
-      await showAppAlert("Silakan pilih Dusun penugasan terlebih dahulu!", "Form Belum Lengkap", "danger");
-      document.getElementById('w-dusun-select').focus();
-      return false;
-    }
-    if (!rt) {
-      await showAppAlert("Silakan pilih RT penugasan!", "Form Belum Lengkap", "danger");
-      document.getElementById('w-rt').focus();
-      return false;
-    }
-    if (!noRumah) {
-      await showAppAlert("Nomor Rumah wajib diisi!", "Form Belum Lengkap", "danger");
-      document.getElementById('w-no-rumah').focus();
-      return false;
-    }
-    if (!noUrut) {
-      await showAppAlert("Nomor Urut Keluarga wajib diisi!", "Form Belum Lengkap", "danger");
-      document.getElementById('w-no-urut').focus();
-      return false;
-    }
-    if (!noKK || noKK.length < 16) {
-      await showAppAlert("Nomor Kartu Keluarga (KK) wajib diisi lengkap 16 digit!", "Form Belum Lengkap", "danger");
-      document.getElementById('w-no-kk').focus();
-      return false;
-    }
-    if (!alamat) {
-      await showAppAlert("Alamat lengkap rumah wajib diisi!", "Form Belum Lengkap", "danger");
-      document.getElementById('w-alamat').focus();
-      return false;
-    }
-  
-    return true;
-  }
-  
-  // Validasi Blok 2: Data Seluruh Individu
-  async function validateStep2() {
-    const cards = document.querySelectorAll('#individus-container > div');
-  
-    for (let idx = 0; idx < cards.length; idx++) {
-      const card = cards[idx];
-      const no = idx + 1;
-  
-      const nama = card.querySelector('.ind-nama').value.trim();
-      const nik = card.querySelector('.ind-nik').value.trim();
-      const hubungan = card.querySelector('.ind-hubungan').value;
-      const jk = document.getElementById(`jk-${no}`).value;
-      const tglLahir = card.querySelector('.ind-tgl-lahir').value;
-      const kawin = document.getElementById(`kawin-${no}`).value;
-      const usiaKawinEl = document.getElementById(`usia-kawin-${no}`);
-      const agama = card.querySelector('.ind-agama').value;
-      const pekerjaan = card.querySelector('.ind-pekerjaan').value;
-      const pendidikan = card.querySelector('.ind-pendidikan').value;
-      const jkn = card.querySelector('.ind-jkn').value;
-  
-      // Geser slider ke kartu yang bermasalah agar petugas langsung melihat letak kekurangannya
-      const jumpToCard = () => {
-        currentSlideIndex = idx;
-        updateSliderPosition();
-      };
-  
-      if (!nama) {
-        jumpToCard();
-        await showAppAlert(`Nama Lengkap pada Anggota #${no} belum diisi!`, "Form Belum Lengkap", "danger");
-        card.querySelector('.ind-nama').focus();
-        return false;
+      if (statusHamil === 'Tidak') {
+        if (statusSedangKB === 'Ya') {
+          subQ3Ya.classList.remove('hidden');
+          boxQ4.classList.add('hidden');
+          boxQ5.classList.add('hidden');
+          boxQ6.classList.remove('hidden');
+        } else if (statusSedangKB === 'Tidak') {
+          subQ3Ya.classList.add('hidden');
+          boxQ4.classList.remove('hidden');
+        } else {
+          subQ3Ya.classList.add('hidden');
+          boxQ4.classList.add('hidden');
+          boxQ5.classList.add('hidden');
+          boxQ6.classList.add('hidden');
+          boxQ7.classList.add('hidden');
+          return;
+        }
       }
-      if (!nik || nik.length < 16) {
-        jumpToCard();
-        await showAppAlert(`NIK pada Anggota #${no} belum lengkap 16 digit!`, "Form Belum Lengkap", "danger");
-        card.querySelector('.ind-nik').focus();
-        return false;
+    
+      if (!boxQ4.classList.contains('hidden')) {
+        if (statusPernahKB === 'Ya') {
+          subQ4Ya.classList.remove('hidden');
+          boxQ5.classList.remove('hidden');
+          boxQ6.classList.remove('hidden');
+        } else if (statusPernahKB === 'Tidak') {
+          subQ4Ya.classList.add('hidden');
+          boxQ5.classList.remove('hidden');
+          boxQ6.classList.add('hidden');
+          boxQ7.classList.add('hidden');
+        } else {
+          subQ4Ya.classList.add('hidden');
+          boxQ5.classList.add('hidden');
+          boxQ6.classList.add('hidden');
+          boxQ7.classList.add('hidden');
+          return;
+        }
       }
-      if (!hubungan) {
-        jumpToCard();
-        await showAppAlert(`Status Hubungan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
-      }
-      if (!jk) {
-        jumpToCard();
-        await showAppAlert(`Jenis Kelamin pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
-      }
-      if (!tglLahir) {
-        jumpToCard();
-        await showAppAlert(`Tanggal Lahir pada Anggota #${no} belum diisi!`, "Form Belum Lengkap", "danger");
-        card.querySelector('.ind-tgl-lahir').focus();
-        return false;
-      }
-      if (!kawin) {
-        jumpToCard();
-        await showAppAlert(`Status Perkawinan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
-      }
-      if (kawin !== 'Belum Kawin' && (!usiaKawinEl.value || parseInt(usiaKawinEl.value) <= 0)) {
-        jumpToCard();
-        await showAppAlert(`Usia Kawin Pertama pada Anggota #${no} wajib diisi!`, "Form Belum Lengkap", "danger");
-        usiaKawinEl.focus();
-        return false;
-      }
-      if (!agama) {
-        jumpToCard();
-        await showAppAlert(`Agama pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
-      }
-      if (!pekerjaan) {
-        jumpToCard();
-        await showAppAlert(`Pekerjaan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
-      }
-      if (!pendidikan) {
-        jumpToCard();
-        await showAppAlert(`Pendidikan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
-      }
-      if (!jkn) {
-        jumpToCard();
-        await showAppAlert(`Kepesertaan JKN pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
-        return false;
+    
+      if (!boxQ6.classList.contains('hidden') && jenisAlat) {
+        const isTradisional = jenisAlat.startsWith('Tradisional');
+        if (isTradisional) {
+          boxQ7.classList.add('hidden');
+        } else {
+          boxQ7.classList.remove('hidden');
+        }
+      } else {
+        boxQ7.classList.add('hidden');
       }
     }
   
-    return true;
-  }
-  
-  // Validasi Blok 3: Keluarga Berencana (KB)
-  async function validateStep3() {
-    const lahirTotal = document.getElementById('kb-lahir-total').value;
-    const statusHamil = document.getElementById('kb-hamil').value;
-  
-    if (lahirTotal === '') {
-      await showAppAlert("Pertanyaan 1: Total riwayat Ibu melahirkan belum diisi!", "Form Belum Lengkap", "danger");
-      document.getElementById('kb-lahir-total').focus();
-      return false;
+    // ================= VALIDASI TIAP BLOK =================
+    async function validateStep1() {
+      const dusun = document.getElementById('w-dusun-select').value;
+      const rt = document.getElementById('w-rt').value;
+      const noRumah = document.getElementById('w-no-rumah').value.trim();
+      const noUrut = document.getElementById('w-no-urut').value.trim();
+      const noKK = document.getElementById('w-no-kk').value.trim();
+      const alamat = document.getElementById('w-alamat').value.trim();
+    
+      if (!dusun) {
+        await showAppAlert("Silakan pilih Dusun penugasan terlebih dahulu!", "Form Belum Lengkap", "danger");
+        document.getElementById('w-dusun-select').focus();
+        return false;
+      }
+      if (!rt) {
+        await showAppAlert("Silakan pilih RT penugasan!", "Form Belum Lengkap", "danger");
+        document.getElementById('w-rt').focus();
+        return false;
+      }
+      if (!noRumah) {
+        await showAppAlert("Nomor Rumah wajib diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('w-no-rumah').focus();
+        return false;
+      }
+      if (!noUrut) {
+        await showAppAlert("Nomor Urut Keluarga wajib diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('w-no-urut').focus();
+        return false;
+      }
+      if (!noKK || noKK.length < 16) {
+        await showAppAlert("Nomor Kartu Keluarga (KK) wajib diisi lengkap 16 digit!", "Form Belum Lengkap", "danger");
+        document.getElementById('w-no-kk').focus();
+        return false;
+      }
+      if (!alamat) {
+        await showAppAlert("Alamat lengkap rumah wajib diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('w-alamat').focus();
+        return false;
+      }
+    
+      return true;
     }
-  
-    if (!statusHamil) {
-      await showAppAlert("Pertanyaan 2: Status kehamilan saat ini belum dipilih!", "Form Belum Lengkap", "danger");
-      document.getElementById('kb-hamil').focus();
-      return false;
-    }
-  
-    if (statusHamil === 'Ya') {
-      const usiaHamil = document.getElementById('kb-usia-hamil').value;
-      const inginHamil = document.getElementById('kb-status-keinginan-hamil').value;
-      if (!usiaHamil) {
-        await showAppAlert("Usia kehamilan (minggu) wajib diisi!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-usia-hamil').focus();
-        return false;
-      }
-      if (!inginHamil) {
-        await showAppAlert("Pilihan keinginan saat mulai hamil belum dipilih!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-status-keinginan-hamil').focus();
-        return false;
-      }
-    } else {
-      const inginAnak = document.getElementById('kb-keinginan-anak-lagi').value;
-      if (!inginAnak) {
-        await showAppAlert("Pilihan keinginan memiliki anak lagi belum dipilih!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-keinginan-anak-lagi').focus();
-        return false;
-      }
-  
-      const sedangKB = document.getElementById('kb-sedang-berkb').value;
-      if (!sedangKB) {
-        await showAppAlert("Pertanyaan 3: Status pemakaian KB saat ini belum dipilih!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-sedang-berkb').focus();
-        return false;
-      }
-  
-      if (sedangKB === 'Ya') {
-        const bln = document.getElementById('kb-mulai-bln').value;
-        const thn = document.getElementById('kb-mulai-thn').value;
-        if (!bln || !thn) {
-          await showAppAlert("Bulan dan Tahun mulai memakai KB wajib diisi!", "Form Belum Lengkap", "danger");
+    
+    async function validateStep2() {
+      const cards = document.querySelectorAll('#individus-container > div');
+    
+      for (let idx = 0; idx < cards.length; idx++) {
+        const card = cards[idx];
+        const no = idx + 1;
+    
+        const nama = card.querySelector('.ind-nama').value.trim();
+        const nik = card.querySelector('.ind-nik').value.trim();
+        const hubungan = card.querySelector('.ind-hubungan').value;
+        const jk = document.getElementById(`jk-${no}`).value;
+        const tglLahir = card.querySelector('.ind-tgl-lahir').value;
+        const kawin = document.getElementById(`kawin-${no}`).value;
+        const usiaKawinEl = document.getElementById(`usia-kawin-${no}`);
+        const agama = card.querySelector('.ind-agama').value;
+        const pekerjaan = card.querySelector('.ind-pekerjaan').value;
+        const pendidikan = card.querySelector('.ind-pendidikan').value;
+        const jkn = card.querySelector('.ind-jkn').value;
+    
+        const jumpToCard = () => {
+          currentSlideIndex = idx;
+          updateSliderPosition();
+        };
+    
+        if (!nama) {
+          jumpToCard();
+          await showAppAlert(`Nama Lengkap pada Anggota #${no} belum diisi!`, "Form Belum Lengkap", "danger");
+          card.querySelector('.ind-nama').focus();
+          return false;
+        }
+        if (!nik || nik.length < 16) {
+          jumpToCard();
+          await showAppAlert(`NIK pada Anggota #${no} belum lengkap 16 digit!`, "Form Belum Lengkap", "danger");
+          card.querySelector('.ind-nik').focus();
+          return false;
+        }
+        if (!hubungan) {
+          jumpToCard();
+          await showAppAlert(`Status Hubungan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+          return false;
+        }
+        if (!jk) {
+          jumpToCard();
+          await showAppAlert(`Jenis Kelamin pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+          return false;
+        }
+        if (!tglLahir) {
+          jumpToCard();
+          await showAppAlert(`Tanggal Lahir pada Anggota #${no} belum diisi!`, "Form Belum Lengkap", "danger");
+          card.querySelector('.ind-tgl-lahir').focus();
+          return false;
+        }
+        if (!kawin) {
+          jumpToCard();
+          await showAppAlert(`Status Perkawinan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+          return false;
+        }
+        if (kawin !== 'Belum Kawin' && (!usiaKawinEl.value || parseInt(usiaKawinEl.value) <= 0)) {
+          jumpToCard();
+          await showAppAlert(`Usia Kawin Pertama pada Anggota #${no} wajib diisi!`, "Form Belum Lengkap", "danger");
+          usiaKawinEl.focus();
+          return false;
+        }
+        if (!agama) {
+          jumpToCard();
+          await showAppAlert(`Agama pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+          return false;
+        }
+        if (!pekerjaan) {
+          jumpToCard();
+          await showAppAlert(`Pekerjaan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+          return false;
+        }
+        if (!pendidikan) {
+          jumpToCard();
+          await showAppAlert(`Pendidikan pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
+          return false;
+        }
+        if (!jkn) {
+          jumpToCard();
+          await showAppAlert(`Kepesertaan JKN pada Anggota #${no} belum dipilih!`, "Form Belum Lengkap", "danger");
           return false;
         }
       }
+    
+      return true;
     }
-  
-    // Cek Pertanyaan 4 jika terbuka
-    const boxQ4 = document.getElementById('box-q4');
-    if (!boxQ4.classList.contains('hidden')) {
-      const pernahKB = document.getElementById('kb-pernah-12bln').value;
-      if (!pernahKB) {
-        await showAppAlert("Pertanyaan 4: Riwayat pemakaian KB 12 bulan terakhir belum dipilih!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-pernah-12bln').focus();
+    
+    async function validateStep3() {
+      const lahirTotal = document.getElementById('kb-lahir-total').value;
+      const statusHamil = document.getElementById('kb-hamil').value;
+    
+      if (lahirTotal === '') {
+        await showAppAlert("Pertanyaan 1: Total riwayat Ibu melahirkan belum diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-lahir-total').focus();
         return false;
       }
-      if (pernahKB === 'Ya') {
-        const mBln = document.getElementById('kb-p-mulai-bln').value;
-        const mThn = document.getElementById('kb-p-mulai-thn').value;
-        const sBln = document.getElementById('kb-p-sampai-bln').value;
-        const sThn = document.getElementById('kb-p-sampai-thn').value;
-        if (!mBln || !mThn || !sBln || !sThn) {
-          await showAppAlert("Rentang Bulan/Tahun pemakaian kontrasepsi terakhir belum lengkap diisi!", "Form Belum Lengkap", "danger");
+    
+      if (!statusHamil) {
+        await showAppAlert("Pertanyaan 2: Status kehamilan saat ini belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('kb-hamil').focus();
+        return false;
+      }
+    
+      if (statusHamil === 'Ya') {
+        const usiaHamil = document.getElementById('kb-usia-hamil').value;
+        const inginHamil = document.getElementById('kb-status-keinginan-hamil').value;
+        if (!usiaHamil) {
+          await showAppAlert("Usia kehamilan (minggu) wajib diisi!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-usia-hamil').focus();
+          return false;
+        }
+        if (!inginHamil) {
+          await showAppAlert("Pilihan keinginan saat mulai hamil belum dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-status-keinginan-hamil').focus();
+          return false;
+        }
+      } else {
+        const inginAnak = document.getElementById('kb-keinginan-anak-lagi').value;
+        if (!inginAnak) {
+          await showAppAlert("Pilihan keinginan memiliki anak lagi belum dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-keinginan-anak-lagi').focus();
+          return false;
+        }
+    
+        const sedangKB = document.getElementById('kb-sedang-berkb').value;
+        if (!sedangKB) {
+          await showAppAlert("Pertanyaan 3: Status pemakaian KB saat ini belum dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-sedang-berkb').focus();
+          return false;
+        }
+    
+        if (sedangKB === 'Ya') {
+          const bln = document.getElementById('kb-mulai-bln').value;
+          const thn = document.getElementById('kb-mulai-thn').value;
+          if (!bln || !thn) {
+            await showAppAlert("Bulan dan Tahun mulai memakai KB wajib diisi!", "Form Belum Lengkap", "danger");
+            return false;
+          }
+        }
+      }
+    
+      const boxQ4 = document.getElementById('box-q4');
+      if (!boxQ4.classList.contains('hidden')) {
+        const pernahKB = document.getElementById('kb-pernah-12bln').value;
+        if (!pernahKB) {
+          await showAppAlert("Pertanyaan 4: Riwayat pemakaian KB 12 bulan terakhir belum dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-pernah-12bln').focus();
+          return false;
+        }
+        if (pernahKB === 'Ya') {
+          const mBln = document.getElementById('kb-p-mulai-bln').value;
+          const mThn = document.getElementById('kb-p-mulai-thn').value;
+          const sBln = document.getElementById('kb-p-sampai-bln').value;
+          const sThn = document.getElementById('kb-p-sampai-thn').value;
+          if (!mBln || !mThn || !sBln || !sThn) {
+            await showAppAlert("Rentang Bulan/Tahun pemakaian kontrasepsi terakhir belum lengkap diisi!", "Form Belum Lengkap", "danger");
+            return false;
+          }
+        }
+      }
+    
+      const boxQ5 = document.getElementById('box-q5');
+      if (!boxQ5.classList.contains('hidden')) {
+        const alasan = document.getElementById('kb-alasan-tidak').value;
+        if (!alasan) {
+          await showAppAlert("Pertanyaan 5: Alasan utama tidak ber-KB wajib dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-alasan-tidak').focus();
           return false;
         }
       }
-    }
-  
-    // Cek Pertanyaan 5 jika terbuka
-    const boxQ5 = document.getElementById('box-q5');
-    if (!boxQ5.classList.contains('hidden')) {
-      const alasan = document.getElementById('kb-alasan-tidak').value;
-      if (!alasan) {
-        await showAppAlert("Pertanyaan 5: Alasan utama tidak ber-KB wajib dipilih!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-alasan-tidak').focus();
-        return false;
-      }
-    }
-  
-    // Cek Pertanyaan 6 & 7 jika terbuka
-    const boxQ6 = document.getElementById('box-q6');
-    if (!boxQ6.classList.contains('hidden')) {
-      const alat = document.getElementById('kb-alat').value;
-      if (!alat) {
-        await showAppAlert("Pertanyaan 6: Jenis metode kontrasepsi wajib dipilih!", "Form Belum Lengkap", "danger");
-        document.getElementById('kb-alat').focus();
-        return false;
-      }
-  
-      const boxQ7 = document.getElementById('box-q7');
-      if (!boxQ7.classList.contains('hidden')) {
-        const sumber = document.getElementById('kb-sumber-pelayanan').value;
-        if (!sumber) {
-          await showAppAlert("Pertanyaan 7: Sumber pelayanan KB wajib dipilih!", "Form Belum Lengkap", "danger");
-          document.getElementById('kb-sumber-pelayanan').focus();
+    
+      const boxQ6 = document.getElementById('box-q6');
+      if (!boxQ6.classList.contains('hidden')) {
+        const alat = document.getElementById('kb-alat').value;
+        if (!alat) {
+          await showAppAlert("Pertanyaan 6: Jenis metode kontrasepsi wajib dipilih!", "Form Belum Lengkap", "danger");
+          document.getElementById('kb-alat').focus();
           return false;
         }
+    
+        const boxQ7 = document.getElementById('box-q7');
+        if (!boxQ7.classList.contains('hidden')) {
+          const sumber = document.getElementById('kb-sumber-pelayanan').value;
+          if (!sumber) {
+            await showAppAlert("Pertanyaan 7: Sumber pelayanan KB wajib dipilih!", "Form Belum Lengkap", "danger");
+            document.getElementById('kb-sumber-pelayanan').focus();
+            return false;
+          }
+        }
       }
+    
+      return true;
     }
-  
-    return true;
-  }
-  
-  // Validasi Blok 4: Pembangunan Keluarga
-  async function validateStep4() {
-    const atap = document.getElementById('pk-atap').value;
-    const kAtap = document.getElementById('pk-kondisi-atap').value;
-    const dinding = document.getElementById('pk-dinding').value;
-    const kDinding = document.getElementById('pk-kondisi-dinding').value;
-    const lantai = document.getElementById('pk-lantai').value;
-    const kLantai = document.getElementById('pk-kondisi-lantai').value;
-    const penerangan = document.getElementById('pk-penerangan').value;
-    const air = document.getElementById('pk-air').value;
-    const bab = document.getElementById('pk-bab').value;
-    const luas = document.getElementById('pk-luas').value;
-    const jmlPenghuni = document.getElementById('pk-jumlah-penghuni').value;
-    const kepemilikan = document.getElementById('pk-kepemilikan').value;
-    const bahanBakar = document.getElementById('pk-bahan-bakar').value;
-  
-    if (!atap || !kAtap) {
-      await showAppAlert("Pertanyaan 1: Jenis atau kondisi atap rumah belum dipilih!", "Form Belum Lengkap", "danger");
-      return false;
+    
+    async function validateStep4() {
+      const atap = document.getElementById('pk-atap').value;
+      const kAtap = document.getElementById('pk-kondisi-atap').value;
+      const dinding = document.getElementById('pk-dinding').value;
+      const kDinding = document.getElementById('pk-kondisi-dinding').value;
+      const lantai = document.getElementById('pk-lantai').value;
+      const kLantai = document.getElementById('pk-kondisi-lantai').value;
+      const penerangan = document.getElementById('pk-penerangan').value;
+      const air = document.getElementById('pk-air').value;
+      const bab = document.getElementById('pk-bab').value;
+      const luas = document.getElementById('pk-luas').value;
+      const jmlPenghuni = document.getElementById('pk-jumlah-penghuni').value;
+      const kepemilikan = document.getElementById('pk-kepemilikan').value;
+      const bahanBakar = document.getElementById('pk-bahan-bakar').value;
+    
+      if (!atap || !kAtap) {
+        await showAppAlert("Pertanyaan 1: Jenis atau kondisi atap rumah belum dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!dinding || !kDinding) {
+        await showAppAlert("Pertanyaan 2: Jenis atau kondisi dinding rumah belum dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!lantai || !kLantai) {
+        await showAppAlert("Pertanyaan 3: Jenis atau kondisi lantai rumah belum dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!penerangan) {
+        await showAppAlert("Pertanyaan 4: Sumber penerangan belum dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (penerangan === 'Listrik PLN Meteran' && !document.getElementById('pk-daya').value) {
+        await showAppAlert("Besar daya listrik PLN wajib dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!air) {
+        await showAppAlert("Pertanyaan 5: Sumber air minum utama belum dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!bab) {
+        await showAppAlert("Pertanyaan 6: Fasilitas buang air besar belum dipilih!", "Form Belum Lengkap", "danger");
+        return false;
+      }
+      if (!luas || parseFloat(luas) <= 0) {
+        await showAppAlert("Pertanyaan 7: Luas bangunan (m²) wajib diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('pk-luas').focus();
+        return false;
+      }
+      if (!jmlPenghuni || parseInt(jmlPenghuni) <= 0) {
+        await showAppAlert("Pertanyaan 8: Jumlah orang yang tinggal menetap wajib diisi!", "Form Belum Lengkap", "danger");
+        document.getElementById('pk-jumlah-penghuni').focus();
+        return false;
+      }
+      if (!kepemilikan) {
+        await showAppAlert("Pertanyaan 9: Status kepemilikan rumah belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('pk-kepemilikan').focus();
+        return false;
+      }
+      if (!bahanBakar) {
+        await showAppAlert("Pertanyaan 10: Bahan bakar utama memasak belum dipilih!", "Form Belum Lengkap", "danger");
+        document.getElementById('pk-bahan-bakar').focus();
+        return false;
+      }
+    
+      return true;
     }
-    if (!dinding || !kDinding) {
-      await showAppAlert("Pertanyaan 2: Jenis atau kondisi dinding rumah belum dipilih!", "Form Belum Lengkap", "danger");
-      return false;
-    }
-    if (!lantai || !kLantai) {
-      await showAppAlert("Pertanyaan 3: Jenis atau kondisi lantai rumah belum dipilih!", "Form Belum Lengkap", "danger");
-      return false;
-    }
-    if (!penerangan) {
-      await showAppAlert("Pertanyaan 4: Sumber penerangan belum dipilih!", "Form Belum Lengkap", "danger");
-      return false;
-    }
-    if (penerangan === 'Listrik PLN Meteran' && !document.getElementById('pk-daya').value) {
-      await showAppAlert("Besar daya listrik PLN wajib dipilih!", "Form Belum Lengkap", "danger");
-      return false;
-    }
-    if (!air) {
-      await showAppAlert("Pertanyaan 5: Sumber air minum utama belum dipilih!", "Form Belum Lengkap", "danger");
-      return false;
-    }
-    if (!bab) {
-      await showAppAlert("Pertanyaan 6: Fasilitas buang air besar belum dipilih!", "Form Belum Lengkap", "danger");
-      return false;
-    }
-    if (!luas || parseFloat(luas) <= 0) {
-      await showAppAlert("Pertanyaan 7: Luas bangunan (m²) wajib diisi!", "Form Belum Lengkap", "danger");
-      document.getElementById('pk-luas').focus();
-      return false;
-    }
-    if (!jmlPenghuni || parseInt(jmlPenghuni) <= 0) {
-      await showAppAlert("Pertanyaan 8: Jumlah orang yang tinggal menetap wajib diisi!", "Form Belum Lengkap", "danger");
-      document.getElementById('pk-jumlah-penghuni').focus();
-      return false;
-    }
-    if (!kepemilikan) {
-      await showAppAlert("Pertanyaan 9: Status kepemilikan rumah belum dipilih!", "Form Belum Lengkap", "danger");
-      document.getElementById('pk-kepemilikan').focus();
-      return false;
-    }
-    if (!bahanBakar) {
-      await showAppAlert("Pertanyaan 10: Bahan bakar utama memasak belum dipilih!", "Form Belum Lengkap", "danger");
-      document.getElementById('pk-bahan-bakar').focus();
-      return false;
-    }
-  
-    return true;
-  }
   </script>
+
   <!-- CUSTOM NOTIFICATION & CONFIRM MODAL -->
   <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden p-4">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 animate-in fade-in zoom-in duration-150">
@@ -2969,11 +2778,10 @@ async function confirmIndividualAndProceed() {
           <p id="modal-message" class="text-xs text-slate-600 mt-1 leading-relaxed">Pesan modal disini...</p>
         </div>
       </div>
-      <div id="modal-actions" class="flex justify-end gap-2 pt-2">
-        <!-- Tombol diatur dinamis via JS -->
-      </div>
+      <div id="modal-actions" class="flex justify-end gap-2 pt-2"></div>
     </div>
   </div>
+
   <!-- MODAL FORM ADMIN (WILAYAH & PENDATA) -->
   <div id="admin-form-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
@@ -2982,9 +2790,7 @@ async function confirmIndividualAndProceed() {
         <button type="button" onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
       </div>
       
-      <div id="admin-modal-content">
-        <!-- Diisi dinamis oleh JS -->
-      </div>
+      <div id="admin-modal-content"></div>
     </div>
   </div>
 </body>
