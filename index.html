@@ -1852,7 +1852,9 @@ async function confirmIndividualAndProceed() {
           daya_listrik: isPlnMeteran ? document.getElementById('pk-daya').value : null,
           sumber_air_minum: document.getElementById('pk-air').value,
           fasilitas_bab: document.getElementById('pk-bab').value,
-          luas_bangunan_m2: parseFloat(document.getElementById('pk-luas').value) || 0,
+          luas_bangunan_m2: parseFloat(document.getElementById('pk-luas').value) || null,
+          jumlah_penghuni: parseInt(document.getElementById('pk-jumlah-penghuni').value) || null,
+          status_kepemilikan_rumah: document.getElementById('pk-kepemilikan').value || null,
           bahan_bakar_memasak: document.getElementById('pk-bahan-bakar').value
         };
         const { error: errPK } = await supabaseClient.from('pembangunan_keluarga').insert(payloadPK);
