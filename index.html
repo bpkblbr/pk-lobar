@@ -355,7 +355,7 @@
             </div>
           
             <div class="flex justify-end pt-4 border-t">
-              <button type="button" onclick="goToStep(2)" class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 shadow-sm">
+              <button type="button" onclick="handleNextFromStep1()" class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 shadow-sm">
                 <span>Lanjut: Data Individu</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
@@ -407,8 +407,8 @@
                 </button>
               </div>
           
-              <button type="button" onclick="confirmIndividualAndProceed()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center gap-2 shadow-sm">
-                <span>Lanjut: Form KB</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              <button type="button" onclick="handleNextFromStep3()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg flex items-center gap-1.5 shadow-sm">
+                <span>Lanjut: Pembangunan</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
           </div>
@@ -1112,6 +1112,13 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
       window.scrollTo({ top: 120, behavior: 'smooth' });
     }
 
+    async function handleNextFromStep1() {
+      const isValid = await validateStep1();
+      if (isValid) {
+        goToStep(2);
+      }
+    }
+
     // State indeks anggota yang sedang aktif dibuka
 let currentActiveIndividu = 1;
 
@@ -1701,8 +1708,12 @@ function toggleDisabilitas(el, index) {
 }
 
 async function confirmIndividualAndProceed() {
+  // Validasi seluruh anggota terlebih dahulu
+  const isValid = await validateStep2();
+  if (!isValid) return;
+
   const isDone = await showAppConfirm(
-    "Apakah seluruh data individu anggota keluarga sudah selesai diisi? Klik Batal jika masih ingin menambah anggota baru.", 
+    "Apakah seluruh data anggota keluarga sudah selesai diisi? Klik Batal jika masih ingin menambah anggota baru.", 
     "Konfirmasi Data Individu"
   );
   
@@ -1712,6 +1723,13 @@ async function confirmIndividualAndProceed() {
     goToStep(3); // Menuju ke Form KB
   }
 }
+
+    async function handleNextFromStep3() {
+      const isValid = await validateStep3();
+      if (isValid) {
+        goToStep(4); // Pindah ke Form Pembangunan Keluarga
+      }
+    }
 
     function toggleListrikDaya(val) {
       document.getElementById('wrapper-daya-listrik').style.display = (val === 'Listrik PLN Meteran') ? 'block' : 'none';
@@ -1754,6 +1772,11 @@ async function confirmIndividualAndProceed() {
     // 5. SUBMIT DATA KE SUPABASE
     document.getElementById('survey-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+    
+      // Validasi ulang blok terakhir sebelum mengirim data ke Supabase
+      const isValidPK = await validateStep4();
+      if (!isValidPK) return;
+    
       const btn = document.getElementById('btn-save-all');
       btn.disabled = true;
       btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Menyimpan...';
