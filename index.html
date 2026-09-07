@@ -156,16 +156,24 @@
 
         <div class="bg-white p-6 rounded-b-xl border border-slate-200 shadow-sm">
           <!-- SUB-TAB 1: MASTER WILAYAH -->
-          <div id="panel-wilayah" class="space-y-4">
-            <div class="flex justify-between items-center">
-              <div>
-                <h3 class="text-sm font-bold text-slate-900">Pengaturan Master Wilayah (Dusun & RT)</h3>
-                <p class="text-xs text-slate-500">Kelola daftar Dusun (4 Digit) dan Jumlah RT di wilayah yurisdiksi Anda</p>
-              </div>
+          <div class="flex flex-wrap justify-between items-center gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Pengaturan Master Wilayah (Dusun & RT)</h3>
+              <p class="text-xs text-slate-500">Kelola daftar Dusun (4 Digit) dan Jumlah RT di wilayah yurisdiksi Anda</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="downloadTemplateWilayah()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Template Excel
+              </button>
+              <label class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition">
+                <i data-lucide="file-up" class="w-3.5 h-3.5"></i> Upload Wilayah
+                <input type="file" id="input-upload-wilayah" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleUploadWilayah(event)">
+              </label>
               <button type="button" onclick="openModalTambahWilayah()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="plus" class="w-4 h-4"></i> Tambah Dusun
               </button>
             </div>
+          </div>
 
             <div class="overflow-x-auto border border-slate-200 rounded-lg">
               <table class="w-full text-xs text-left">
@@ -188,14 +196,23 @@
 
           <!-- SUB-TAB 2: MANAJEMEN AKUN PENDATA -->
           <div id="panel-pendata" class="hidden space-y-4">
-            <div class="flex justify-between items-center">
+            <div class="flex flex-wrap justify-between items-center gap-3">
               <div>
                 <h3 class="text-sm font-bold text-slate-900">Daftar Akun Kader Pendata</h3>
                 <p class="text-xs text-slate-500">Buat akun login dan tentukan wilayah penugasan (dusun & RT)</p>
               </div>
-              <button type="button" onclick="openModalTambahPendata()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Pendata Baru
-              </button>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="downloadTemplatePendata()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i> Template Excel
+                </button>
+                <label class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition">
+                  <i data-lucide="file-up" class="w-3.5 h-3.5"></i> Upload Pendata
+                  <input type="file" id="input-upload-pendata" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleUploadPendata(event)">
+                </label>
+                <button type="button" onclick="openModalTambahPendata()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                  <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Pendata Baru
+                </button>
+              </div>
             </div>
 
             <div class="overflow-x-auto border border-slate-200 rounded-lg">
@@ -218,9 +235,23 @@
 
           <!-- SUB-TAB 3: CARI & EDIT DATA KELUARGA -->
           <div id="panel-keluarga" class="hidden space-y-4">
-            <div>
-              <h3 class="text-sm font-bold text-slate-900">Pencarian & Koreksi Data Pendataan</h3>
-              <p class="text-xs text-slate-500">Cari berdasarkan No. KK, ID Keluarga, atau Nama Kepala Keluarga</p>
+            <div class="flex flex-wrap justify-between items-center gap-3">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Pencarian & Koreksi Data Pendataan</h3>
+                <p class="text-xs text-slate-500">Cari berdasarkan No. KK, ID Keluarga, atau Nama Kepala Keluarga</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="downloadTemplateKeluarga()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i> Template Excel
+                </button>
+                <label class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition">
+                  <i data-lucide="file-up" class="w-3.5 h-3.5"></i> Upload Keluarga
+                  <input type="file" id="input-upload-keluarga" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleUploadKeluarga(event)">
+                </label>
+                <button type="button" onclick="exportDataKeluargaTerisi()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+                  <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Download Hasil Input (Excel)
+                </button>
+              </div>
             </div>
 
             <div class="flex gap-2">
@@ -996,13 +1027,17 @@
       return document.getElementById('form-wizard-wrapper');
     }
 
+    // ================= 1. PENGATURAN TAMPILAN ADMIN & EDIT KELUARGA =================
     function renderUserInterface(profile) {
       document.getElementById('user-nama').textContent = profile.nama_lengkap || profile.username;
       document.getElementById('user-role-badge').textContent = (profile.role || 'petugas').replace('_', ' ');
       document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
     
       const adminNav = document.getElementById('admin-nav-menu');
-
+      const formSection = document.getElementById('form-wizard-wrapper');
+      const adminSection = document.getElementById('admin-panel-view');
+    
+      // Set form wilayah induk
       const provEl = document.getElementById('w-prov');
       provEl.value = profile.nama_prov || 'Jawa Barat';
       provEl.setAttribute('data-code', profile.kode_prov || '32');
@@ -1018,18 +1053,512 @@
       const desaEl = document.getElementById('w-desa');
       desaEl.value = profile.nama_desa || 'Cangkuang';
       desaEl.setAttribute('data-code', profile.kode_desa || '0001');
-
+    
       if (profile.role !== 'pendata') {
-        adminNav.classList.remove('hidden');
-        switchMainView('admin');
+        // Mode ADMIN: Sembunyikan tombol tab navigasi ganda, sembunyikan form, buka Panel Admin
+        adminNav.classList.add('hidden'); 
+        formSection.classList.add('hidden'); // Form disembunyikan total
+        adminSection.classList.remove('hidden'); // Hanya panel admin yang muncul
         switchAdminSubTab('keluarga');
       } else {
+        // Mode PENDATA: Sembunyikan panel admin, kader langsung mengisi form
         adminNav.classList.add('hidden');
-        switchMainView('pendataan');
+        adminSection.classList.add('hidden');
+        formSection.classList.remove('hidden');
         goToStep(1);
       }
-
+    
       updateIDKeluarga();
+    }
+    
+    function cancelEditModeAndReturnToAdmin() {
+      document.getElementById('survey-form').reset();
+      editingKeluargaUUID = null;
+      document.getElementById('form-wizard-wrapper').classList.add('hidden');
+      document.getElementById('admin-panel-view').classList.remove('hidden');
+      document.getElementById('admin-close-edit-bar').classList.add('hidden');
+      cariDataKeluarga();
+    }
+    
+    // Buka data keluarga yang diklik dan munculkan formnya
+    async function muatDataKeluargaKeForm(keluargaUUID) {
+      try {
+        const { data: kData, error: kErr } = await supabaseClient.from('keluarga').select('*').eq('id', keluargaUUID).single();
+        if (kErr) throw kErr;
+    
+        const { data: indData, error: indErr } = await supabaseClient.from('individu').select('*').eq('keluarga_id', keluargaUUID).order('no_urut', { ascending: true });
+        if (indErr) throw indErr;
+    
+        const { data: pkData } = await supabaseClient.from('pembangunan_keluarga').select('*').eq('keluarga_id', keluargaUUID).maybeSingle();
+        const { data: kbData } = await supabaseClient.from('keluarga_berencana').select('*').eq('keluarga_id', keluargaUUID).maybeSingle();
+    
+        editingKeluargaUUID = keluargaUUID;
+    
+        // Isi Form Wilayah
+        document.getElementById('w-no-rumah').value = kData.no_rumah;
+        document.getElementById('w-no-urut').value = kData.no_urut_keluarga;
+        document.getElementById('w-no-kk').value = kData.no_kk;
+        document.getElementById('w-no-telp').value = kData.no_telp || '';
+        document.getElementById('w-alamat').value = kData.alamat;
+        document.getElementById('w-jml-anggota').value = kData.jumlah_anggota;
+        document.getElementById('w-status-keluarga').value = kData.status_keluarga;
+    
+        const dusunSelect = document.getElementById('w-dusun-select');
+        if (dusunSelect) {
+          dusunSelect.value = kData.kode_dusun;
+          dusunSelect.dispatchEvent(new Event('change'));
+          setTimeout(() => {
+            document.getElementById('w-rt').value = kData.kode_rt;
+            updateIDKeluarga();
+          }, 50);
+        }
+    
+        // Isi Baris Data Individu
+        const totalInd = indData.length || 1;
+        initIndividuRows(totalInd);
+    
+        setTimeout(() => {
+          const container = document.getElementById('individus-container');
+          indData.forEach((ind, idx) => {
+            const card = container.children[idx];
+            if (!card) return;
+            const index = idx + 1;
+    
+            card.querySelector('.ind-nama').value = ind.nama_lengkap;
+            card.querySelector('.ind-nik').value = ind.nik;
+            if (index !== 1) card.querySelector('.ind-hubungan').value = ind.status_hubungan;
+            document.getElementById(`jk-${index}`).value = ind.jenis_kelamin;
+            card.querySelector('.ind-tgl-lahir').value = ind.tanggal_lahir;
+            document.getElementById(`usia-${index}`).value = ind.usia;
+            document.getElementById(`kawin-${index}`).value = ind.status_perkawinan;
+            
+            const usiaKawin = document.getElementById(`usia-kawin-${index}`);
+            if (usiaKawin) {
+              usiaKawin.value = ind.usia_kawin_pertama || '';
+              usiaKawin.disabled = (ind.status_perkawinan === 'Belum Kawin');
+            }
+    
+            card.querySelector('.ind-akta').value = ind.memiliki_akta_lahir ? 'true' : 'false';
+            card.querySelector('.ind-agama').value = ind.agama;
+            card.querySelector('.ind-pekerjaan').value = ind.pekerjaan;
+            card.querySelector('.ind-pendidikan').value = ind.pendidikan;
+            card.querySelector('.ind-jkn').value = ind.kepesertaan_jkn;
+            document.getElementById(`luarnegeri-${index}`).value = ind.bekerja_luar_negeri;
+            card.querySelector('.ind-mutasi').value = ind.mutasi_anggota || '';
+    
+            if (Array.isArray(ind.disabilitas)) {
+              card.querySelectorAll(`.dis-check-${index}`).forEach(cb => {
+                cb.checked = ind.disabilitas.includes(cb.value);
+              });
+            }
+          });
+    
+          refreshMotherDropdowns();
+        }, 100);
+    
+        if (pkData) {
+          document.getElementById('pk-atap').value = pkData.jenis_atap || '';
+          document.getElementById('pk-kondisi-atap').value = pkData.kondisi_atap || '';
+          document.getElementById('pk-dinding').value = pkData.jenis_dinding || '';
+          document.getElementById('pk-kondisi-dinding').value = pkData.kondisi_dinding || '';
+          document.getElementById('pk-lantai').value = pkData.jenis_lantai || '';
+          document.getElementById('pk-kondisi-lantai').value = pkData.kondisi_lantai || '';
+          document.getElementById('pk-penerangan').value = pkData.sumber_penerangan || '';
+          toggleListrikDaya(pkData.sumber_penerangan);
+          if (pkData.daya_listrik) document.getElementById('pk-daya').value = pkData.daya_listrik;
+          document.getElementById('pk-air').value = pkData.sumber_air_minum || '';
+          document.getElementById('pk-bab').value = pkData.fasilitas_bab || '';
+          document.getElementById('pk-luas').value = pkData.luas_bangunan_m2 || '';
+          document.getElementById('pk-jumlah-penghuni').value = pkData.jumlah_penghuni || '';
+          document.getElementById('pk-kepemilikan').value = pkData.status_kepemilikan_rumah || '';
+          document.getElementById('pk-bahan-bakar').value = pkData.bahan_bakar_memasak || '';
+        }        
+    
+        if (kbData) {
+          document.getElementById('kb-lahir-total').value = kbData.jml_melahirkan ?? '';
+          document.getElementById('kb-lh-laki').value = kbData.jml_lahir_hidup_laki ?? '';
+          document.getElementById('kb-lh-perempuan').value = kbData.jml_lahir_hidup_perempuan ?? '';
+          document.getElementById('kb-mh-laki').value = kbData.jml_masih_hidup_laki ?? '';
+          document.getElementById('kb-mh-perempuan').value = kbData.jml_masih_hidup_perempuan ?? '';
+          document.getElementById('kb-hamil').value = kbData.sedang_hamil ? 'Ya' : 'Tidak';
+          if (kbData.usia_kehamilan_minggu) document.getElementById('kb-usia-hamil').value = kbData.usia_kehamilan_minggu;
+          if (kbData.status_keinginan_hamil) document.getElementById('kb-status-keinginan-hamil').value = kbData.status_keinginan_hamil;
+          if (kbData.keinginan_anak_lagi) document.getElementById('kb-keinginan-anak-lagi').value = kbData.keinginan_anak_lagi;
+    
+          document.getElementById('kb-sedang-berkb').value = kbData.sedang_ber_kb ? 'Ya' : 'Tidak';
+          if (kbData.kb_mulai_bulan) document.getElementById('kb-mulai-bln').value = kbData.kb_mulai_bulan;
+          if (kbData.kb_mulai_tahun) document.getElementById('kb-mulai-thn').value = kbData.kb_mulai_tahun;
+          if (kbData.alat_kontrasepsi) document.getElementById('kb-alat').value = kbData.alat_kontrasepsi;
+    
+          document.getElementById('kb-pernah-12bln').value = kbData.pernah_kb_12_bln ? 'Ya' : 'Tidak';
+          if (kbData.pernah_kb_mulai_bln) document.getElementById('kb-p-mulai-bln').value = kbData.pernah_kb_mulai_bln;
+          if (kbData.pernah_kb_mulai_thn) document.getElementById('kb-p-mulai-thn').value = kbData.pernah_kb_mulai_thn;
+          if (kbData.pernah_kb_sampai_bln) document.getElementById('kb-p-sampai-bln').value = kbData.pernah_kb_sampai_bln;
+          if (kbData.pernah_kb_sampai_thn) document.getElementById('kb-p-sampai-thn').value = kbData.pernah_kb_sampai_thn;
+          if (kbData.alasan_tidak_kb) document.getElementById('kb-alasan-tidak').value = kbData.alasan_tidak_kb;
+          if (kbData.sumber_pelayanan_kb) document.getElementById('kb-sumber-pelayanan').value = kbData.sumber_pelayanan_kb;
+    
+          handleAlurKB();
+        }
+    
+        // Munculkan kontainer form & sembunyikan admin panel
+        document.getElementById('admin-panel-view').classList.add('hidden');
+        document.getElementById('form-wizard-wrapper').classList.remove('hidden');
+        document.getElementById('admin-close-edit-bar').classList.remove('hidden');
+    
+        goToStep(1);
+        currentSlideIndex = 0;
+        updateSliderPosition();
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+        lucide.createIcons();
+    
+      } catch (err) {
+        await showAppAlert(err.message, "Gagal Memuat Data", "danger");
+      }
+    }
+    
+    // ================= 2. MODUL EXCEL: MASTER WILAYAH =================
+    
+    function downloadTemplateWilayah() {
+      const data = [
+        {
+          "Kode Dusun (4 Digit)": "0001",
+          "Nama Dusun": "Dusun Mawar",
+          "Jumlah RT": 3
+        },
+        {
+          "Kode Dusun (4 Digit)": "0002",
+          "Nama Dusun": "Dusun Melati",
+          "Jumlah RT": 5
+        }
+      ];
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Template_Wilayah");
+      XLSX.writeFile(wb, "Template_Master_Wilayah.xlsx");
+    }
+    
+    async function handleUploadWilayah(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+    
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet);
+    
+          if (rows.length === 0) {
+            await showAppAlert("File Excel kosong atau format tidak sesuai!", "Peringatan", "danger");
+            return;
+          }
+    
+          const payload = rows.map(r => ({
+            kode_prov: currentUserProfile.kode_prov,
+            nama_prov: currentUserProfile.nama_prov,
+            kode_kab: currentUserProfile.kode_kab,
+            nama_kab: currentUserProfile.nama_kab,
+            kode_kec: currentUserProfile.kode_kec,
+            nama_kec: currentUserProfile.nama_kec,
+            kode_desa: currentUserProfile.kode_desa,
+            nama_desa: currentUserProfile.nama_desa,
+            kode_dusun: String(r["Kode Dusun (4 Digit)"] || '').padStart(4, '0'),
+            nama_dusun: String(r["Nama Dusun"] || '').trim(),
+            jumlah_rt: parseInt(r["Jumlah RT"]) || 1
+          }));
+    
+          const { error } = await supabaseClient.from('master_wilayah').insert(payload);
+          if (error) throw error;
+    
+          await showAppAlert(`Berhasil mengimpor ${payload.length} data wilayah!`, "Sukses", "success");
+          loadMasterWilayahTable();
+          setupWilayahPenugasan(currentUserProfile);
+        } catch (err) {
+          await showAppAlert("Gagal upload wilayah: " + err.message, "Gagal", "danger");
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+    
+    // ================= 3. MODUL EXCEL: MANAJEMEN PENDATA =================
+    
+    function downloadTemplatePendata() {
+      const data = [
+        {
+          "Username": "kader01",
+          "Password": "password123",
+          "Nama Lengkap": "Siti Aminah",
+          "No HP": "081234567890",
+          "Kode Dusun Tugas": "0001",
+          "Daftar RT (Pisahkan Koma)": "001,002,003"
+        }
+      ];
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Template_Pendata");
+      XLSX.writeFile(wb, "Template_Akun_Pendata.xlsx");
+    }
+    
+    async function handleUploadPendata(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+    
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet);
+    
+          if (rows.length === 0) {
+            await showAppAlert("File Excel kosong!", "Peringatan", "danger");
+            return;
+          }
+    
+          // Ambil data dusun untuk referensi nama dusun
+          const { data: listDusun } = await supabaseClient
+            .from('master_wilayah')
+            .select('*')
+            .eq('kode_desa', currentUserProfile.kode_desa);
+    
+          const payload = rows.map(r => {
+            const kdDusun = String(r["Kode Dusun Tugas"] || '').padStart(4, '0');
+            const foundDusun = listDusun?.find(d => d.kode_dusun === kdDusun);
+            const namaDusun = foundDusun ? foundDusun.nama_dusun : `Dusun ${kdDusun}`;
+    
+            const rtRaw = String(r["Daftar RT (Pisahkan Koma)"] || '');
+            const rtList = rtRaw.split(',').map(s => s.trim().padStart(3, '0')).filter(Boolean);
+    
+            return {
+              username: String(r["Username"] || '').trim(),
+              password: String(r["Password"] || 'pendata123').trim(),
+              nama_lengkap: String(r["Nama Lengkap"] || '').trim(),
+              no_hp: String(r["No HP"] || '').trim(),
+              role: 'pendata',
+              kode_prov: currentUserProfile.kode_prov,
+              nama_prov: currentUserProfile.nama_prov,
+              kode_kab: currentUserProfile.kode_kab,
+              nama_kab: currentUserProfile.nama_kab,
+              kode_kec: currentUserProfile.kode_kec,
+              nama_kec: currentUserProfile.nama_kec,
+              kode_desa: currentUserProfile.kode_desa,
+              nama_desa: currentUserProfile.nama_desa,
+              wilayah_tugas: [{
+                kode_dusun: kdDusun,
+                nama_dusun: namaDusun,
+                rt: rtList
+              }],
+              is_active: true
+            };
+          });
+    
+          const { error } = await supabaseClient.from('users').insert(payload);
+          if (error) throw error;
+    
+          await showAppAlert(`Berhasil membuat ${payload.length} akun kader pendata!`, "Sukses", "success");
+          loadPendataTable();
+        } catch (err) {
+          await showAppAlert("Gagal upload pendata: " + err.message, "Gagal", "danger");
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+    
+    // ================= 4. MODUL EXCEL: DATA KELUARGA (TEMPLATE & UPLOAD) =================
+    
+    function downloadTemplateKeluarga() {
+      const data = [
+        {
+          "Kode Dusun (4 Digit)": "0001",
+          "Kode RT (3 Digit)": "001",
+          "No Rumah (3 Digit)": "012",
+          "No Urut Keluarga (3 Digit)": "001",
+          "No Kartu Keluarga (16 Digit)": "3204123456780001",
+          "Nama Kepala Keluarga": "Ahmad Sudrajat",
+          "NIK Kepala Keluarga (16 Digit)": "3204123456780002",
+          "No Telp / HP": "081234567890",
+          "Alamat Rumah": "Jl. Melati No. 12",
+          "Status Keluarga": "keluarga ada",
+          "Luas Bangunan (m2)": 36,
+          "Jumlah Penghuni": 4,
+          "Kepemilikan Rumah": "Milik sendiri"
+        }
+      ];
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Template_Keluarga");
+      XLSX.writeFile(wb, "Template_Data_Keluarga.xlsx");
+    }
+    
+    async function handleUploadKeluarga(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+    
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet);
+    
+          if (rows.length === 0) {
+            await showAppAlert("File Excel kosong!", "Peringatan", "danger");
+            return;
+          }
+    
+          let countSuccess = 0;
+          for (const r of rows) {
+            const kdProv = currentUserProfile.kode_prov || '32';
+            const kdKab  = currentUserProfile.kode_kab || '04';
+            const kdKec  = currentUserProfile.kode_kec || '01';
+            const kdDesa = currentUserProfile.kode_desa || '0001';
+            const kdDusun = String(r["Kode Dusun (4 Digit)"] || '0001').padStart(4, '0');
+            const kdRT = String(r["Kode RT (3 Digit)"] || '001').padStart(3, '0');
+            const noRumah = String(r["No Rumah (3 Digit)"] || '001').padStart(3, '0');
+            const noUrut = String(r["No Urut Keluarga (3 Digit)"] || '001').padStart(3, '0');
+    
+            const idKeluarga = `${kdProv}${kdKab}${kdKec}${kdDesa}${kdDusun} ${kdRT}${noRumah}${noUrut}`;
+    
+            // 1. Simpan tabel keluarga
+            const { data: insertedKeluarga, error: errK } = await supabaseClient.from('keluarga').insert({
+              id_keluarga: idKeluarga,
+              kode_prov: kdProv,
+              kode_kab: kdKab,
+              kode_kec: kdKec,
+              kode_desa: kdDesa,
+              kode_dusun: kdDusun,
+              kode_rt: kdRT,
+              no_rumah: noRumah,
+              no_urut_keluarga: noUrut,
+              no_kk: String(r["No Kartu Keluarga (16 Digit)"] || ''),
+              no_telp: String(r["No Telp / HP"] || ''),
+              alamat: String(r["Alamat Rumah"] || ''),
+              jumlah_anggota: 1,
+              status_keluarga: String(r["Status Keluarga"] || 'keluarga ada'),
+              surveyor_id: currentUserProfile.id
+            }).select().single();
+    
+            if (errK) continue;
+    
+            // 2. Simpan KK ke tabel individu
+            await supabaseClient.from('individu').insert({
+              keluarga_id: insertedKeluarga.id,
+              no_urut: 1,
+              nama_lengkap: String(r["Nama Kepala Keluarga"] || 'Kepala Keluarga'),
+              nik: String(r["NIK Kepala Keluarga (16 Digit)"] || '0000000000000000'),
+              jenis_kelamin: 'Laki-laki',
+              tanggal_lahir: '1980-01-01',
+              usia: 46,
+              status_perkawinan: 'Kawin Tercatat',
+              status_hubungan: 'KK',
+              memiliki_akta_lahir: true,
+              agama: 'Islam',
+              pekerjaan: 'Wiraswasta',
+              pendidikan: 'Tamat SLTA/Sederajat',
+              kepesertaan_jkn: 'PBI'
+            });
+    
+            // 3. Simpan nilai awal pembangunan keluarga
+            await supabaseClient.from('pembangunan_keluarga').insert({
+              keluarga_id: insertedKeluarga.id,
+              luas_bangunan_m2: parseFloat(r["Luas Bangunan (m2)"]) || 36,
+              jumlah_penghuni: parseInt(r["Jumlah Penghuni"]) || 1,
+              status_kepemilikan_rumah: String(r["Kepemilikan Rumah"] || 'Milik sendiri')
+            });
+    
+            countSuccess++;
+          }
+    
+          await showAppAlert(`Berhasil mengimpor ${countSuccess} keluarga!`, "Sukses", "success");
+          cariDataKeluarga();
+          loadStats();
+        } catch (err) {
+          await showAppAlert("Gagal upload keluarga: " + err.message, "Gagal", "danger");
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+    
+    // ================= 5. EXPORT DATA KELUARGA TERISI (HASIL INPUT) =================
+    
+    async function exportDataKeluargaTerisi() {
+      try {
+        let query = supabaseClient.from('keluarga').select(`
+          id_keluarga, no_kk, kode_dusun, kode_rt, no_rumah, no_urut_keluarga, alamat, status_keluarga,
+          individu(nama_lengkap, nik, status_hubungan, jenis_kelamin, usia, status_perkawinan, kepesertaan_jkn),
+          pembangunan_keluarga(luas_bangunan_m2, jumlah_penghuni, status_kepemilikan_rumah, jenis_atap, jenis_dinding, jenis_lantai, sumber_air_minum),
+          keluarga_berencana(sedang_hamil, sedang_ber_kb, alat_kontrasepsi, alasan_tidak_kb, sumber_pelayanan_kb)
+        `);
+    
+        // Sesuaikan dengan wilayah tugas login jika kader pendata
+        if (currentUserProfile.role === 'pendata' && currentUserProfile.wilayah_tugas?.length > 0) {
+          const allowedDusun = currentUserProfile.wilayah_tugas.map(t => t.kode_dusun);
+          query = query.in('kode_dusun', allowedDusun);
+        } else if (currentUserProfile.kode_desa) {
+          query = query.eq('kode_desa', currentUserProfile.kode_desa);
+        }
+    
+        const { data: listKeluarga, error } = await query;
+        if (error) throw error;
+    
+        if (!listKeluarga || listKeluarga.length === 0) {
+          await showAppAlert("Belum ada data keluarga yang tersimpan untuk diunduh!", "Informasi", "info");
+          return;
+        }
+    
+        // Olah data bertingkat menjadi format flat Excel yang siap olah
+        const flatRows = listKeluarga.map((k, index) => {
+          const kk = k.individu?.find(i => i.status_hubungan === 'KK') || {};
+          const pk = Array.isArray(k.pembangunan_keluarga) ? k.pembangunan_keluarga[0] : (k.pembangunan_keluarga || {});
+          const kb = Array.isArray(k.keluarga_berencana) ? k.keluarga_berencana[0] : (k.keluarga_berencana || {});
+    
+          return {
+            "No": index + 1,
+            "ID Keluarga": k.id_keluarga,
+            "No KK": k.no_kk,
+            "Kepala Keluarga": kk.nama_lengkap || '-',
+            "NIK KK": kk.nik || '-',
+            "Dusun": k.kode_dusun,
+            "RT": k.kode_rt,
+            "No Rumah": k.no_rumah,
+            "No Urut": k.no_urut_keluarga,
+            "Alamat": k.alamat,
+            "Status Keluarga": k.status_keluarga,
+            "Total Jiwa Terdaftar": k.individu?.length || 0,
+            "Sedang Ber-KB": kb.sedang_ber_kb ? 'Ya' : 'Tidak',
+            "Metode Kontrasepsi": kb.alat_kontrasepsi || '-',
+            "Alasan Tidak KB": kb.alasan_tidak_kb || '-',
+            "Sumber Pelayanan KB": kb.sumber_pelayanan_kb || '-',
+            "Luas Rumah (m2)": pk.luas_bangunan_m2 || '-',
+            "Jumlah Penghuni": pk.jumlah_penghuni || '-',
+            "Kepemilikan Rumah": pk.status_kepemilikan_rumah || '-',
+            "Kondisi Atap": pk.jenis_atap || '-',
+            "Kondisi Dinding": pk.jenis_dinding || '-',
+            "Kondisi Lantai": pk.jenis_lantai || '-',
+            "Sumber Air": pk.sumber_air_minum || '-'
+          };
+        });
+    
+        const ws = XLSX.utils.json_to_sheet(flatRows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data_Hasil_Input");
+        
+        const timestamp = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, `SIM-PK_Data_Keluarga_Terisi_${timestamp}.xlsx`);
+    
+      } catch (err) {
+        await showAppAlert("Gagal mengekspor data: " + err.message, "Gagal", "danger");
+      }
     }
 
     async function setupWilayahPenugasan(profile) {
