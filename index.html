@@ -1242,48 +1242,68 @@
       });
     }
 
-    // ================= 1. PENGATURAN TAMPILAN ADMIN & EDIT KELUARGA =================
     function renderUserInterface(profile) {
-      document.getElementById('user-nama').textContent = profile.nama_lengkap || profile.username;
-      document.getElementById('user-role-badge').textContent = (profile.role || 'petugas').replace('_', ' ');
-      document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
-    
-      const adminNav = document.getElementById('admin-nav-menu');
-      const formSection = document.getElementById('form-wizard-wrapper');
-      const adminSection = document.getElementById('admin-panel-view');
-    
-      // Set form wilayah induk
+      // Pastikan data profil terpasang aman
+      const elNama = document.getElementById('user-nama');
+      if (elNama) elNama.textContent = profile.nama_lengkap || profile.username;
+
+      const elBadge = document.getElementById('user-role-badge');
+      if (elBadge) elBadge.textContent = (profile.role || 'petugas').replace('_', ' ');
+
+      const elWilayah = document.getElementById('user-wilayah-info');
+      if (elWilayah) elWilayah.textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
+
+      // Set default form wilayah induk jika elemennya ada
       const provEl = document.getElementById('w-prov');
-      provEl.value = profile.nama_prov || 'Jawa Barat';
-      provEl.setAttribute('data-code', profile.kode_prov || '32');
-    
-      const kabEl = document.getElementById('w-kab');
-      kabEl.value = profile.nama_kab || 'Bandung';
-      kabEl.setAttribute('data-code', profile.kode_kab || '04');
-    
-      const kecEl = document.getElementById('w-kec');
-      kecEl.value = profile.nama_kec || 'Cangkuang';
-      kecEl.setAttribute('data-code', profile.kode_kec || '01');
-    
-      const desaEl = document.getElementById('w-desa');
-      desaEl.value = profile.nama_desa || 'Cangkuang';
-      desaEl.setAttribute('data-code', profile.kode_desa || '0001');
-    
-      if (profile.role !== 'pendata') {
-        // Mode ADMIN: Sembunyikan tombol tab navigasi ganda, sembunyikan form, buka Panel Admin
-        adminNav.classList.add('hidden'); 
-        formSection.classList.add('hidden'); // Form disembunyikan total
-        adminSection.classList.remove('hidden'); // Hanya panel admin yang muncul
-        switchAdminSubTab('keluarga');
-      } else {
-        // Mode PENDATA: Sembunyikan panel admin, kader langsung mengisi form
-        adminNav.classList.add('hidden');
-        adminSection.classList.add('hidden');
-        formSection.classList.remove('hidden');
-        goToStep(1);
+      if (provEl) {
+        provEl.value = profile.nama_prov || 'Jawa Barat';
+        provEl.setAttribute('data-code', profile.kode_prov || '32');
       }
-    
-      updateIDKeluarga();
+
+      const kabEl = document.getElementById('w-kab');
+      if (kabEl) {
+        kabEl.value = profile.nama_kab || 'Bandung';
+        kabEl.setAttribute('data-code', profile.kode_kab || '04');
+      }
+
+      const kecEl = document.getElementById('w-kec');
+      if (kecEl) {
+        kecEl.value = profile.nama_kec || 'Cangkuang';
+        kecEl.setAttribute('data-code', profile.kode_kec || '01');
+      }
+
+      const desaEl = document.getElementById('w-desa');
+      if (desaEl) {
+        desaEl.value = profile.nama_desa || 'Cangkuang';
+        desaEl.setAttribute('data-code', profile.kode_desa || '0001');
+      }
+
+      // Navigasi Tampilan Berdasarkan Role
+      const adminNav = document.getElementById('admin-nav-menu');
+      const adminSection = document.getElementById('admin-panel-view');
+      const formSection = document.getElementById('form-wizard-wrapper') || document.getElementById('view-kader-home');
+
+      if (profile.role !== 'pendata') {
+        // Mode ADMIN
+        if (adminNav) adminNav.classList.remove('hidden');
+        if (adminSection) adminSection.classList.remove('hidden');
+        if (formSection) formSection.classList.add('hidden');
+        if (typeof switchAdminSubTab === 'function') switchAdminSubTab('keluarga');
+      } else {
+        // Mode KADER PENDATA (Mobile Dashboard)
+        if (adminNav) adminNav.classList.add('hidden');
+        if (adminSection) adminSection.classList.add('hidden');
+        
+        // Buka dashboard Home kader jika menggunakan UI Mobile baru
+        if (typeof switchKaderTab === 'function') {
+          switchKaderTab('home');
+        } else {
+          if (formSection) formSection.classList.remove('hidden');
+          goToStep(1);
+        }
+      }
+
+      if (typeof updateIDKeluarga === 'function') updateIDKeluarga();
     }
     
     function cancelEditModeAndReturnToAdmin() {
