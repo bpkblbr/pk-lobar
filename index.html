@@ -2616,34 +2616,34 @@
 
     // TOGGLE TAMPILAN ADMIN
     function switchMainView(view) {
-      const formSection = document.getElementById('form-wizard-wrapper');
+      const formSection = document.getElementById('form-wizard-wrapper') || document.getElementById('view-kader-home');
       const adminSection = document.getElementById('admin-panel-view');
       const btnForm = document.getElementById('tab-btn-pendataan');
       const btnAdmin = document.getElementById('tab-btn-admin');
-    
+
       if (view === 'admin') {
-        formSection.classList.add('hidden');
-        adminSection.classList.remove('hidden');
+        if (formSection) formSection.classList.add('hidden');
+        if (adminSection) adminSection.classList.remove('hidden');
 
         if (btnAdmin) btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
         if (btnForm) btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
 
-        loadMasterWilayahTable();
+        if (typeof loadMasterWilayahTable === 'function') loadMasterWilayahTable();
       } else {
-        adminSection.classList.add('hidden');
-        formSection.classList.remove('hidden');
+        if (adminSection) adminSection.classList.add('hidden');
+        if (formSection) formSection.classList.remove('hidden');
 
         if (btnForm) btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
         if (btnAdmin) btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
 
         const track = document.getElementById('individus-container');
         if (!track || track.children.length === 0) {
-          initIndividuRows(2);
+          if (typeof initIndividuRows === 'function') initIndividuRows(2);
         }
-        goToStep(1);
+        if (typeof goToStep === 'function') goToStep(1);
       }
 
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
     
     function switchAdminSubTab(sub) {
