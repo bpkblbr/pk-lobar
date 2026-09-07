@@ -632,11 +632,11 @@
             </div>
           </div>
 
-          <!-- ================= STEP 4: PEMBANGUNAN KELUARGA (FINAL FORM) ================= -->          
-          <div id="step-4" class="step-content hidden space-y-4">
+          <!-- ================= STEP 4: PEMBANGUNAN KELUARGA ================= -->          
+          <div id="step-4" class="step-content hidden max-w-3xl mx-auto space-y-4">
             <div class="pb-2 border-b border-slate-200">
               <h3 class="text-base font-bold text-slate-900">E. Form Pembangunan Keluarga</h3>
-              <p class="text-xs text-slate-500">Data kelayakan hunian dan infrastruktur keluarga</p>
+              <p class="text-xs text-slate-500">Pilih kondisi kelayakan hunian dan sarana prasarana tempat tinggal</p>
             </div>
           
             <!-- 1. Kondisi Atap -->
@@ -644,14 +644,24 @@
               <label class="block text-xs font-bold text-slate-900">1. Atap Rumah</label>
               <div>
                 <label class="block text-[11px] text-slate-600 mb-1">Jenis Atap Terluas</label>
-                <select id="pk-atap" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>Beton</option><option>Genteng</option><option>Asbes/Seng</option><option>Kayu/Sirap</option><option>Bambu</option><option>Jerami/Ijuk/Rumbia/ Daun-daunan</option><option>Lainnya</option>
+                <select id="pk-atap" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH JENIS ATAP --</option>
+                  <option value="Beton">Beton</option>
+                  <option value="Genteng">Genteng</option>
+                  <option value="Asbes/Seng">Asbes/Seng</option>
+                  <option value="Kayu/Sirap">Kayu/Sirap</option>
+                  <option value="Bambu">Bambu</option>
+                  <option value="Jerami/Ijuk/Rumbia/ Daun-daunan">Jerami/Ijuk/Rumbia/ Daun-daunan</option>
+                  <option value="Lainnya">Lainnya</option>
                 </select>
               </div>
               <div>
                 <label class="block text-[11px] text-slate-600 mb-1">Kondisi Atap</label>
-                <select id="pk-kondisi-atap" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>baik</option><option>rusak ringan</option><option>Rusak berat</option>
+                <select id="pk-kondisi-atap" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH KONDISI ATAP --</option>
+                  <option value="baik">Baik</option>
+                  <option value="rusak ringan">Rusak Ringan</option>
+                  <option value="Rusak berat">Rusak Berat</option>
                 </select>
               </div>
             </div>
@@ -661,14 +671,22 @@
               <label class="block text-xs font-bold text-slate-900">2. Dinding Rumah</label>
               <div>
                 <label class="block text-[11px] text-slate-600 mb-1">Jenis Dinding Terluas</label>
-                <select id="pk-dinding" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>Tembok</option><option>Kayu/Papan</option><option>Seng</option><option>Bambu</option><option>Lainnya</option>
+                <select id="pk-dinding" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH JENIS DINDING --</option>
+                  <option value="Tembok">Tembok</option>
+                  <option value="Kayu/Papan">Kayu/Papan</option>
+                  <option value="Seng">Seng</option>
+                  <option value="Bambu">Bambu</option>
+                  <option value="Lainnya">Lainnya</option>
                 </select>
               </div>
               <div>
                 <label class="block text-[11px] text-slate-600 mb-1">Kondisi Dinding</label>
-                <select id="pk-kondisi-dinding" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>baik</option><option>rusak ringan</option><option>Rusak berat</option>
+                <select id="pk-kondisi-dinding" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH KONDISI DINDING --</option>
+                  <option value="baik">Baik</option>
+                  <option value="rusak ringan">Rusak Ringan</option>
+                  <option value="Rusak berat">Rusak Berat</option>
                 </select>
               </div>
             </div>
@@ -678,14 +696,23 @@
               <label class="block text-xs font-bold text-slate-900">3. Lantai Rumah</label>
               <div>
                 <label class="block text-[11px] text-slate-600 mb-1">Jenis Lantai Terluas</label>
-                <select id="pk-lantai" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>Keramik/Granit/Marmer/Ubin/Tegel/Teraso</option><option>Semen</option><option>Kayu/Papan</option><option>Bambu</option><option>Tanah</option><option>Lainnya</option>
+                <select id="pk-lantai" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH JENIS LANTAI --</option>
+                  <option value="Keramik/Granit/Marmer/Ubin/Tegel/Teraso">Keramik/Granit/Marmer/Ubin/Tegel/Teraso</option>
+                  <option value="Semen">Semen</option>
+                  <option value="Kayu/Papan">Kayu/Papan</option>
+                  <option value="Bambu">Bambu</option>
+                  <option value="Tanah">Tanah</option>
+                  <option value="Lainnya">Lainnya</option>
                 </select>
               </div>
               <div>
                 <label class="block text-[11px] text-slate-600 mb-1">Kondisi Lantai</label>
-                <select id="pk-kondisi-lantai" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>baik</option><option>rusak ringan</option><option>Rusak berat</option>
+                <select id="pk-kondisi-lantai" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH KONDISI LANTAI --</option>
+                  <option value="baik">Baik</option>
+                  <option value="rusak ringan">Rusak Ringan</option>
+                  <option value="Rusak berat">Rusak Berat</option>
                 </select>
               </div>
             </div>
@@ -693,16 +720,21 @@
             <!-- 4. Sumber Penerangan -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2.5 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">4. Sumber Penerangan Utama</label>
-              <select id="pk-penerangan" onchange="toggleListrikDaya(this.value)" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
+              <select id="pk-penerangan" onchange="toggleListrikDaya(this.value)" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                <option value="">-- PILIH SUMBER PENERANGAN --</option>
                 <option value="Listrik PLN Meteran">Listrik PLN Meteran</option>
                 <option value="Listrik PLN Non Meteran">Listrik PLN Non Meteran</option>
                 <option value="Listrik Non PLN">Listrik Non PLN</option>
                 <option value="Bukan Listrik">Bukan Listrik</option>
               </select>
-              <div id="wrapper-daya-listrik">
+              <div id="wrapper-daya-listrik" class="hidden">
                 <label class="block text-[11px] text-slate-600 mb-1">Besar Daya Terpasang</label>
-                <select id="pk-daya" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                  <option>450 watt</option><option>900 watt</option><option>1300 watt</option><option>&gt;1300 watt</option>
+                <select id="pk-daya" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="">-- PILIH BESAR DAYA --</option>
+                  <option value="450 watt">450 watt</option>
+                  <option value="900 watt">900 watt</option>
+                  <option value="1300 watt">1300 watt</option>
+                  <option value=">1300 watt">&gt;1300 watt</option>
                 </select>
               </div>
             </div>
@@ -710,34 +742,52 @@
             <!-- 5. Sumber Air Minum -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">5. Sumber Air Minum Utama</label>
-              <select id="pk-air" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                <option>Air Kemasan bermerek</option><option>Air Isi Ulang</option><option>Ledeng/PAM</option><option>Sumur Bor</option><option>Sumur Terlindung</option><option>Sumur Tidak Terlindung</option><option>Air Permukaan (Sungai, Danau, dll)</option><option>KRAN Umum/Hidwan Umum/Terminal Air</option><option>Penampungan Air Hujan (PAH)</option><option>Lainnya</option>
+              <select id="pk-air" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                <option value="">-- PILIH SUMBER AIR MINUM --</option>
+                <option value="Air Kemasan bermerek">Air Kemasan bermerek</option>
+                <option value="Air Isi Ulang">Air Isi Ulang</option>
+                <option value="Ledeng/PAM">Ledeng/PAM</option>
+                <option value="Sumur Bor">Sumur Bor</option>
+                <option value="Sumur Terlindung">Sumur Terlindung</option>
+                <option value="Sumur Tidak Terlindung">Sumur Tidak Terlindung</option>
+                <option value="Air Permukaan (Sungai, Danau, dll)">Air Permukaan (Sungai, Danau, dll)</option>
+                <option value="KRAN Umum/Hidwan Umum/Terminal Air">KRAN Umum/Hidwan Umum/Terminal Air</option>
+                <option value="Penampungan Air Hujan (PAH)">Penampungan Air Hujan (PAH)</option>
+                <option value="Lainnya">Lainnya</option>
               </select>
             </div>
           
             <!-- 6. Fasilitas BAB -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">6. Fasilitas Buang Air Besar</label>
-              <select id="pk-bab" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                <option>Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL dan dilakukan penyedotan secara berkala (satu kali dalam 3-5 tahun)</option>
-                <option>Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL</option>
-                <option>Ya MCK komunal dengan leher angsa dan tangka septic/IPAL</option>
-                <option>Ya, lainnya</option>
-                <option>Tidak ada</option>
+              <select id="pk-bab" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                <option value="">-- PILIH FASILITAS BAB --</option>
+                <option value="Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL dan dilakukan penyedotan secara berkala (satu kali dalam 3-5 tahun)">Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL dan dilakukan penyedotan secara berkala (satu kali dalam 3-5 tahun)</option>
+                <option value="Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL">Ya, milik sendiri dengan leher angsa dan tangka septic/IPAL</option>
+                <option value="Ya MCK komunal dengan leher angsa dan tangka septic/IPAL">Ya MCK komunal dengan leher angsa dan tangka septic/IPAL</option>
+                <option value="Ya, lainnya">Ya, lainnya</option>
+                <option value="Tidak ada">Tidak ada</option>
               </select>
             </div>
           
             <!-- 7. Luas Bangunan -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">7. Luas Bangunan (m²)</label>
-              <input type="number" step="0.1" id="pk-luas" required class="w-full px-3 py-2 border rounded-lg text-xs" placeholder="Contoh: 36">
+              <input type="number" step="0.1" id="pk-luas" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs" placeholder="Ketik luas bangunan (contoh: 36)...">
             </div>
           
             <!-- 8. Bahan Bakar Memasak -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
               <label class="block text-xs font-bold text-slate-900">8. Bahan Bakar Utama Memasak</label>
-              <select id="pk-bahan-bakar" class="w-full px-3 py-2 border rounded-lg text-xs bg-white">
-                <option>Listrik</option><option>Gas 12 kg</option><option>Gas 5,5kg/blue gas</option><option>Gas 3kg</option><option>Minyak tanah</option><option>Briket/arang/kayu</option><option>lainnya</option>
+              <select id="pk-bahan-bakar" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                <option value="">-- PILIH BAHAN BAKAR MEMASAK --</option>
+                <option value="Listrik">Listrik</option>
+                <option value="Gas 12 kg">Gas 12 kg</option>
+                <option value="Gas 5,5kg/blue gas">Gas 5,5kg/blue gas</option>
+                <option value="Gas 3kg">Gas 3kg</option>
+                <option value="Minyak tanah">Minyak tanah</option>
+                <option value="Briket/arang/kayu">Briket/arang/kayu</option>
+                <option value="lainnya">Lainnya</option>
               </select>
             </div>
           
