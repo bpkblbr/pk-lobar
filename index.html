@@ -1075,20 +1075,47 @@
       desaEl.setAttribute('data-code', profile.kode_desa || '0001');
     }
 
-    function setupWilayahPenugasan(profile) {
+    async function setupWilayahPenugasan(profile) {
       const dusunSelect = document.getElementById('w-dusun-select');
       const rtSelect = document.getElementById('w-rt');
       dusunSelect.innerHTML = '<option value="">-- PILIH DUSUN --</option>';
       rtSelect.innerHTML = '<option value="">-- PILIH RT --</option>';
     
       let listTugas = [];
+
+      // Jika kader pendata dan punya batasan tugas
       if (profile.role === 'pendata' && Array.isArray(profile.wilayah_tugas) && profile.wilayah_tugas.length > 0) {
         listTugas = profile.wilayah_tugas;
       } else {
-        listTugas = [
-          { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
-          { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
-        ];
+        // Jika ADMIN, ambil seluruh dusun yang ada di desa ini dari master_wilayah
+        try {
+          const { data: dbDusun } = await supabaseClient
+            .from('master_wilayah')
+            .select('*')
+            .eq('kode_desa', profile.kode_desa || '0001')
+            .order('kode_dusun', { ascending: true });
+
+          if (dbDusun && dbDusun.length > 0) {
+            listTugas = dbDusun.map(d => {
+              const rts = [];
+              for (let i = 1; i <= d.jumlah_rt; i++) {
+                rts.push(String(i).padStart(3, '0'));
+              }
+              return {
+                kode_dusun: d.kode_dusun,
+                nama_dusun: d.nama_dusun,
+                rt: rts
+              };
+            });
+          } else {
+            listTugas = [
+              { kode_dusun: "0001", nama_dusun: "Dusun Mawar", rt: ["001", "002", "003"] },
+              { kode_dusun: "0002", nama_dusun: "Dusun Melati", rt: ["001", "002", "003", "004", "005"] }
+            ];
+          }
+        } catch (e) {
+          console.error("Gagal load master dusun untuk admin:", e);
+        }
       }
     
       listTugas.forEach((item, index) => {
