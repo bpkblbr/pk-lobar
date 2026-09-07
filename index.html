@@ -1085,16 +1085,16 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
     }
 
     function updateIDKeluarga() {
-      // Blok 1: Wilayah Induk (Tanpa Spasi)
+      // Blok 1: Wilayah Induk sampai Dusun (Tanpa Spasi)
       const prov = (document.getElementById('w-prov')?.getAttribute('data-code') || '00').padStart(2, '0');
       const kab  = (document.getElementById('w-kab')?.getAttribute('data-code') || '00').padStart(2, '0');
       const kec  = (document.getElementById('w-kec')?.getAttribute('data-code') || '00').padStart(2, '0');
       const desa = (document.getElementById('w-desa')?.getAttribute('data-code') || '0000').padStart(4, '0');
     
-      // Blok 2: Dusun, RT, No. Rumah, dan No. Urut (Dusun 4 digit, RT 3 digit, Rumah 3 digit, Urut 3 digit)
       const dusunRaw = document.getElementById('w-dusun')?.getAttribute('data-code') || document.getElementById('w-dusun-select')?.value || '';
       const dusun = dusunRaw ? String(dusunRaw).padStart(4, '0') : '0000';
     
+      // Blok 2: RT, No. Rumah, dan No. Urut (RT 3 digit, Rumah 3 digit, Urut 3 digit)
       const rtRaw = document.getElementById('w-rt')?.value || '';
       const rt = rtRaw ? String(rtRaw).padStart(3, '0') : '000';
     
@@ -1104,11 +1104,11 @@ function showAppConfirm(message, title = "Konfirmasi Tindakan") {
       const noUrutRaw = document.getElementById('w-no-urut')?.value.trim() || '';
       const noUrut = noUrutRaw ? String(noUrutRaw).padStart(3, '0') : '000';
     
-      // Gabungkan dengan 1 spasi pemisah di antara desa dan dusun
-      const blokWilayahInduk = `${prov}${kab}${kec}${desa}`;
-      const blokLokalKeluarga = `${dusun}${rt}${noRumah}${noUrut}`;
+      // Gabungkan: Prov+Kab+Kec+Desa+Dusun + [SPASI] + RT+Rumah+Urut
+      const blokWilayahDusun = `${prov}${kab}${kec}${desa}${dusun}`;
+      const blokRtRumahUrut  = `${rt}${noRumah}${noUrut}`;
     
-      const generatedID = `${blokWilayahInduk} ${blokLokalKeluarga}`;
+      const generatedID = `${blokWilayahDusun} ${blokRtRumahUrut}`;
     
       const idInput = document.getElementById('w-id-keluarga');
       if (idInput) {
