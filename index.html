@@ -2391,20 +2391,22 @@ async function confirmIndividualAndProceed() {
     
         // Isi Form Pembangunan Keluarga jika ada
         if (pkData) {
-          document.getElementById('pk-atap').value = pkData.jenis_atap;
-          document.getElementById('pk-kondisi-atap').value = pkData.kondisi_atap;
-          document.getElementById('pk-dinding').value = pkData.jenis_dinding;
-          document.getElementById('pk-kondisi-dinding').value = pkData.kondisi_dinding;
-          document.getElementById('pk-lantai').value = pkData.jenis_lantai;
-          document.getElementById('pk-kondisi-lantai').value = pkData.kondisi_lantai;
-          document.getElementById('pk-penerangan').value = pkData.sumber_penerangan;
+          document.getElementById('pk-atap').value = pkData.jenis_atap || '';
+          document.getElementById('pk-kondisi-atap').value = pkData.kondisi_atap || '';
+          document.getElementById('pk-dinding').value = pkData.jenis_dinding || '';
+          document.getElementById('pk-kondisi-dinding').value = pkData.kondisi_dinding || '';
+          document.getElementById('pk-lantai').value = pkData.jenis_lantai || '';
+          document.getElementById('pk-kondisi-lantai').value = pkData.kondisi_lantai || '';
+          document.getElementById('pk-penerangan').value = pkData.sumber_penerangan || '';
           toggleListrikDaya(pkData.sumber_penerangan);
           if (pkData.daya_listrik) document.getElementById('pk-daya').value = pkData.daya_listrik;
-          document.getElementById('pk-air').value = pkData.sumber_air_minum;
-          document.getElementById('pk-bab').value = pkData.fasilitas_bab;
-          document.getElementById('pk-luas').value = pkData.luas_bangunan_m2;
-          document.getElementById('pk-bahan-bakar').value = pkData.bahan_bakar_memasak;
-        }
+          document.getElementById('pk-air').value = pkData.sumber_air_minum || '';
+          document.getElementById('pk-bab').value = pkData.fasilitas_bab || '';
+          document.getElementById('pk-luas').value = pkData.luas_bangunan_m2 || '';
+          document.getElementById('pk-jumlah-penghuni').value = pkData.jumlah_penghuni || '';
+          document.getElementById('pk-kepemilikan').value = pkData.status_kepemilikan_rumah || '';
+          document.getElementById('pk-bahan-bakar').value = pkData.bahan_bakar_memasak || '';
+        }        
     
         // Isi Form KB jika ada
         if (kbData) {
