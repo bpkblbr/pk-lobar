@@ -259,85 +259,103 @@
         <form id="survey-form" class="p-6 sm:p-8 space-y-6">
 
           <!-- FORM A: WILAYAH -->
-          <div id="step-1" class="step-content space-y-6">
-            <div class="flex justify-between items-center pb-2 border-b">
-              <h3 class="text-lg font-bold text-slate-900">B. Form Wilayah</h3>
-              <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md font-medium">Auto Lock</span>
+          <div id="step-1" class="step-content space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-200">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">B. Form Wilayah</h3>
+                <p class="text-xs text-slate-500">Data wilayah administratif dan identitas kartu keluarga</p>
+              </div>
+              <span class="text-[11px] bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md font-bold">Auto Lock</span>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Provinsi</label>
-                <input type="text" id="w-prov" data-code="32" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kabupaten/Kota</label>
-                <input type="text" id="w-kab" data-code="04" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kecamatan</label>
-                <input type="text" id="w-kec" data-code="01" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Desa/Kelurahan (4 Digit)</label>
-                <input type="text" id="w-desa" data-code="0001" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Dusun/RW Penugasan (4 Digit)</label>
-                <select id="w-dusun-select" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium"></select>
-                <input type="hidden" id="w-dusun" data-code="0001">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">RT Penugasan (3 Digit)</label>
-                <select id="w-rt" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 font-medium"></select>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Rumah</label>
-                <input type="text" id="w-no-rumah" required placeholder="012" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Urut Keluarga</label>
-                <input type="text" id="w-no-urut" required placeholder="001" class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">ID Keluarga (Generated)</label>
-                <input type="text" id="w-id-keluarga" readonly class="w-full px-3 py-2 border rounded-lg font-mono text-indigo-700 bg-indigo-50 font-bold text-xs">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Kartu Keluarga (KK)</label>
-                <input type="text" id="w-no-kk" maxlength="16" required placeholder="3204..." class="w-full px-3 py-2 border rounded-lg">
+          
+            <!-- 1. Wilayah Administratif -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">1. Wilayah Administratif (Terkunci Akun Petugas)</label>
+              <div class="space-y-2.5">
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Provinsi</label>
+                  <input type="text" id="w-prov" data-code="32" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-xs">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Kabupaten/Kota</label>
+                  <input type="text" id="w-kab" data-code="04" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-xs">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Kecamatan</label>
+                  <input type="text" id="w-kec" data-code="01" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-xs">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Desa/Kelurahan (4 Digit)</label>
+                  <input type="text" id="w-desa" data-code="0001" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-xs">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">Dusun/RW Penugasan (4 Digit)</label>
+                  <select id="w-dusun-select" class="w-full px-3 py-2 border rounded-lg text-xs font-medium"></select>
+                  <input type="hidden" id="w-dusun" data-code="0001">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">RT Penugasan (3 Digit)</label>
+                  <select id="w-rt" class="w-full px-3 py-2 border rounded-lg text-xs font-medium"></select>
+                </div>
               </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Telepon / HP</label>
-                <input type="tel" id="w-no-telp" placeholder="0812..." class="w-full px-3 py-2 border rounded-lg">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Anggota Keluarga</label>
-                <input type="number" id="w-jml-anggota" min="1" max="20" value="2" class="w-full px-3 py-2 border rounded-lg font-semibold">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Status Keluarga</label>
-                <select id="w-status-keluarga" class="w-full px-3 py-2 border rounded-lg">
-                  <option value="keluarga ada">Keluarga Ada</option>
-                  <option value="keluarga pindah">Keluarga Pindah</option>
-                  <option value="keluarga seluruh anggota keluarga meninggal dunia">Seluruh Anggota Meninggal Dunia</option>
-                  <option value="keluarga tidak ditemukan">Keluarga Tidak Ditemukan</option>
-                </select>
-              </div>
-              <div class="md:col-span-3">
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Alamat Lengkap Rumah</label>
-                <textarea id="w-alamat" rows="2" required placeholder="Jl. Melati No..." class="w-full px-3 py-2 border rounded-lg"></textarea>
+          
+            <!-- 2. Penomoran Rumah & Keluarga -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">2. Penomoran Rumah & Urut Keluarga</label>
+              <div class="space-y-2.5">
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">No. Rumah</label>
+                  <input type="text" id="w-no-rumah" required placeholder="012" class="w-full px-3 py-2 border rounded-lg text-xs">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">No. Urut Keluarga</label>
+                  <input type="text" id="w-no-urut" required placeholder="001" class="w-full px-3 py-2 border rounded-lg text-xs">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-slate-600 mb-1">ID Keluarga (Generated)</label>
+                  <input type="text" id="w-id-keluarga" readonly class="w-full px-3 py-2 border rounded-lg font-mono text-indigo-700 bg-indigo-50 font-bold text-xs">
+                </div>
               </div>
             </div>
-
-            <div class="flex justify-end pt-4">
-              <button type="button" onclick="goToStep(2)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg flex items-center gap-2">
+          
+            <!-- 3. Nomor Kartu Keluarga (KK) -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">3. No. Kartu Keluarga (KK)</label>
+              <input type="text" id="w-no-kk" maxlength="16" required placeholder="3204..." class="w-full px-3 py-2 border rounded-lg text-xs font-mono">
+            </div>
+          
+            <!-- 4. Kontak Keluarga -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">4. No. Telepon / HP</label>
+              <input type="tel" id="w-no-telp" placeholder="0812..." class="w-full px-3 py-2 border rounded-lg text-xs">
+            </div>
+          
+            <!-- 5. Jumlah Anggota Keluarga -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">5. Jumlah Anggota Keluarga</label>
+              <input type="number" id="w-jml-anggota" min="1" max="20" value="2" class="w-full px-3 py-2 border rounded-lg text-xs font-bold">
+            </div>
+          
+            <!-- 6. Status Keberadaan Keluarga -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">6. Status Keberadaan Keluarga</label>
+              <select id="w-status-keluarga" class="w-full px-3 py-2 border rounded-lg text-xs">
+                <option value="keluarga ada">Keluarga Ada</option>
+                <option value="keluarga pindah">Keluarga Pindah</option>
+                <option value="keluarga seluruh anggota keluarga meninggal dunia">Seluruh Anggota Meninggal Dunia</option>
+                <option value="keluarga tidak ditemukan">Keluarga Tidak Ditemukan</option>
+              </select>
+            </div>
+          
+            <!-- 7. Alamat Lengkap -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">7. Alamat Lengkap Rumah</label>
+              <textarea id="w-alamat" rows="2" required placeholder="Jl. Melati No..." class="w-full px-3 py-2 border rounded-lg text-xs"></textarea>
+            </div>
+          
+            <div class="flex justify-end pt-4 border-t">
+              <button type="button" onclick="goToStep(2)" class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 shadow-sm">
                 <span>Lanjut: Data Individu</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
