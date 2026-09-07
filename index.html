@@ -1090,8 +1090,7 @@ function addIndividualRow() {
 // Buat elemen slide kartu (w-full shrink-0 untuk sistem slider)
 function createIndividualCard(index) {
   const card = document.createElement('div');
-  // Kelas w-full, flex-none / shrink-0 wajib agar setiap kartu mengisi 1 lebar layar slide
-  card.className = 'w-full flex-none shrink-0 p-6 rounded-xl border border-slate-200 bg-white space-y-4 shadow-sm';
+  card.className = 'w-full flex-none shrink-0 p-4 sm:p-6 rounded-xl border border-slate-200 bg-white space-y-4 shadow-sm';
   card.id = `ind-card-${index}`;
 
   const isKK = (index === 1);
@@ -1116,46 +1115,58 @@ function createIndividualCard(index) {
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+    <!-- 1. Nama Lengkap -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">1. Nama Lengkap</label>
+      <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg text-xs" oninput="refreshMotherDropdowns()" required placeholder="Nama Lengkap">
+    </div>
+
+    <!-- 2. NIK -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">2. NIK (16 Digit)</label>
+      <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg text-xs font-mono" required placeholder="3204...">
+    </div>
+
+    <!-- 3. Status Hubungan -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">3. Status Hubungan dengan Kepala Keluarga</label>
+      <select class="ind-hubungan w-full px-3 py-2 border rounded-lg text-xs font-medium" id="hubungan-${index}" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
+        ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
+          <option value="Istri">Istri</option>
+          <option value="Anak" selected>Anak</option>
+          <option value="Lainnya">Lainnya</option>
+        `}
+      </select>
+    </div>
+
+    <!-- 4. Jenis Kelamin -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">4. Jenis Kelamin</label>
+      <select class="ind-jk w-full px-3 py-2 border rounded-lg text-xs font-medium" id="jk-${index}" onchange="onJenisKelaminChanged(${index}, this.value)">
+        <option value="Laki-laki">Laki-laki</option>
+        <option value="Perempuan">Perempuan</option>
+      </select>
+    </div>
+
+    <!-- 5. Tanggal Lahir & Usia -->
+    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
+      <label class="block text-xs font-bold text-slate-800">5. Kelahiran & Usia</label>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
-        <input type="text" class="ind-nama w-full px-3 py-2 border rounded-lg" oninput="refreshMotherDropdowns()" required placeholder="Nama Lengkap">
+        <label class="block text-[11px] text-slate-600 mb-1">Tanggal Lahir</label>
+        <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg text-xs bg-white" onchange="calculateAge(${index}, this.value)" required>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">NIK (16 Digit)</label>
-        <input type="text" maxlength="16" class="ind-nik w-full px-3 py-2 border rounded-lg" required placeholder="3204...">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Status Hubungan</label>
-        <select class="ind-hubungan w-full px-3 py-2 border rounded-lg font-medium" id="hubungan-${index}" onchange="onHubunganChanged(${index}, this.value)" ${isKK ? 'disabled' : ''}>
-          ${isKK ? '<option value="KK" selected>KK (Kepala Keluarga)</option>' : `
-            <option value="Istri">Istri</option>
-            <option value="Anak" selected>Anak</option>
-            <option value="Lainnya">Lainnya</option>
-          `}
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
-        <select class="ind-jk w-full px-3 py-2 border rounded-lg font-medium" id="jk-${index}" onchange="onJenisKelaminChanged(${index}, this.value)">
-          <option value="Laki-laki">Laki-laki</option>
-          <option value="Perempuan">Perempuan</option>
-        </select>
+        <label class="block text-[11px] text-slate-600 mb-1">Usia (Tahun)</label>
+        <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-100 font-bold text-slate-800 text-xs">
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+    <!-- 6. Status Perkawinan -->
+    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2.5">
+      <label class="block text-xs font-bold text-slate-800">6. Status Perkawinan</label>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Lahir</label>
-        <input type="date" class="ind-tgl-lahir w-full px-3 py-2 border rounded-lg" onchange="calculateAge(${index}, this.value)" required>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Usia (Tahun)</label>
-        <input type="number" id="usia-${index}" readonly class="ind-usia w-full px-3 py-2 border rounded-lg bg-slate-50 font-bold text-slate-700">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Status Perkawinan</label>
-        <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg font-medium" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
+        <label class="block text-[11px] text-slate-600 mb-1">Status Saat Ini</label>
+        <select class="ind-perkawinan w-full px-3 py-2 border rounded-lg text-xs bg-white font-medium" id="kawin-${index}" onchange="onKawinChanged(${index}, this.value)">
           <option value="Belum Kawin">Belum Kawin</option>
           <option value="Kawin Tercatat">Kawin Tercatat</option>
           <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
@@ -1165,75 +1176,89 @@ function createIndividualCard(index) {
         </select>
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Usia Kawin Pertama</label>
-        <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci jika belum" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg">
+        <label class="block text-[11px] text-slate-600 mb-1">Usia Kawin Pertama</label>
+        <input type="number" id="usia-kawin-${index}" disabled placeholder="Terkunci jika belum kawin" class="ind-usia-kawin w-full px-3 py-2 border rounded-lg text-xs bg-white">
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Memiliki Akta Lahir?</label>
-        <select class="ind-akta w-full px-3 py-2 border rounded-lg">
-          <option value="true">Ya</option>
-          <option value="false">Tidak</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Ibu Kandung</label>
-        <select class="ind-ibu w-full px-3 py-2 border rounded-lg" id="ibu-${index}" ${isKK ? 'disabled' : ''}>
-          <option value="">- Terkunci / Pilih Ibu -</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Agama</label>
-        <select class="ind-agama w-full px-3 py-2 border rounded-lg">
-          <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Pekerjaan</label>
-        <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg">
-          <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
-        </select>
-      </div>
+    <!-- 7. Akta Lahir -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">7. Memiliki Akta Lahir?</label>
+      <select class="ind-akta w-full px-3 py-2 border rounded-lg text-xs">
+        <option value="true">Ya</option>
+        <option value="false">Tidak</option>
+      </select>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Pendidikan</label>
-        <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg">
-          <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Kepesertaan JKN</label>
-        <select class="ind-jkn w-full px-3 py-2 border rounded-lg">
-          <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Bekerja di Luar Negeri</label>
-        <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg" id="luarnegeri-${index}">
-          <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-semibold text-slate-600 mb-1">Mutasi Anggota</label>
-        <select class="ind-mutasi w-full px-3 py-2 border rounded-lg">
-          <option value="">Kosongkan</option><option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option><option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option><option value="Meninggal Dunia">Meninggal Dunia</option>
-        </select>
-      </div>
+    <!-- 8. Ibu Kandung -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">8. Ibu Kandung</label>
+      <select class="ind-ibu w-full px-3 py-2 border rounded-lg text-xs" id="ibu-${index}" ${isKK ? 'disabled' : ''}>
+        <option value="">- Terkunci / Pilih Ibu -</option>
+      </select>
     </div>
 
-    <div>
-      <label class="block text-xs font-semibold text-slate-600 mb-1">Ragam Disabilitas</label>
-      <div class="flex flex-wrap gap-4 text-xs mt-1">
+    <!-- 9. Agama -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">9. Agama</label>
+      <select class="ind-agama w-full px-3 py-2 border rounded-lg text-xs">
+        <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Penghayat Kepercayaan</option><option>Lainnya</option>
+      </select>
+    </div>
+
+    <!-- 10. Pekerjaan -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">10. Pekerjaan</label>
+      <select class="ind-pekerjaan w-full px-3 py-2 border rounded-lg text-xs">
+        <option>Tidak/Belum Bekerja</option><option>Petani</option><option>Nelayan</option><option>Pedagang</option><option>Pejabat Negara</option><option>PNS/TNI/POLRI</option><option>Pegawai Swasta</option><option>Wiraswasta</option><option>Pensiunan</option><option>Pekerja Lepas</option>
+      </select>
+    </div>
+
+    <!-- 11. Pendidikan -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">11. Pendidikan Terakhir / Sedang Ditempuh</label>
+      <select class="ind-pendidikan w-full px-3 py-2 border rounded-lg text-xs">
+        <option>Tidak/Belum Sekolah</option><option>Tidak Tamat SD/Sederajat</option><option>Masih SD/Sederajat</option><option>Tamat SD/Sederajat</option><option>Masih SLTP/Sederajat</option><option>Tamat SLTP/Sederajat</option><option>Masih SLTA/Sederajat</option><option>Tamat SLTA/Sederajat</option><option>Masih PT/Akademi</option><option>Tamat PT/Akademi</option>
+      </select>
+    </div>
+
+    <!-- 12. Kepesertaan JKN -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">12. Kepesertaan JKN / Asuransi Kesehatan</label>
+      <select class="ind-jkn w-full px-3 py-2 border rounded-lg text-xs">
+        <option>PBI</option><option>BUKAN PBI</option><option>SWASTA</option><option>TIDAK MEMILIKI</option>
+      </select>
+    </div>
+
+    <!-- 13. Bekerja di Luar Negeri -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">13. Bekerja di Luar Negeri</label>
+      <select class="ind-luar-negeri w-full px-3 py-2 border rounded-lg text-xs" id="luarnegeri-${index}">
+        <option value="Tidak">Tidak</option><option value="Pernah">Pernah</option><option value="Sedang">Sedang</option><option value="Akan">Akan (dlm 3 th)</option>
+      </select>
+    </div>
+
+    <!-- 14. Ragam Disabilitas -->
+    <div class="space-y-1">
+      <label class="block text-xs font-bold text-slate-800">14. Ragam Disabilitas</label>
+      <div class="flex flex-wrap gap-3 text-xs pt-1">
         <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Tidak" checked onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Tidak</label>
         <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Fisik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Fisik</label>
         <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Sensorik" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Sensorik</label>
         <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Mental" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Mental</label>
         <label class="inline-flex items-center gap-1.5"><input type="checkbox" value="Intelektual" onchange="toggleDisabilitas(this, ${index})" class="dis-check-${index}"> Intelektual</label>
       </div>
+    </div>
+
+    <!-- Mutasi Anggota (Opsional jika ada) -->
+    <div class="space-y-1 pt-1 border-t border-slate-100">
+      <label class="block text-[11px] font-semibold text-slate-500">Mutasi Anggota (Jika Ada)</label>
+      <select class="ind-mutasi w-full px-3 py-2 border rounded-lg text-xs">
+        <option value="">Kosongkan (Tidak Bermutasi)</option>
+        <option value="Anggota Baru Pindah Datang">Anggota Baru Pindah Datang</option>
+        <option value="Anggota Pindah Keluar">Anggota Pindah Keluar</option>
+        <option value="Meninggal Dunia">Meninggal Dunia</option>
+      </select>
     </div>
   `;
 
