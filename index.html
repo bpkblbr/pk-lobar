@@ -632,7 +632,7 @@
             </div>
           </div>
 
-          <!-- ================= STEP 4: PEMBANGUNAN KELUARGA ================= -->          
+          <!-- ================= STEP 4: PEMBANGUNAN KELUARGA ================= -->
           <div id="step-4" class="step-content hidden max-w-3xl mx-auto space-y-4">
             <div class="pb-2 border-b border-slate-200">
               <h3 class="text-base font-bold text-slate-900">E. Form Pembangunan Keluarga</h3>
@@ -776,9 +776,31 @@
               <input type="number" step="0.1" id="pk-luas" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs" placeholder="Ketik luas bangunan (contoh: 36)...">
             </div>
           
-            <!-- 8. Bahan Bakar Memasak -->
+            <!-- 8. Jumlah Orang yang Tinggal dan Menetap (BARU) -->
             <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
-              <label class="block text-xs font-bold text-slate-900">8. Bahan Bakar Utama Memasak</label>
+              <label class="block text-xs font-bold text-slate-900">8. Berapa jumlah orang yang tinggal dan menetap di rumah/bangunan ini?</label>
+              <div class="relative">
+                <input type="number" min="1" id="pk-jumlah-penghuni" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs pr-16" placeholder="Ketik jumlah...">
+                <span class="absolute right-3 top-2 text-xs font-semibold text-slate-400 pointer-events-none">Orang</span>
+              </div>
+            </div>
+          
+            <!-- 9. Kepemilikan Rumah/Bangunan (BARU) -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">9. Kepemilikan rumah/bangunan tempat tinggal?</label>
+              <select id="pk-kepemilikan" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                <option value="">-- PILIH STATUS KEPEMILIKAN RUMAH --</option>
+                <option value="Milik sendiri">Milik sendiri</option>
+                <option value="Kontrak/Sewa">Kontrak/Sewa</option>
+                <option value="Bebas sewa/Menumpang">Bebas sewa/Menumpang</option>
+                <option value="Dinas">Dinas</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+          
+            <!-- 10. Bahan Bakar Memasak -->
+            <div class="p-4 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+              <label class="block text-xs font-bold text-slate-900">10. Bahan Bakar Utama Memasak</label>
               <select id="pk-bahan-bakar" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white">
                 <option value="">-- PILIH BAHAN BAKAR MEMASAK --</option>
                 <option value="Listrik">Listrik</option>
