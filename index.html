@@ -999,30 +999,63 @@
       return document.getElementById('form-wizard-wrapper');
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      bindIDGenerators();
+      initIndividuRows(2);
+
+      // Cek sesi login tersimpan
+      const savedUser = localStorage.getItem('simpk_session');
+      if (savedUser) {
+        currentUserProfile = JSON.parse(savedUser);
+        document.getElementById('auth-view').classList.add('hidden');
+        document.getElementById('app-view').classList.remove('hidden');
+
+        setupWilayahPenugasan(currentUserProfile);
+        renderUserInterface(currentUserProfile);
+        loadStats();
+      }
+    });
+
+    // ================= SINKRONISASI TAMPILAN USER / ROLE =================
     function renderUserInterface(profile) {
-      document.getElementById('user-nama').textContent = profile.nama_lengkap;
-      document.getElementById('user-role-badge').textContent = profile.role.replace('_', ' ');
+      document.getElementById('user-nama').textContent = profile.nama_lengkap || profile.username;
+      document.getElementById('user-role-badge').textContent = (profile.role || 'petugas').replace('_', ' ');
       document.getElementById('user-wilayah-info').textContent = `${profile.nama_desa || ''}, ${profile.nama_kec || ''}`;
     
       const adminNav = document.getElementById('admin-nav-menu');
-      const formContainer = getFormWizardContainer();
-      const adminSection = document.getElementById('admin-panel-view');
+
+      // Set form wilayah induk default
+      const provEl = document.getElementById('w-prov');
+      provEl.value = profile.nama_prov || 'Jawa Barat';
+      provEl.setAttribute('data-code', profile.kode_prov || '32');
+    
+      const kabEl = document.getElementById('w-kab');
+      kabEl.value = profile.nama_kab || 'Bandung';
+      kabEl.setAttribute('data-code', profile.kode_kab || '04');
+    
+      const kecEl = document.getElementById('w-kec');
+      kecEl.value = profile.nama_kec || 'Cangkuang';
+      kecEl.setAttribute('data-code', profile.kode_kec || '01');
+    
+      const desaEl = document.getElementById('w-desa');
+      desaEl.value = profile.nama_desa || 'Cangkuang';
+      desaEl.setAttribute('data-code', profile.kode_desa || '0001');
 
       if (profile.role !== 'pendata') {
-        // Mode ADMIN:
+        // Mode ADMIN: Tampilkan tombol navigasi bar dan buka Panel Admin secara eksplisit
         adminNav.classList.remove('hidden');
-        formContainer.classList.add('hidden');
-        adminSection.classList.remove('hidden');
         switchMainView('admin');
         switchAdminSubTab('keluarga');
       } else {
-        // Mode PENDATA:
+        // Mode PENDATA: Sembunyikan menu admin, buka form pendataan
         adminNav.classList.add('hidden');
-        adminSection.classList.add('hidden');
-        formContainer.classList.remove('hidden');
         switchMainView('pendataan');
         goToStep(1);
       }
+
+      updateIDKeluarga();
+    }
     
       // Set default form wilayah induk
       const provEl = document.getElementById('w-prov');
@@ -1838,7 +1871,7 @@
 
     // ================= TOGGLE TAMPILAN ADMIN =================
     function switchMainView(view) {
-      const formSection = getFormWizardContainer();
+      const formSection = document.getElementById('form-wizard-wrapper');
       const adminSection = document.getElementById('admin-panel-view');
       const btnForm = document.getElementById('tab-btn-pendataan');
       const btnAdmin = document.getElementById('tab-btn-admin');
@@ -1846,15 +1879,36 @@
       if (view === 'admin') {
         formSection.classList.add('hidden');
         adminSection.classList.remove('hidden');
-        if (btnAdmin) btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
-        if (btnForm) btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+
+        if (btnAdmin) {
+          btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
+        }
+        if (btnForm) {
+          btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+        }
+
+        // Muat data master wilayah atau keluarga
         loadMasterWilayahTable();
       } else {
         adminSection.classList.add('hidden');
         formSection.classList.remove('hidden');
-        if (btnForm) btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
-        if (btnAdmin) btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+
+        if (btnForm) {
+          btnForm.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-white text-indigo-600 shadow-sm transition";
+        }
+        if (btnAdmin) {
+          btnAdmin.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+        }
+
+        // Pastikan form pendataan terisi slide individu jika sebelumnya kosong
+        const track = document.getElementById('individus-container');
+        if (!track || track.children.length === 0) {
+          initIndividuRows(2);
+        }
+        goToStep(1);
       }
+
+      lucide.createIcons();
     }
     
     function switchAdminSubTab(sub) {
