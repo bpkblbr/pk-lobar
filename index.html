@@ -1005,6 +1005,243 @@
       return document.getElementById('form-wizard-wrapper');
     }
 
+    // Fungsi untuk memfungsikan tombol pilihan bergaya Pill Option
+    function setupPillOption(groupId, targetHiddenInputId) {
+      const container = document.getElementById(groupId);
+      if (!container) return;
+    
+      const buttons = container.querySelectorAll('button');
+      buttons.forEach(btn => {
+        btn.onclick = () => {
+          // Reset status tombol lain di grup yang sama
+          buttons.forEach(b => {
+            b.className = "px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 transition";
+          });
+          // Beri efek hijau tebal pada opsi yang diklik
+          btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-100 border-2 border-emerald-500 text-slate-900 shadow-sm transition";
+          
+          // Update nilai ke input hidden penampung
+          const hiddenInput = document.getElementById(targetHiddenInputId);
+          if (hiddenInput) {
+            hiddenInput.value = btn.getAttribute('data-value');
+            hiddenInput.dispatchEvent(new Event('change'));
+          }
+        };
+      });
+    }
+
+    let kaderFamilyDataList = [];
+
+    // ================= GANTI TAB KADER (HOME vs DATA vs FORM) =================
+    function switchKaderTab(tabName) {
+      const viewHome = document.getElementById('view-kader-home');
+      const viewData = document.getElementById('view-kader-data');
+      const viewForm = document.getElementById('view-kader-form');
+      const bottomNav = document.getElementById('kader-bottom-nav');
+    
+      const bnavHome = document.getElementById('bnav-home');
+      const bnavData = document.getElementById('bnav-data');
+    
+      if (tabName === 'home') {
+        viewHome.classList.remove('hidden');
+        viewData.classList.add('hidden');
+        viewForm.classList.add('hidden');
+        bottomNav.classList.remove('hidden');
+    
+        bnavHome.className = "flex-1 flex flex-col items-center justify-center text-red-600 py-1";
+        bnavData.className = "flex-1 flex flex-col items-center justify-center text-slate-400 py-1";
+        loadKaderDashboardData();
+      } else if (tabName === 'data') {
+        viewHome.classList.add('hidden');
+        viewData.classList.remove('hidden');
+        viewForm.classList.add('hidden');
+        bottomNav.classList.remove('hidden');
+    
+        bnavHome.className = "flex-1 flex flex-col items-center justify-center text-slate-400 py-1";
+        bnavData.className = "flex-1 flex flex-col items-center justify-center text-red-600 py-1";
+        loadKaderDataList();
+      } else if (tabName === 'form') {
+        viewHome.classList.add('hidden');
+        viewData.classList.add('hidden');
+        viewForm.classList.remove('hidden');
+        bottomNav.classList.add('hidden'); // Sembunyikan bottom bar saat mengisi form agar layar lega
+      }
+    
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+    
+    // Buka form input untuk tambah KK baru
+    function startNewPendataan() {
+      document.getElementById('survey-form').reset();
+      editingKeluargaUUID = null;
+      document.getElementById('form-header-subtitle').textContent = "Input Data Keluarga Baru";
+      initIndividuRows(2);
+      setupWilayahPenugasan(currentUserProfile);
+      switchKaderTab('form');
+      goToStep(1);
+    }
+    
+    // Tombol tutup form untuk kembali ke dashboard
+    function closeFormWizard() {
+      showAppConfirm("Tutup formulir dan kembali ke menu utama? Perubahan yang belum disimpan akan hilang.", "Tutup Form").then(yes => {
+        if (yes) {
+          switchKaderTab('home');
+        }
+      });
+    }
+    
+    // ================= LOAD DATA DASHBOARD HOME =================
+    async function loadKaderDashboardData() {
+      if (!currentUserProfile) return;
+    
+      document.getElementById('home-kader-nama').textContent = currentUserProfile.nama_lengkap || currentUserProfile.username;
+      document.getElementById('home-kader-wilayah').textContent = `${currentUserProfile.nama_desa || 'Desa'}, Dusun ${currentUserProfile.kode_dusun || '0001'}`;
+    
+      try {
+        let query = supabaseClient.from('keluarga').select('*');
+        if (currentUserProfile.role === 'pendata' && currentUserProfile.wilayah_tugas?.length > 0) {
+          const allowedDusun = currentUserProfile.wilayah_tugas.map(t => t.kode_dusun);
+          query = query.in('kode_dusun', allowedDusun);
+        }
+    
+        const { data: listKeluarga, error } = await query;
+        if (error) throw error;
+    
+        const total = listKeluarga ? listKeluarga.length : 0;
+        const target = 50; // Target wilayah kader
+        const persentase = Math.min(100, ((total / target) * 100)).toFixed(1);
+    
+        document.getElementById('home-target-text').textContent = `${total} dari ${target} Keluarga (${persentase}%)`;
+        document.getElementById('home-target-bar').style.width = `${persentase}%`;
+    
+        // Status hitungan
+        let ada = 0, pindah = 0, mati = 0, hilang = 0;
+        listKeluarga?.forEach(k => {
+          if (k.status_keluarga === 'keluarga ada') ada++;
+          else if (k.status_keluarga === 'keluarga pindah') pindah++;
+          else if (k.status_keluarga.includes('meninggal')) mati++;
+          else hilang++;
+        });
+    
+        document.getElementById('stat-baru-didata').textContent = total;
+        document.getElementById('stat-status-ada').textContent = ada;
+        document.getElementById('stat-status-pindah').textContent = pindah;
+        document.getElementById('stat-status-mati').textContent = mati;
+        document.getElementById('stat-status-hilang').textContent = hilang;
+    
+      } catch (err) {
+        console.error("Gagal load stat kader:", err);
+      }
+    }
+    
+    // ================= LOAD DATA TAB "DATA KELUARGA" =================
+    async function loadKaderDataList() {
+      const container = document.getElementById('kader-family-list');
+      container.innerHTML = '<div class="p-6 text-center text-xs text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2"></i>Memuat daftar keluarga...</div>';
+      lucide.createIcons();
+    
+      try {
+        let query = supabaseClient.from('keluarga').select(`
+          id, id_keluarga, no_kk, no_rumah, no_urut_keluarga, status_keluarga,
+          individu(nama_lengkap, nik, status_hubungan)
+        `).order('created_at', { ascending: false });
+    
+        if (currentUserProfile.role === 'pendata' && currentUserProfile.wilayah_tugas?.length > 0) {
+          const allowedDusun = currentUserProfile.wilayah_tugas.map(t => t.kode_dusun);
+          query = query.in('kode_dusun', allowedDusun);
+        }
+    
+        const { data, error } = await query;
+        if (error) throw error;
+    
+        kaderFamilyDataList = data || [];
+        renderKaderCards(kaderFamilyDataList);
+    
+      } catch (err) {
+        container.innerHTML = `<div class="p-4 text-center text-xs text-rose-500">${err.message}</div>`;
+      }
+    }
+    
+    function renderKaderCards(list) {
+      const container = document.getElementById('kader-family-list');
+      document.getElementById('kader-total-count').textContent = list.length;
+    
+      if (list.length === 0) {
+        container.innerHTML = '<div class="p-8 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed">Belum ada data keluarga yang tersimpan.</div>';
+        return;
+      }
+    
+      container.innerHTML = '';
+      list.forEach((item, index) => {
+        const kk = item.individu?.find(i => i.status_hubungan === 'KK');
+        const namaKK = kk ? kk.nama_lengkap : 'Kepala Keluarga';
+        const nikKK = kk ? kk.nik : '-';
+    
+        const card = document.createElement('div');
+        card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-start justify-between gap-3";
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <!-- Angka Nomor Urut Besar di Sisi Kiri -->
+            <span class="text-xl font-black text-slate-800 leading-none pt-0.5 w-6 text-center shrink-0 font-mono">
+              ${index + 1}
+            </span>
+            <div class="space-y-0.5 text-slate-700">
+              <h4 class="text-xs font-black text-slate-900 uppercase tracking-tight">${namaKK}</h4>
+              <p class="text-[11px] text-slate-500 font-mono">NIK: ${nikKK}</p>
+              <p class="text-[11px] text-slate-500">No Rumah: ${item.no_rumah || '-'} | No Urut: ${item.no_urut_keluarga || '-'}</p>
+              <p class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded inline-block mt-1 uppercase">${item.status_keluarga}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <!-- Tombol Edit Hijau Sesuai Gambar -->
+            <button type="button" onclick="editKeluargaKader('${item.id}')" class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Ubah Data">
+              <i data-lucide="file-edit" class="w-4 h-4"></i>
+            </button>
+            <!-- Tombol Hapus Merah Sesuai Gambar -->
+            <button type="button" onclick="hapusDataKeluarga('${item.id}')" class="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition" title="Hapus Data">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    
+      lucide.createIcons();
+    }
+    
+    function filterKaderData(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) {
+        renderKaderCards(kaderFamilyDataList);
+        return;
+      }
+      const filtered = kaderFamilyDataList.filter(item => {
+        const kk = item.individu?.find(i => i.status_hubungan === 'KK');
+        const nama = kk?.nama_lengkap?.toLowerCase() || '';
+        const nik = kk?.nik || '';
+        const noKK = item.no_kk || '';
+        return nama.includes(q) || nik.includes(q) || noKK.includes(q);
+      });
+      renderKaderCards(filtered);
+    }
+    
+    // Buka edit keluarga dari tab Data
+    async function editKeluargaKader(uuid) {
+      document.getElementById('form-header-subtitle').textContent = "Ubah Data Keluarga Terdaftar";
+      await muatDataKeluargaKeForm(uuid);
+      switchKaderTab('form');
+    }
+    
+    function logoutKader() {
+      showAppConfirm("Keluar dari akun pendata?", "Konfirmasi Keluar").then(yes => {
+        if (yes) {
+          localStorage.removeItem('simpk_session');
+          location.reload();
+        }
+      });
+    }
+
     // ================= 1. PENGATURAN TAMPILAN ADMIN & EDIT KELUARGA =================
     function renderUserInterface(profile) {
       document.getElementById('user-nama').textContent = profile.nama_lengkap || profile.username;
